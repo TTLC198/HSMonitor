@@ -1,0 +1,22 @@
+﻿<Application x:Class="HSMonitor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:utils="clr-namespace:HSMonitor.Utils">
+    <Application.Resources>
+        <s:ApplicationLoader>
+            <!--  Bootstrapper  -->
+            <s:ApplicationLoader.Bootstrapper>
+                <utils:Bootstrapper />
+            </s:ApplicationLoader.Bootstrapper>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <!--Main resources-->
+                <ResourceDictionary Source="Resources/StylesResource.xaml"/>
+                <!--Material Design Themes-->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </s:ApplicationLoader>
+    </Application.Resources>
+</Application>

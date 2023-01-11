@@ -1,0 +1,50 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--  Colors  -->
+    <Color x:Key="PrimaryColor">#616161</Color>
+    <Color x:Key="PrimaryLightColor">#8e8e8e</Color>
+    <Color x:Key="PrimaryDarkColor">#373737</Color>
+    <Color x:Key="AccentColor">#424242</Color>
+    <Color x:Key="AccentDarkColor">#1b1b1b</Color>
+    <Color x:Key="TextColor">#FFFFFF</Color>
+    <Color x:Key="InverseTextColor">#FFFFFF</Color>
+
+    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{DynamicResource PrimaryLightColor}" />
+    <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{DynamicResource InverseTextColor}" />
+    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{DynamicResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{DynamicResource InverseTextColor}" />
+    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{DynamicResource PrimaryDarkColor}" />
+    <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{DynamicResource InverseTextColor}" />
+    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{DynamicResource AccentColor}" />
+    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{DynamicResource TextColor}" />
+    
+    <!--  Styles  -->
+    <Style x:Key="MaterialDesignRoot" TargetType="{x:Type FrameworkElement}">
+        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+        <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="TextElement.FontSize" Value="13" />
+        <Setter Property="TextElement.FontWeight" Value="Regular" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+    
+    <Style
+        x:Key="MaterialDesignFlatDarkButton"
+        BasedOn="{StaticResource MaterialDesignFlatButton}"
+        TargetType="{x:Type Button}">
+        <Style.Resources>
+            <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
+        </Style.Resources>
+
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+    </Style>
+    
+    <!--  Fonts  -->
+    <FontFamily
+        x:Key="VT323">
+        /Resources/Fonts/#VT323
+    </FontFamily>
+</ResourceDictionary>

@@ -1,0 +1,334 @@
+﻿<UserControl
+    x:Class="HSMonitor.Views.DashboardView"
+    xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="https://github.com/canton7/Stylet"
+    d:DesignHeight="320"
+    d:DesignWidth="240"
+    d:DataContext="{d:DesignInstance Type=viewModels:DashboardViewModel}"
+    Loaded="{s:Action OnViewLoaded}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style
+            TargetType="{x:Type Border}">
+            <Setter
+                Property="CornerRadius"
+                Value="4"/>
+            <Setter
+                Property="BorderBrush"
+                Value="Gray"/>
+            <Setter
+                Property="BorderThickness"
+                Value="1"/>
+        </Style>
+        <Style
+            TargetType="{x:Type Path}">
+            <Setter
+                Property="Fill"
+                Value="Gray"/>
+        </Style>
+        <Style
+            TargetType="{x:Type Polygon}">
+            <Setter
+                Property="Fill"
+                Value="Gray"/>
+        </Style>
+        <Style
+            TargetType="{x:Type TextBlock}">
+            <Setter
+                Property="FontFamily"
+                Value="{StaticResource VT323}"/>
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center"/>
+            <Setter
+                Property="FontSize"
+                Value="34"/>
+            <Setter
+                Property="Foreground"
+                Value="White"/>
+            <!--{DynamicResource MaterialDesignDarkForeground}-->
+        </Style>
+    </UserControl.Resources>
+    <Canvas
+        Background="Black">
+        <Border
+            Canvas.Top="0"
+            Canvas.Left="0"
+            Width="240"
+            Height="120"/>
+        <Border
+            Canvas.Top="122"
+            Canvas.Left="0"
+            Width="240"
+            Height="138"/>
+        <Border
+            Canvas.Top="262"
+            Canvas.Left="0"
+            Width="240"
+            Height="55"/>
+        <Border
+            Canvas.Top="22"
+            Canvas.Left="13"
+            Width="88"
+            Height="89"/>
+        <Border
+            Canvas.Top="140"
+            Canvas.Left="13"
+            Width="88"
+            Height="89"/>
+        <Border
+            Canvas.Top="91"
+            Canvas.Left="107"
+            Width="120"
+            Height="20"/>
+        <Border
+            Canvas.Top="234"
+            Canvas.Left="14"
+            Width="88"
+            Height="24"/>
+        <!--CPU Name-->
+        <TextBlock
+            Canvas.Top="8"
+            Canvas.Left="16"
+            Text="{Binding Cpu.Name}"
+            FontSize="14"/>
+        <Border
+            Canvas.Top="25"
+            Canvas.Left="16"
+            Width="82"
+            Height="82"
+            BorderThickness="0">
+            <Grid>
+                <Path
+                    Data="M23.71327,26.51253l-.02256,31.63822,32.79474.00514L33.01507,81.96342.10465,82-.29316,50.31234,23.71323,26.51253" />
+                <Path
+                    Data="M23.85994,24.02728l34.00352-.06515-.06819,34.03916L81.70684,82,81.63862.03429.10749,0,23.85994,24.02728" />
+            </Grid>
+        </Border>
+        <!--CPU Temperature-->
+        <TextBlock
+            Canvas.Top="17"
+            Canvas.Left="105"
+            FontSize="34"
+            Text="{Binding Cpu.Temperature, UpdateSourceTrigger=PropertyChanged}"/>
+        <!--CPU Temperature Degree-->
+        <TextBlock
+            Canvas.Top="20"
+            Canvas.Left="130"
+            FontSize="18"
+            Text="°C"/>
+        <!--CPU Load-->
+        <TextBlock
+            Canvas.Top="17"
+            Canvas.Left="170"
+            FontSize="34"
+            Text="{Binding Cpu.Load}"/>
+        <!--CPU Load Percent-->
+        <TextBlock
+            Canvas.Top="20"
+            Canvas.Left="200"
+            FontSize="18"
+            Text="%"/>
+        <!--CPU Power-->
+        <TextBlock
+            Canvas.Top="95"
+            Canvas.Left="175"
+            Text="{Binding Cpu.Power}"
+            FontSize="12"/>
+        <!--CPU Power Watt-->
+        <TextBlock
+            Canvas.Top="95"
+            Canvas.Left="200"
+            Text="W"
+            FontSize="12"/>
+        <!--CPU Clock-->
+        <TextBlock
+            Canvas.Top="40"
+            Canvas.Left="105"
+            Text="{Binding Cpu.Clock}"
+            FontSize="54"/>
+        <!--CPU Clock MHz-->
+        <TextBlock
+            Canvas.Top="47"
+            Canvas.Left="200"
+            Text="MHz"
+            FontSize="18"/>
+        <Border
+            Canvas.Top="144"
+            Canvas.Left="16"
+            Width="82"
+            Height="82"
+            BorderThickness="0">
+            <Grid>
+                <Path
+                    Data="M39.36757,24.0121h4.32435a.37171.37171,0,0,0,.368-.37542v-6.2904a.37181.37181,0,0,0-.368-.37554H39.36757a.37183.37183,0,0,0-.36812.37554v6.2904A.37173.37173,0,0,0,39.36757,24.0121Z" />
+                <Path
+                    Data="M54.45705,19.03613V17.34628a.37189.37189,0,0,0-.36812-.37554H50.22461v2.441h3.86432A.372.372,0,0,0,54.45705,19.03613Z" />
+                <Path
+                    Data="M27.19878,10.00568V7.72433a1.45863,1.45863,0,0,0-1.39731-1.52094H24.21774v5.32324h1.58373A1.45865,1.45865,0,0,0,27.19878,10.00568Z" />
+                <Path
+                    Data="M58.21453,47.37153l2.995-2.57678a7.89237,7.89237,0,0,0-5.87166-2.92581,10.612,10.612,0,0,0-1.16046.06985v1.85657C56.41724,44.07147,56.8676,45.08107,58.21453,47.37153Z" />
+                <Path
+                    Data="M54.79807,39.75943c5.75362-.18449,9.52841,5.04467,9.52841,5.04467s-4.077,5.77809-8.44822,5.77809a5.2033,5.2033,0,0,1-1.70083-.27756v1.69223a9.0186,9.0186,0,0,0,1.60947.14465c6.23759,0,12.22515-7.42934,12.22515-7.42934s-5.21283-6.97087-13.214-6.69581c-.20747.00778-.41419.021-.62064.03782v1.738C54.38151,39.77727,54.58782,39.76622,54.79807,39.75943Z" />
+                <Path
+                    Data="M73.58568,49.93981c-.56745-.58714-3.32684-1.92667-4.00022-2.47729-4.065,3.58028-8.26291,6.60491-14.06776,6.60491a10.37807,10.37807,0,0,1-1.34027-.08862v1.8476c.46419.04551.93757.07579,1.42958.07579C60.71331,55.9022,69.72026,53.24132,73.58568,49.93981Z" />
+                <Path
+                    Data="M81.99961,65.38735V12.69168L69.56167-.00014H.0001V48.77674L16.27847,65.38735ZM25.93416,16.97074H20.22958v2.441H24.83v2.25334H20.22958v2.347h5.70458v2.25342H18.02133V14.71741h7.91283Zm9.661,0H29.89056v2.441H34.491v2.25334H29.89056v4.60045H27.68229V14.71741h7.91285ZM76.24019,58.6118H54.17743V55.82641C44.49723,54.89429,41.046,44.71217,41.046,44.71217s6.09414-6.08181,13.13147-6.658V34.84774H76.24019ZM68.16647,14.71741h7.91282v2.25333H70.37463v2.441h4.60044v2.25334H70.37463v2.347h5.70466v2.25342H68.16647Zm-9.7531,1.87771a1.85926,1.85926,0,0,1,1.84016-1.87771s6.16477.0093,6.16477,0v2.25333c0-.00944-5.42865,0-5.42865,0a.37179.37179,0,0,0-.368.37554v6.2904a.3717.3717,0,0,0,.368.37542s5.42865-.00938,5.42865,0v2.25342c0-.00947-6.16477,0-6.16477,0a1.85934,1.85934,0,0,1-1.84016-1.87779Zm-10.397-1.87771h6.80869a1.85921,1.85921,0,0,1,1.84016,1.87771v3.19215a1.866,1.866,0,0,1-1.53086,1.84919l2.359,4.62906H55.10105l-2.34436-4.60045H50.22461v4.60045H48.01636Zm-1.74817,1.87771v7.79261A1.85934,1.85934,0,0,1,44.428,26.26552H38.63138a1.85929,1.85929,0,0,1-1.84011-1.87779V16.59512a1.85921,1.85921,0,0,1,1.84011-1.87771H44.428A1.85927,1.85927,0,0,1,46.26819,16.59512ZM34.74456,5.06269h1.11792l2.79469,7.60463H37.353l-.52169-1.52084H33.77573l-.52168,1.52084h-1.3042Zm-4.75108,0h1.11791v7.60463H29.99348Zm-6.89357,0h2.70156a2.6266,2.6266,0,0,1,2.51528,2.66164v2.28135a2.62659,2.62659,0,0,1-2.51528,2.66164H23.09991Zm-3.07419,0h1.11783v7.60463H20.02572Zm-5.58945,0,1.67684,5.3233,1.67682-5.3233H19.001l-2.42213,7.60463h-.93161L13.2252,5.06269Zm-7.73211,0H7.822l3.35371,5.22825V5.06269h1.11791v7.60463H11.1757L7.822,7.43917v5.22815H6.70416Zm9.477,19.5128a1.67377,1.67377,0,0,1-1.65618,1.69H9.00437l-2.30021-2.3473V16.40735a1.68134,1.68134,0,0,1,1.65618-1.68994h7.45281v2.25333H9.28044a.37438.37438,0,0,0-.3681.37554v5.63314L9.92455,24.0121h3.68033a.367.367,0,0,0,.368-.37542V21.66507H11.21262V19.41173h4.96855Z" />
+                <Path
+                    Data="M54.16906,43.79441c-2.24655-.27529-4.002,1.86684-4.002,1.86684s.98343,3.60567,4.01038,4.64338V43.79536Z" />
+                <Path
+                    Data="M47.31845,45.3253a11.53946,11.53946,0,0,1,6.859-3.38651V39.79217a13.26258,13.26258,0,0,0-9.5357,5.2864s2.43227,7.98828,9.5357,8.90024v-1.982C48.80854,51.02011,47.31845,45.3253,47.31845,45.3253Z" />
+                <Polygon
+                    Points="15.261 67.761 0 52.219 0 68.835 12.928 82 82 82 82 67.761 15.261 67.761" />
+                <Polygon
+                    Points="35.303 6.692 34.167 10.006 36.44 10.006 35.303 6.692" />
+            </Grid>
+        </Border>
+        <TextBlock
+            Canvas.Top="95"
+            Canvas.Left="110"
+            Text="OVERCLOCKED"
+            FontSize="12"/>
+        <TextBlock
+            Canvas.Top="240"
+            Canvas.Left="24"
+            Text="BOOST"
+            FontSize="12"/>
+        <!--CPU Name-->
+        <TextBlock
+            Canvas.Top="127"
+            Canvas.Left="16"
+            Text="{Binding Gpu.Name}"
+            FontSize="14"/>
+        <!--GPU Temperature-->
+        <TextBlock
+            Canvas.Top="136"
+            Canvas.Left="105"
+            Text="{Binding Gpu.CoreTemperature}"
+            FontSize="34"/>
+        <!--GPU Temperature Degree-->
+        <TextBlock
+            Canvas.Top="139"
+            Canvas.Left="130"
+            FontSize="18"
+            Text="°C"/>
+        <!--GPU Load-->
+        <TextBlock
+            Canvas.Top="136"
+            Canvas.Left="170"
+            Text="{Binding Gpu.CoreLoad}"
+            FontSize="34"/>
+        <!--GPU Load Percent-->
+        <TextBlock
+            Canvas.Top="139"
+            Canvas.Left="200"
+            FontSize="18"
+            Text="%"/>
+        <!--GPU Clock-->
+        <TextBlock
+            Canvas.Top="165"
+            Canvas.Left="105"
+            Text="{Binding Gpu.CoreClock}"
+            FontSize="34"/>
+        <!--GPU Clock MHz-->
+        <TextBlock
+            Canvas.Top="168"
+            Canvas.Left="165"
+            Text="MHz"
+            FontSize="18"/>
+        <!--GPU VRam Clock-->
+        <TextBlock
+            Canvas.Top="195"
+            Canvas.Left="125"
+            Text="VRam Clock:"
+            FontSize="14"/>
+        <!--GPU VRam Clock-->
+        <TextBlock
+            Canvas.Top="195"
+            Canvas.Left="190"
+            Text="{Binding Gpu.VRamClock}"
+            FontSize="14"/>
+        <!--GPU Power-->
+        <TextBlock
+            Canvas.Top="210"
+            Canvas.Left="125"
+            Text="Power     :"
+            FontSize="14"/>
+        <!--GPU Power-->
+        <TextBlock
+            Canvas.Top="210"
+            Canvas.Left="190"
+            Text="{Binding Gpu.Power}"
+            FontSize="14"/>
+        <!--GPU Fan1 Load-->
+        <TextBlock
+            x:Name="Fan1TextBlock"
+            Canvas.Top="225"
+            Canvas.Left="125"
+            Text="Fan1 Load :"
+            FontSize="14"/>
+        <!--GPU Fan1 Load-->
+        <TextBlock
+            x:Name="Fan1LoadTextBlock"
+            Canvas.Top="225"
+            Canvas.Left="190"
+            Text="{Binding GpuFan1.Load}"
+            FontSize="14"/>
+        <!--GPU Fan2 Load-->
+        <TextBlock
+            x:Name="Fan2TextBlock"
+            Canvas.Top="240"
+            Canvas.Left="125"
+            Text="Fan2 Load :"
+            FontSize="14"/>
+        <!--GPU Fan2 Load-->
+        <TextBlock
+            x:Name="Fan2LoadTextBlock"
+            Canvas.Top="240"
+            Canvas.Left="190"
+            Text="{Binding GpuFan2.Load}"
+            FontSize="14"/>
+        <!--RAM Image-->
+        <Image
+            Canvas.Top="268"
+            Canvas.Left="16"
+            Width="100"
+            Height="40"
+            Source="../Resources/Images/RamImage.png"
+            Stretch="Fill"/>
+        <!--Total / RAM Used-->
+        <TextBlock
+            Canvas.Top="270"
+            Canvas.Left="120"
+            Text="Total  /  RAM Used"
+            FontSize="14"/>
+        <!--Total RAM-->
+        <TextBlock
+            Canvas.Top="285"
+            Canvas.Left="120"
+            Text="{Binding Memory.Total}"
+            FontSize="20"/>
+        <!--Total RAM GB-->
+        <TextBlock
+            Canvas.Top="285"
+            Canvas.Left="145"
+            Text="GB"
+            FontSize="12"/>
+        <!--RAM Used-->
+        <TextBlock
+            Canvas.Top="285"
+            Canvas.Left="170"
+            Text="{Binding Memory.Used}"
+            FontSize="20"/>
+        <!--RAM Used GB-->
+        <TextBlock
+            Canvas.Top="285"
+            Canvas.Left="210"
+            Text="GB"
+            FontSize="12"/>
+    </Canvas>
+</UserControl>
