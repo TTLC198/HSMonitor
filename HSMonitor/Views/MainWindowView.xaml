@@ -53,7 +53,7 @@
                 TrayMouseDoubleClick="MainTaskbarIcon_OnTrayBalloonTipClicked">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu
-                        Margin="4">
+                        Margin="2">
                         <MenuItem
                             Header="_Show window"
                             Click="Show_OnClick">

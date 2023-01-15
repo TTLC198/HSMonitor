@@ -30,7 +30,7 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 
     public string SelectedPort
     {
-        get => SettingsService.Settings.LastSelectedPort;
+        get => SettingsService.Settings.LastSelectedPort ?? "COM1";
         set => SettingsService.Settings.LastSelectedPort = value;
     }
     
@@ -49,6 +49,6 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
     public ConnectionSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 0, "Connection")
     {
-        SelectedPort = AvailablePorts.First();
+        SelectedPort = AvailablePorts.FirstOrDefault() ?? SettingsService.Settings.LastSelectedPort ?? "COM1";
     }
 }

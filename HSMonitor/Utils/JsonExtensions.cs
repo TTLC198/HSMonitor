@@ -14,7 +14,7 @@ public static class JsonExtensions
             var options = new JsonSerializerOptions { WriteIndented = true };
             File.WriteAllText(fileName, JsonSerializer.Serialize(sender, format ? options : null));
     
-            return (true, null);
+            return (true, null!);
         }
         catch (Exception exception)
         {

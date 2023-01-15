@@ -18,11 +18,18 @@ public class ApplicationSettings
 
     public string? CpuCustomName { get; set; }
     
+    public string? CpuCustomType { get; set; }
+    
     public string? GpuCustomName { get; set; }
+    
+    public string? GpuCustomType { get; set; }
+    
+    public string? MemoryCustomType { get; set; }
 
-    public bool IsAutodetectHardwareEnabled { get; set; }
+    public bool IsAutoDetectHardwareEnabled { get; set; }
     
     // Advanced
     [JsonIgnore]
     public bool IsAutoStartEnabled { get; set; }
+    public bool IsHiddenAutoStartEnabled { get; set; }
 }

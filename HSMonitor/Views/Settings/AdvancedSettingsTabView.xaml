@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
+             xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              d:DataContext="{d:DesignInstance Type=settings:AdvancedSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -40,6 +41,24 @@
             <ToggleButton
                 Grid.Column="1"
                 IsChecked="{Binding IsAutoStartEnabled}" />
+        </Grid>
+        <!--Set hidden autostart enabled-->
+        <Grid 
+            Margin="16,8" 
+            ToolTip="Launch HSMonitor hidden at Windows startup"
+            IsEnabled="{Binding IsAutoStartEnabled}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="Start hidden" />
+            <ToggleButton
+                Grid.Column="1"
+                IsChecked="{Binding IsHiddenAutoStartEnabled}" />
         </Grid>
     </StackPanel>
 </UserControl>

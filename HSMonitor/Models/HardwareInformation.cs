@@ -46,6 +46,7 @@ public class GpuFan
 
 public class MemoryInformation
 {
+    public string? Type { get; set; }
     public int Load { get; set; }
     public double Available { get; set; }
     public double Used { get; set; }

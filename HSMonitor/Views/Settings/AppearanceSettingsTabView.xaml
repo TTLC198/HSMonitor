@@ -11,6 +11,28 @@
              Background="Transparent">
     <UserControl.Resources>
         <Style
+            TargetType="{x:Type ComboBox}"
+            BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Right"/>
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center"/>
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Center"/>
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Center"/>
+            <Setter
+                Property="Width"
+                Value="80"/>
+            <Setter
+                Property="Margin"
+                Value="8 ,0, 0, 0"/>
+        </Style>
+        <Style
             TargetType="{x:Type TextBlock}"
             BasedOn="{StaticResource MaterialDesignTextBlock}">
             <Setter
@@ -43,12 +65,21 @@
                 Property="VerticalAlignment"
                 Value="Center"/>
         </Style>
+        <Style
+            TargetType="{x:Type Grid}">
+            <Setter
+                Property="IsEnabled"
+                Value="{Binding IsAutoDetectHardwareEnabled,Converter={x:Static converters:InverseBoolConverter.Instance}}"/>
+        </Style>
     </UserControl.Resources>
     <StackPanel
         Margin="0, 8"
         Orientation="Vertical">
         <!--On/Off autodetect hardware-->
-        <Grid Margin="12,4" ToolTip="On/Off autodetect hardware">
+        <Grid 
+            Margin="12,4" 
+            ToolTip="On/Off autodetect hardware"
+            IsEnabled="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -62,12 +93,11 @@
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                IsChecked="{Binding IsAutodetectHardwareEnabled}" />
+                IsChecked="{Binding IsAutoDetectHardwareEnabled}" />
         </Grid>
         <!--Set custom CPU name-->
         <Grid
-            Margin="12, 4"
-            IsEnabled="{Binding IsAutodetectHardwareEnabled,Converter={x:Static converters:InverseBoolConverter.Instance}}">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -85,8 +115,7 @@
         </Grid>
         <!--Set custom GPU name-->
         <Grid
-            Margin="12, 4"
-            IsEnabled="{Binding IsAutodetectHardwareEnabled,Converter={x:Static converters:InverseBoolConverter.Instance}}">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -101,6 +130,81 @@
                 Grid.Row="1"
                 Text="{Binding GpuCustomName, Mode=TwoWay}"
                 TextAlignment="Left" />
+        </Grid>
+        <!-- Select custom CPU Type -->
+        <Grid
+            Margin="12, 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="CPU icon:"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                x:Name="CpuCustomTypesComboBox"
+                Grid.Column="1"
+                ItemsSource="{Binding CpuCustomTypes}"
+                SelectedValue="{Binding CpuCustomType, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding }"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+        <!-- Select custom GPU Type -->
+        <Grid
+            Margin="12, 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="GPU icon:"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                x:Name="GpuCustomTypesComboBox"
+                Grid.Column="1"
+                ItemsSource="{Binding GpuCustomTypes}"
+                SelectedValue="{Binding GpuCustomType, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding }"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+        <!-- Select custom Memory Type -->
+        <Grid
+            Margin="12, 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="Ram icon:"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                x:Name="MemoryCustomTypesComboBox"
+                Grid.Column="1"
+                ItemsSource="{Binding MemoryCustomTypes}"
+                SelectedValue="{Binding MemoryCustomType, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding }"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </Grid>
     </StackPanel>
 </UserControl>

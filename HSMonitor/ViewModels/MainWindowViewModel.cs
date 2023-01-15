@@ -78,9 +78,17 @@ Press OK to restart the application as administrator.".Trim(),
             Process.Start(startInfo);
             Exit();
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            // UAC elevation failed
+            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: "Some error has occurred",
+                message: $@"
+An error has occurred, the error text is shown below
+{exception.Message}".Trim(),
+                okButtonText: "OK",
+                cancelButtonText: null
+            );
+            _dialogManager.ShowDialogAsync(messageBoxDialog);
         }
     }
 

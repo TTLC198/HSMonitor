@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Windows;
 using HSMonitor.Services;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
@@ -41,5 +42,11 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
 
         base.Launch();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        GetInstance<SerialMonitorService>().Dispose();
+        base.OnExit(e);
     }
 }

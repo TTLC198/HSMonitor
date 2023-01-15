@@ -7,66 +7,66 @@ namespace HSMonitor.Utils.Serial;
 
 public class Serial : IDisposable
 {
-    private readonly SerialPort _serial;
+    private readonly SerialPort _serialPort;
     private readonly SettingsService _settingsService;
 
     public Serial(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        _serial = new SerialPort(string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort) ? "COM1" : _settingsService.Settings.LastSelectedPort, _settingsService.Settings.LastSelectedBaudRate);
+        _serialPort = new SerialPort(
+            string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort) ? "COM1" : _settingsService.Settings.LastSelectedPort,
+            _settingsService.Settings.LastSelectedBaudRate,
+            Parity.None, 
+            8,
+            StopBits.One);
+        _serialPort.ReadTimeout = 500;
+        _serialPort.WriteTimeout = 500;
+        _serialPort.DtrEnable = true;
+        _serialPort.RtsEnable = true;
     }
 
     public bool Open()
     {
-        if (_serial.IsOpen)
-        {
-            try { _serial.Close(); }
-            catch { }
-        }
+        if (_serialPort.IsOpen)
+            return true;
 
-        _serial.PortName = _settingsService.Settings.LastSelectedPort ?? "COM1";
-
-        try
-        {
-            _serial.Open();
-        }
-        catch (IOException e)
-        {
-            return false;
-        }
+        _serialPort.PortName = _settingsService.Settings.LastSelectedPort ?? "COM1";
+        _serialPort.Open();
 
         return true;
     }
 
-    private void Close()
+    public void Close()
     {
-        if (_serial.IsOpen)
-        {
-            _serial.Close();
-        }
+        if (_serialPort.IsOpen)
+            _serialPort.Close();
     }
 
     public void Write(byte[] data)
     {
-        if (_serial.IsOpen)
+        if (!_serialPort.IsOpen) return;
+        _serialPort.Write(data, 0, data.Length);
+    }
+    
+    public void Write(string text)
+    {
+        if (!_serialPort.IsOpen) return;
+        try
         {
-            try
-            {
-                _serial.Write(data, 0, data.Length);
-            }
-            catch (Exception ex)
-            {
-                try { _serial.Close(); }
-                catch { }
+            _serialPort.Write(text);
+        }
+        catch (Exception ex)
+        {
+            try { _serialPort.Close(); }
+            catch { }
 
-                Open();
-            }
+            Open();
         }
     }
 
     public void Dispose()
     {
         Close();
-        _serial.Dispose();
+        _serialPort.Dispose();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,7 +19,8 @@ public class SettingsService
     private readonly DialogManager _dialogManager;
     private readonly RegistryHandler _autoStartSwitch = new(
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
-        $"\"{App.ExecutableFilePath}\" {App.HiddenOnLaunchArgument}"
+        $"\"{App.ExecutableFilePath}\"",
+        new string[] {App.HiddenOnLaunchArgument}
     );
 
     public event EventHandler? SettingsReset;
@@ -47,8 +49,11 @@ public class SettingsService
             SendInterval = 1000,
             CpuCustomName = null,
             GpuCustomName = null,
-            IsAutodetectHardwareEnabled = true,
-            IsAutoStartEnabled = true
+            CpuCustomType = null,
+            GpuCustomType = null,
+            IsAutoDetectHardwareEnabled = true,
+            IsAutoStartEnabled = true,
+            IsHiddenAutoStartEnabled = true,
         };
         Save();
         SettingsReset?.Invoke(this, EventArgs.Empty);
@@ -68,6 +73,20 @@ public class SettingsService
         
         try
         {
+            if (Settings.IsAutoStartEnabled)
+            {
+                if (Settings.IsHiddenAutoStartEnabled)
+                {
+                    if (_autoStartSwitch.Args.FirstOrDefault(a => a.Contains(App.HiddenOnLaunchArgument)) is null)
+                        _autoStartSwitch.Args = _autoStartSwitch.Args.Append(App.HiddenOnLaunchArgument).ToArray();
+                }
+                else
+                {
+                    if (_autoStartSwitch.Args.FirstOrDefault(a => a.Contains(App.HiddenOnLaunchArgument)) is not null)
+                        _autoStartSwitch.Args = _autoStartSwitch.Args.Where(a => !a.Contains(App.HiddenOnLaunchArgument))
+                            .ToArray();
+                }
+            }
             _autoStartSwitch.IsSet = Settings.IsAutoStartEnabled;
         }
         catch (Exception exception)
@@ -80,11 +99,7 @@ An error has occurred, the error text is shown below
                 okButtonText: "OK",
                 cancelButtonText: null
             );
-
-            Task.Run(async () =>
-            {
-                await _dialogManager.ShowDialogAsync(messageBoxDialog);
-            });
+            _dialogManager.ShowDialogAsync(messageBoxDialog);
         }
         
         SettingsSaved?.Invoke(this, EventArgs.Empty);

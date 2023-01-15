@@ -31,15 +31,15 @@ public class SerialMonitorService : IDisposable
     public bool SendInformationToMonitor()
     {
         var isConnected = false;
-        var message = HardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
-        var jsonData = JsonSerializer
-            .Serialize(message)
-            .Append('\0')
-            .Select(c => (byte)c).ToArray();
+
         try
         {
-            isConnected = _serial.Open();
-            if (isConnected)
+            var message = HardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
+            var jsonData = JsonSerializer
+                .Serialize(message)
+                .Select(s => (byte)s)
+                .ToArray();
+            if (_serial.Open())
                 _serial.Write(jsonData);
         }
         catch (Exception exception)
@@ -52,11 +52,10 @@ An error has occurred, the error text is shown below
                 okButtonText: "OK",
                 cancelButtonText: null
             );
-
-            Task.Run(async () =>
+            if (_dialogManager.ShowDialogAsync(messageBoxDialog).Result == true)
             {
-                await _dialogManager.ShowDialogAsync(messageBoxDialog);
-            });
+                _serial.Close();
+            }
         }
 
         return isConnected;

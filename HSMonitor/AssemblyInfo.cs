@@ -12,11 +12,11 @@ using System.Windows;
 
 [assembly: AssemblyTitle("HSMonitor")]
 [assembly: AssemblyDescription("Server part of the program for monitoring the state of computer hardware on a separate screen.")]
-[assembly: AssemblyConfiguration("debug")]
+[assembly: AssemblyConfiguration("release")]
 [assembly: AssemblyCompany("ttlc198")]
 [assembly: AssemblyProduct("HSMonitor")]
 [assembly: AssemblyCopyright("ttlc198 2023")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.5.0")]
+[assembly: AssemblyVersion("1.0.6")]

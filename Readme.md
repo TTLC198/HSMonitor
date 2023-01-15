@@ -1,5 +1,8 @@
 # [<img src=".assets/favicon.ico" width="40"/>](.assets/favicon.ico) Hardware Serial Monitor
 
+![Build](https://img.shields.io/github/v/release/TTLC198/HSMonitor)
+![LastCommit](https://img.shields.io/github/last-commit/TTLC198/HSMonitor)
+
 **HSMonitor** is an application that is a back-end application that reads PC status data and sends it to a special device based on Arduino. \
 This device allows you to quickly monitor the temperature and degree of CPU and GPU utilization, power consumption, and so on, without being distracted from other things.
 
