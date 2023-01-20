@@ -30,7 +30,7 @@ public class HardwareMonitorService
         _settingsService = settingsService;
     }
 
-    public static Message GetHwInfoMessage()
+    public Message GetHwInfoMessage()
         => new ()
         {
             CpuInformation = Cpu,
@@ -86,12 +86,10 @@ public class HardwareMonitorService
             {
                 Type = _settingsService.Settings.IsAutoDetectHardwareEnabled 
                     ? (cpuHardware.GetType().ToString().Split(".").Last() ?? "Unknown") 
-                    : _settingsService.Settings.CpuCustomType 
-                      ?? (cpuHardware.GetType().ToString().Split(".").Last() ?? "Unknown"),
+                    : _settingsService.Settings.CpuCustomType ?? (cpuHardware.GetType().ToString().Split(".").Last() ?? "Unknown"),
                 Name = _settingsService.Settings.IsAutoDetectHardwareEnabled 
                     ? (cpuHardware.Name ?? "Unknown")
-                    : _settingsService.Settings.CpuCustomName 
-                      ?? (cpuHardware.Name ?? "Unknown"),
+                    : string.IsNullOrWhiteSpace(_settingsService.Settings.CpuCustomName) ? cpuHardware.Name : _settingsService.Settings.CpuCustomName,
                 Clock = Convert.ToInt32(cpuHardwareSensors.First(s => s.SensorType == SensorType.Clock).Value ?? 0),
                 Load = Convert.ToInt32(cpuHardwareSensors
                     .First(s => s.Name.Contains("Total") && s.SensorType == SensorType.Load).Value ?? 0),
@@ -174,8 +172,7 @@ public class HardwareMonitorService
                       ?? (gpuHardware.GetType().ToString().Split(".").Last() ?? "Unknown"),
                 Name = _settingsService.Settings.IsAutoDetectHardwareEnabled 
                     ? (gpuHardware.Name ?? "Unknown") 
-                    : _settingsService.Settings.GpuCustomName 
-                      ?? (gpuHardware.Name ?? "Unknown"),
+                    : string.IsNullOrWhiteSpace(_settingsService.Settings.GpuCustomName) ? gpuHardware.Name : _settingsService.Settings.GpuCustomName,
                 CoreClock = Convert.ToInt32(gpuHardwareSensors
                     .First(s => s.Name.Contains("Core") && s.SensorType == SensorType.Clock).Value ?? 0),
                 CoreLoad = Convert.ToInt32(gpuHardwareSensors
