@@ -19,10 +19,18 @@ public class Serial : IDisposable
             Parity.None, 
             8,
             StopBits.One);
-        _serialPort.ReadTimeout = 500;
-        _serialPort.WriteTimeout = 500;
-        _serialPort.DtrEnable = true;
-        _serialPort.RtsEnable = true;
+    }
+
+    public bool CheckAccess()
+    {
+        try
+        {
+            return Open();;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public bool Open()
@@ -33,7 +41,7 @@ public class Serial : IDisposable
         _serialPort.PortName = _settingsService.Settings.LastSelectedPort ?? "COM1";
         _serialPort.Open();
 
-        return true;
+        return _serialPort.IsOpen;
     }
 
     public void Close()
@@ -47,26 +55,6 @@ public class Serial : IDisposable
         if (!_serialPort.IsOpen) return;
         _serialPort.Write(data, 0, data.Length);
     }
-    
-    public void Write(string text)
-    {
-        if (!_serialPort.IsOpen) return;
-        try
-        {
-            _serialPort.Write(text);
-        }
-        catch (Exception ex)
-        {
-            try { _serialPort.Close(); }
-            catch { }
 
-            Open();
-        }
-    }
-
-    public void Dispose()
-    {
-        Close();
-        _serialPort.Dispose();
-    }
+    public void Dispose() => _serialPort.Dispose();
 }
