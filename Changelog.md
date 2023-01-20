@@ -1,4 +1,4 @@
-### v1.0.7 (date)
+### v1.0.7 (20.01.2023)
 
 - Added enable admin run mode to enable faster startup after OS boot.
 - Added auto-detection of whether the device is connected to the computer and whether it is busy with other programs.

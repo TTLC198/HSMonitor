@@ -23,7 +23,7 @@ This device allows you to quickly monitor the temperature and degree of CPU and 
 > Supported OS version: Windows 7 and higher. \
 > The latest release is not yet fully tested and awaits your feedback!
 
-- [**Beta release**](https://github.com/TTLC198/HSMonitor/releases)
+- [**Latest release**](https://github.com/TTLC198/HSMonitor/releases)
 
 ## Preview
 
