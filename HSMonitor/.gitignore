@@ -18,7 +18,8 @@ bld/
 [Oo]bj/
 
 # Installer binary sources
-Installer/Source
+Installer/bin
+Installer/Release
 
 # Coverage
 *.opencover.xml
