@@ -14,6 +14,11 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
         get => SettingsService.Settings.IsHiddenAutoStartEnabled;
         set => SettingsService.Settings.IsHiddenAutoStartEnabled = value;
     }
+    public bool IsRunAsAdministrator
+    {
+        get => SettingsService.Settings.IsRunAsAdministrator;
+        set => SettingsService.Settings.IsRunAsAdministrator = value;
+    }
 
     public AdvancedSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 2, "Advanced")

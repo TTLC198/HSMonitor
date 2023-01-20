@@ -60,5 +60,22 @@
                 Grid.Column="1"
                 IsChecked="{Binding IsHiddenAutoStartEnabled}" />
         </Grid>
+        <!--Set start as administrator directly-->
+        <Grid 
+            Margin="16,8" 
+            ToolTip="Launch HSMonitor as administrator directly">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="Run as admininstrator" />
+            <ToggleButton
+                Grid.Column="1"
+                IsChecked="{Binding IsRunAsAdministrator}" />
+        </Grid>
     </StackPanel>
 </UserControl>

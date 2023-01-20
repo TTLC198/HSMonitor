@@ -33,6 +33,13 @@ public class SettingsViewModel : DialogScreen
         ActiveTab = settingsTab;
         settingsTab.IsSelected = true;
     }
+    
+    public void ActivateTabByType<T>() where T : ISettingsTabViewModel
+    {
+        var tab = Tabs.OfType<T>().FirstOrDefault();
+        if (tab is not null)
+            ActivateTab(tab);
+    }
 
     public void Reset() => _settingsService.Reset();
 
