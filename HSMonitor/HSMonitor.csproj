@@ -8,6 +8,7 @@
         <RootNamespace>HSMonitor</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <ApplicationIcon>Resources/Images/favicon.ico</ApplicationIcon>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,20 +21,22 @@
 
     <ItemGroup>
       <None Remove="Resources\Fonts\VT323.ttf" />
-      <None Include="bin\Debug\net7.0-windows\appsettings.json" />
       <Resource Include="Resources\Fonts\VT323.ttf" />
       <Resource Include="Resources\Images\favicon.ico" />
-      <Resource Include="Resources\Images\MainWindowDevice.png" />
-      <Resource Include="Resources\Images\RamImage.png" />
+      <Resource Include="Resources\Images\MainWindowDevice.png" /> 
       <Resource Include="Resources\Images\favicon_wrong.ico" />
-      <None Remove="Resources\Images\favicon_light.ico" />
       <Resource Include="Resources\Images\favicon_light.ico" />
-      <None Remove="Resources\Images\AmdLogo.png" />
       <Resource Include="Resources\Images\AmdLogo.png" />
-      <None Remove="Resources\Images\NvidiaLogo.png" />
       <Resource Include="Resources\Images\NvidiaLogo.png" />
-      <None Remove="Resources\Images\UnknownLogo.png" />
       <Resource Include="Resources\Images\UnknownLogo.png" />
+      <Resource Include="Resources\Images\favicon_wrong_light.ico" />
+      <Resource Include="Resources\Images\ViperRam.png" />
+      <Resource Include="Resources\Images\TridentRam.png" />
+      <Resource Include="Resources\Images\IntelLogo.png" />
+      <Resource Include="Resources\Images\RadeonLogo.png" />
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -63,12 +66,5 @@
       <Compile Update="Views\Settings\ConnectionSettingsTabView.xaml.cs">
         <DependentUpon>ConnectionSettingsTabViewModel.xaml</DependentUpon>
       </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="appsettings.json" />
-      <Content Include="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
     </ItemGroup>
 </Project>

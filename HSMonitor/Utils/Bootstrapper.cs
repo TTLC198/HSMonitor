@@ -6,18 +6,18 @@ using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using Stylet;
 using StyletIoC;
+using MessageBoxViewModel = HSMonitor.ViewModels.MessageBoxViewModel;
 
 namespace HSMonitor.Utils;
-
+#pragma warning disable CA1416
 public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 {
     private T GetInstance<T>() => (T) base.GetInstance(typeof(T));
-    
 
     protected override void ConfigureIoC(IStyletIoCBuilder builder)
     {
         base.ConfigureIoC(builder);
-        
+
         builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<SerialMonitorService>().ToSelf().InSingletonScope();
@@ -50,3 +50,4 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         base.OnExit(e);
     }
 }
+#pragma warning restore CA1416

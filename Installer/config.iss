@@ -1,5 +1,5 @@
 ﻿#define AppName "HSMonitor"
-#define AppVersion "1.0.6"
+#define AppVersion "1.0.7"
 #define GithubPage "https://github.com/TTLC198/HSMonitor"
 
 [Setup]

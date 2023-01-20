@@ -25,7 +25,7 @@
     mc:Ignorable="d">
     <materialDesign:DialogHost
         x:Name="DialogHost"
-        CloseOnClickAway="True"
+        CloseOnClickAway="False"
         Loaded="{s:Action OnViewFullyLoaded}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
         DialogMargin="10"
@@ -47,10 +47,24 @@
             <tb:TaskbarIcon
                 Grid.Row="0"
                 x:Name="MainTaskbarIcon"
-                IconSource="/Resources/Images/favicon.ico"
                 ToolTipText="{x:Static hsMonitor:App.Name}"
                 NoLeftClickDelay="True"
                 TrayMouseDoubleClick="MainTaskbarIcon_OnTrayBalloonTipClicked">
+                <tb:TaskbarIcon.Style>
+                    <Style TargetType="tb:TaskbarIcon">
+                        <Setter
+                            Property="IconSource"
+                            Value="/Resources/Images/favicon_wrong.ico"/>
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsSerialMonitorEnabled}" Value="True">
+                                <Setter
+                                    Property="IconSource"
+                                    Value="/Resources/Images/favicon.ico"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </tb:TaskbarIcon.Style>
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu
                         Margin="2">
@@ -91,14 +105,30 @@
                             Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!--Logo-->
+                    <!-- Application Logo -->
                     <Image
                         Grid.Column="0"
-                        VerticalAlignment="Center"
-                        Margin="4"
                         Width="28"
                         Height="28"
-                        Source="../Resources/Images/favicon_light.ico"/>
+                        Margin="4"
+                        VerticalAlignment="Center">
+                        <Image.Style>
+                            <Style
+                                TargetType="{x:Type Image}">
+                                <Setter
+                                    Property="Source"
+                                    Value="../Resources/Images/favicon_wrong_light.ico"/>
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsSerialMonitorEnabled}" Value="True">
+                                        <Setter
+                                            Property="Source"
+                                            Value="../Resources/Images/favicon_light.ico"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                     <!--  Application name and version  -->
                     <TextBlock
                         Grid.Column="1"

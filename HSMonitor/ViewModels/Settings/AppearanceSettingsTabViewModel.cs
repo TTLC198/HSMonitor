@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HSMonitor.Services;
+using static System.String;
 
 namespace HSMonitor.ViewModels.Settings;
 
@@ -7,32 +8,32 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
 {
     public string? CpuCustomName
     {
-        get => SettingsService.Settings.CpuCustomName ?? HardwareMonitorService.Cpu.Name;
+        get => IsNullOrWhiteSpace(SettingsService.Settings.CpuCustomName) ? HardwareMonitorService.Cpu.Name : SettingsService.Settings.CpuCustomName;
         set => SettingsService.Settings.CpuCustomName = value;
     }
     
     public string? GpuCustomName
     {
-        get => SettingsService.Settings.GpuCustomName ?? HardwareMonitorService.Gpu.Name;
+        get => IsNullOrWhiteSpace(SettingsService.Settings.GpuCustomName) ? HardwareMonitorService.Gpu.Name : SettingsService.Settings.GpuCustomName;
         set => SettingsService.Settings.GpuCustomName = value;
     }
 
     public string? CpuCustomType
     {
-        get => SettingsService.Settings.CpuCustomType ?? HardwareMonitorService.Cpu.Type;
+        get => SettingsService.Settings.CpuCustomType;
         set => SettingsService.Settings.CpuCustomType = value;
     }
     
     public string? GpuCustomType
     {
-        get => SettingsService.Settings.GpuCustomType ?? HardwareMonitorService.Gpu.Type;
+        get => SettingsService.Settings.GpuCustomType;
         set => SettingsService.Settings.GpuCustomType = value;
     }
     
     public string? MemoryCustomType
     {
-        get => SettingsService.Settings.GpuCustomType ?? HardwareMonitorService.Memory.Type;
-        set => SettingsService.Settings.GpuCustomType = value;
+        get => SettingsService.Settings.MemoryCustomType;
+        set => SettingsService.Settings.MemoryCustomType = value;
     }
 
     public IReadOnlyList<string> CpuCustomTypes { get; } = new List<string>()
@@ -50,7 +51,8 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
     
     public IReadOnlyList<string> MemoryCustomTypes { get; } = new List<string>()
     {
-        "Trident"
+        "Trident",
+        "Viper"
     };
 
     public bool IsAutoDetectHardwareEnabled

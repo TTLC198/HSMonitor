@@ -53,10 +53,19 @@ public class DialogManager : IDisposable
         var view = GetViewForDialogScreen(dialogScreen);
 
         void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
+    
         {
             void OnScreenClosed(object? closeSender, EventArgs args)
             {
-                openArgs.Session.Close();
+                try
+                {
+                    openArgs.Session.Close();
+                }
+                catch
+                {
+                    // ignored
+                }
+
                 dialogScreen.Closed -= OnScreenClosed;
             }
 
