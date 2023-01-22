@@ -107,13 +107,15 @@ Press OK to restart the application as administrator.".Trim(),
 
     private void RestartAsAdmin()
     {
-        ProcessStartInfo startInfo = new ProcessStartInfo();
-        startInfo.UseShellExecute = true;
-        startInfo.WorkingDirectory = Environment.CurrentDirectory;
-        startInfo.FileName = App.ExecutableFilePath;
-        startInfo.Arguments = "restart";
+        var startInfo = new ProcessStartInfo
+        {
+            UseShellExecute = true,
+            WorkingDirectory = Environment.CurrentDirectory,
+            FileName = App.ExecutableFilePath,
+            Arguments = "restart" + (App.IsHiddenOnLaunch ? " " + App.HiddenOnLaunchArgument : null),
+            Verb = "runas"
+        };
 
-        startInfo.Verb = "runas";
         try
         {
             Process.Start(startInfo);
