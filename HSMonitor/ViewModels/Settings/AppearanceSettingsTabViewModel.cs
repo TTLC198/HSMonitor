@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using HSMonitor.Services;
-using static System.String;
+using HSMonitor.Utils;
 
 namespace HSMonitor.ViewModels.Settings;
 
@@ -8,31 +10,31 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
 {
     public string? CpuCustomName
     {
-        get => IsNullOrWhiteSpace(SettingsService.Settings.CpuCustomName) ? HardwareMonitorService.Cpu.Name : SettingsService.Settings.CpuCustomName;
+        get => IsAutoDetectHardwareEnabled ? HardwareMonitorService.Cpu.Name : SettingsService.Settings.CpuCustomName;
         set => SettingsService.Settings.CpuCustomName = value;
     }
     
     public string? GpuCustomName
     {
-        get => IsNullOrWhiteSpace(SettingsService.Settings.GpuCustomName) ? HardwareMonitorService.Gpu.Name : SettingsService.Settings.GpuCustomName;
+        get => IsAutoDetectHardwareEnabled ? HardwareMonitorService.Gpu.Name : SettingsService.Settings.GpuCustomName;
         set => SettingsService.Settings.GpuCustomName = value;
     }
 
     public string? CpuCustomType
     {
-        get => SettingsService.Settings.CpuCustomType;
+        get => IsAutoDetectHardwareEnabled ? (HardwareMonitorService.Cpu.Type ?? CpuCustomType ?? "Unknown").SplitByCapitalLettersConvention().First() : SettingsService.Settings.CpuCustomType;
         set => SettingsService.Settings.CpuCustomType = value;
     }
     
     public string? GpuCustomType
     {
-        get => SettingsService.Settings.GpuCustomType;
+        get => IsAutoDetectHardwareEnabled ? (HardwareMonitorService.Gpu.Type ?? GpuCustomType ?? "Unknown").SplitByCapitalLettersConvention().First() : SettingsService.Settings.GpuCustomType;
         set => SettingsService.Settings.GpuCustomType = value;
     }
     
     public string? MemoryCustomType
     {
-        get => SettingsService.Settings.MemoryCustomType;
+        get => IsAutoDetectHardwareEnabled ? HardwareMonitorService.Memory.Type : SettingsService.Settings.MemoryCustomType;
         set => SettingsService.Settings.MemoryCustomType = value;
     }
 
@@ -58,7 +60,18 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
     public bool IsAutoDetectHardwareEnabled
     {
         get => SettingsService.Settings.IsAutoDetectHardwareEnabled;
-        set => SettingsService.Settings.IsAutoDetectHardwareEnabled = value;
+        set
+        {
+            if (!value)
+            {
+                SettingsService.Settings.CpuCustomName = HardwareMonitorService.Cpu.Name;
+                SettingsService.Settings.GpuCustomName = HardwareMonitorService.Gpu.Name;
+                SettingsService.Settings.CpuCustomType = (HardwareMonitorService.Cpu.Type ?? CpuCustomType ?? "Unknown").SplitByCapitalLettersConvention().First();
+                SettingsService.Settings.GpuCustomType = (HardwareMonitorService.Gpu.Type ?? GpuCustomType ?? "Unknown").SplitByCapitalLettersConvention().First();
+                SettingsService.Settings.MemoryCustomType = HardwareMonitorService.Memory.Type;
+            }
+            SettingsService.Settings.IsAutoDetectHardwareEnabled = value;
+        }
     }
 
     public AppearanceSettingsTabViewModel(SettingsService settingsService) 
