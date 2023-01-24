@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using HSMonitor.Services;
@@ -8,7 +9,7 @@ namespace HSMonitor.ViewModels.Settings;
 
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
-    public static IEnumerable<string> AvailablePorts 
+    public IEnumerable<string> AvailablePorts 
         => SerialPort.GetPortNames();
 
     public static IEnumerable<int> SupportedBaudRates => new List<int>()
@@ -30,7 +31,7 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 
     public string SelectedPort
     {
-        get => SettingsService.Settings.LastSelectedPort ?? "COM1";
+        get => SettingsService.Settings.LastSelectedPort ?? AvailablePorts.FirstOrDefault() ?? "COM1";
         set => SettingsService.Settings.LastSelectedPort = value;
     }
     

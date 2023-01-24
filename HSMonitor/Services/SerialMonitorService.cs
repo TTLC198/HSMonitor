@@ -63,6 +63,4 @@ public class SerialMonitorService : IDisposable
     {
         _serial.Dispose();
     }
-    
-    ~SerialMonitorService() => Dispose();
 }

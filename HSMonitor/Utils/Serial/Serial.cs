@@ -25,7 +25,7 @@ public class Serial : IDisposable
     {
         try
         {
-            return Open();;
+            return Open();
         }
         catch
         {
