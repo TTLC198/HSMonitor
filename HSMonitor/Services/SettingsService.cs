@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.Json;
@@ -47,13 +48,13 @@ public class SettingsService
             LastSelectedPort = null,
             LastSelectedBaudRate = 115200,
             SendInterval = 1000,
-            CpuCustomName = null,
-            GpuCustomName = null,
-            CpuCustomType = null,
-            GpuCustomType = null,
+            CpuCustomName = "",
+            GpuCustomName = "",
+            CpuCustomType = "",
+            GpuCustomType = "",
             IsAutoDetectHardwareEnabled = true,
-            IsAutoStartEnabled = true,
             IsHiddenAutoStartEnabled = true,
+            IsAutoStartEnabled = false,
         };
         Save();
         SettingsReset?.Invoke(this, EventArgs.Empty);
@@ -64,6 +65,7 @@ public class SettingsService
         var json = File.ReadAllText(_configurationPath);
         Settings = json.JsonToItem<ApplicationSettings>() ?? throw new InvalidOperationException();
         Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
+        Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
         SettingsLoaded?.Invoke(this, EventArgs.Empty);
     }
 
