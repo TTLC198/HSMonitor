@@ -93,9 +93,10 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan1
     {
-        get => _gpu is {GpuFans: null} or null ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
+        get => !_gpu.GpuFans.Any() ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
         set
         {
+            if (!_gpu.GpuFans.Any()) return;
             _gpu.GpuFans.ToArray()[0] = value;
             OnPropertyChanged();
         }
@@ -103,9 +104,10 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan2
     {
-        get => _gpu is {GpuFans: null} or null ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
+        get => !_gpu.GpuFans.Any() ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
         set
         {
+            if (!_gpu.GpuFans.Any()) return;
             _gpu.GpuFans.ToArray()[1] = value;
             OnPropertyChanged();
         }
@@ -151,7 +153,7 @@ public class DashboardViewModel : INotifyPropertyChanged
             GpuImageSource = Gpu.Type switch
             {
                 var type when type!.Contains("Amd") => new BitmapImage(
-                    new Uri(@".pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png", 
+                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png", 
                         UriKind.Absolute)),
                 var type when type!.Contains("Intel") => new BitmapImage(
                     new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png", 
