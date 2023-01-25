@@ -47,6 +47,12 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
         set => SettingsService.Settings.SendInterval = value;
     }
     
+    public int DeviceDisplayBrightness
+    {
+        get => SettingsService.Settings.DeviceDisplayBrightness;
+        set => SettingsService.Settings.DeviceDisplayBrightness = value;
+    }
+    
     public ConnectionSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 0, "Connection")
     {

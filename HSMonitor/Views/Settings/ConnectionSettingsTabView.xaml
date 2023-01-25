@@ -117,5 +117,38 @@
                 PreviewTextInput="NumberValidationTextBox"
                 TextAlignment="Left" />
         </Grid>
+        <!--Select device display brightness-->
+        <Grid
+            Margin="12, 4">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel
+                Grid.Row="0"
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Display brightness:"
+                    VerticalAlignment="Center"/>
+                <TextBox
+                    Margin="2"
+                    Text="{Binding DeviceDisplayBrightness}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+            <Slider
+                x:Name="DeviceDisplayBrightnessSlider"
+                Grid.Row="1"
+                Margin="2"
+                IsSnapToTickEnabled="True"
+                LargeChange="10"
+                Maximum="100"
+                Minimum="0"
+                SmallChange="1"
+                TickFrequency="10"
+                Style="{DynamicResource MaterialDesignThinSlider}"
+                Value="{Binding DeviceDisplayBrightness}"/>
+        </Grid>
     </StackPanel>
 </UserControl>
