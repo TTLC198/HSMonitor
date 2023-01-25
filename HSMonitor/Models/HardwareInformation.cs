@@ -10,25 +10,41 @@ public class Message
     public CpuInformation CpuInformation { get; set; }
     public GpuInformation GpuInformation { get; set; }
     public MemoryInformation MemoryInformation { get; set; }
+    
+    public DeviceSettings DeviceSettings { get; set; }
 }
 
 public class CpuInformation
 {
+    private string _name;
     public string? Type{ get; set; }
 
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get => _name.Length > 23 ? _name[..23] : _name;
+        set => _name = value!;
+    }
+
     public double Power { get; set; }
     public int Clock { get; set; }
+    public int DefaultClock { get; set; }
     public int Temperature { get; set; }
     public int Load { get; set; }
 }
 
 public class GpuInformation
 {
+    private string _name;
     public string? Type { get; set; }
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get => _name.Length > 23 ? _name[..23] : _name;
+        set => _name = value!;
+    }
     public double Power { get; set; }
     public int CoreClock { get; set; }
+    
+    public int DefaultCoreClock { get; set; }
     public int CoreTemperature { get; set; }
     public int CoreLoad { get; set; }
     public int VRamClock { get; set; }
@@ -52,4 +68,9 @@ public class MemoryInformation
     public double Used { get; set; }
 
     public double Total => Math.Round(Available + Used, MidpointRounding.AwayFromZero);
+}
+
+public class DeviceSettings
+{
+    public int DisplayBrightness { get; set; }
 }
