@@ -14,6 +14,7 @@ public class SettingsTabsToIconConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value switch
     {
         ConnectionSettingsTabViewModel => PackIconKind.SerialPort,
+        HardwareSettingsTabViewModel => PackIconKind.DesktopTowerMonitor,
         AppearanceSettingsTabViewModel => PackIconKind.Brush,
         AdvancedSettingsTabViewModel => PackIconKind.CheckboxesMarked,
         _ => PackIconKind.QuestionMark
