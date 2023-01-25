@@ -1,0 +1,141 @@
+﻿<UserControl x:Class="HSMonitor.Views.Settings.HardwareSettingsTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
+             xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+             d:DataContext="{d:DesignInstance Type=settings:HardwareSettingsTabViewModel}"
+             Style="{DynamicResource MaterialDesignRoot}"
+             mc:Ignorable="d"
+             Background="Transparent">
+    <UserControl.Resources>
+        <Style
+            TargetType="{x:Type ComboBox}"
+            BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Right"/>
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center"/>
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Center"/>
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Center"/>
+            <Setter
+                Property="Width"
+                Value="120"/>
+            <Setter
+                Property="Margin"
+                Value="8 ,0, 0, 0"/>
+        </Style>
+        <Style
+            TargetType="{x:Type TextBox}"
+            BasedOn="{StaticResource MaterialDesignTextBox}">
+            <Setter
+                Property="Margin"
+                Value="0, 2"/>
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Stretch"/>
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel
+        Margin="0, 8"
+        Orientation="Vertical">
+        <!--Select CPU-->
+        <Grid
+            Margin="12, 8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="Select CPU:"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                x:Name="SelectCpuComboBox"
+                Grid.Column="1"
+                ItemsSource="{Binding Processors}"
+                SelectedValue="{Binding SelectedCpu, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding Name }"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+        <!--Select GPU-->
+        <Grid
+            Margin="12, 8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="Select GPU:"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                x:Name="SelectGpuComboBox"
+                Grid.Column="1"
+                ItemsSource="{Binding GraphicCards}"
+                SelectedValue="{Binding SelectedGpu, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding Name }"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+        <!--Select default CPU Frequency-->
+        <Grid
+            Margin="12, 4">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock
+                Text="Default CPU Frequency(MHz):"
+                VerticalAlignment="Center"/>
+            <TextBox
+                x:Name="DefaultCpuFreqTextBox"
+                Grid.Row="1"
+                Text="{Binding DefaultCpuFrequency, Mode=TwoWay}"
+                PreviewTextInput="NumberValidationTextBox"
+                TextAlignment="Left" />
+        </Grid>
+        <!--Select default GPU Frequency-->
+        <Grid
+            Margin="12, 4">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock
+                Text="Default GPU Frequency(MHz):"
+                VerticalAlignment="Center"/>
+            <TextBox
+                x:Name="DefaultGpuFreqTextBox"
+                Grid.Row="1"
+                Text="{Binding DefaultGpuFrequency, Mode=TwoWay}"
+                PreviewTextInput="NumberValidationTextBox"
+                TextAlignment="Left" />
+        </Grid>
+    </StackPanel>
+</UserControl>
