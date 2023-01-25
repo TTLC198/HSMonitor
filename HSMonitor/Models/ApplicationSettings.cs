@@ -15,6 +15,18 @@ public class ApplicationSettings
     
     public int SendInterval { get; set; }
     
+    public int DeviceDisplayBrightness { get; set; }
+    
+    // Hardware
+    
+    public string? CpuId { get; set; }
+    
+    public string? GpuId { get; set; }
+    
+    public int DefaultCpuFrequency { get; set; }
+    
+    public int DefaultGpuFrequency { get; set; }
+    
     // Customization
 
     public string? CpuCustomName { get; set; }

@@ -9,7 +9,7 @@
     xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
-    Height="250"
+    Height="260"
     Style="{DynamicResource MaterialDesignRoot}"
     Background="{DynamicResource MaterialDesignCardBackground}"
     mc:Ignorable="d">

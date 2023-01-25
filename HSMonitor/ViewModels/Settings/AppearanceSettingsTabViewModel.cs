@@ -75,7 +75,7 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
     }
 
     public AppearanceSettingsTabViewModel(SettingsService settingsService) 
-        : base(settingsService, 1, "Appearance")
+        : base(settingsService, 2, "Appearance")
     {
     }
 }
