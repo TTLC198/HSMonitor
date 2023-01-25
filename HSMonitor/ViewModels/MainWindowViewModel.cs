@@ -61,6 +61,11 @@ public class MainWindowViewModel : Screen
             },
             dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException()
         );
+
+        _settingsService.SettingsSaved += (_, _) =>
+        {
+            _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(settingsService.Settings.SendInterval == 0 ? 500 : settingsService.Settings.SendInterval);
+        };
         
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
