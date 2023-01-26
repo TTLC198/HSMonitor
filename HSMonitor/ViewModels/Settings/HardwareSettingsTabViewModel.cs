@@ -17,36 +17,40 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
     public IHardware SelectedCpu
     {
         get => HardwareMonitorService
-            .GetProcessors()
-            .FirstOrDefault(c =>
-                c.Identifier
-                    .ToString()
-                    .Contains(_settingsService.Settings.CpuId!))!;
+                   .GetProcessors()
+                   .FirstOrDefault(c =>
+                       c.Identifier
+                           .ToString()
+                           .Contains(_settingsService.Settings.CpuId ?? ""))
+               ?? HardwareMonitorService.GetProcessors().First();
         set => _settingsService.Settings.CpuId =
             (HardwareMonitorService
-                .GetProcessors()
-                .FirstOrDefault(c =>
-                    c.Identifier
-                        .ToString()
-                        .Contains(value.Identifier.ToString()))!).Identifier
+                 .GetProcessors()
+                 .FirstOrDefault(c =>
+                     c.Identifier
+                         .ToString()
+                         .Contains(value.Identifier.ToString()))
+             ?? HardwareMonitorService.GetProcessors().First()).Identifier
             .ToString();
     }
-    
+
     public IHardware SelectedGpu
     {
         get => HardwareMonitorService
-            .GetGraphicCards()
-            .FirstOrDefault(c =>
-                c.Identifier
-                    .ToString()
-                    .Contains(_settingsService.Settings.GpuId!))!;
+                   .GetGraphicCards()
+                   .FirstOrDefault(c =>
+                       c.Identifier
+                           .ToString()
+                           .Contains(_settingsService.Settings.GpuId ?? ""))
+               ?? HardwareMonitorService.GetGraphicCards().First();
         set => _settingsService.Settings.GpuId =
             (HardwareMonitorService
-                .GetGraphicCards()
-                .FirstOrDefault(c =>
-                    c.Identifier
-                        .ToString()
-                        .Contains(value.Identifier.ToString()))!).Identifier
+                 .GetGraphicCards()
+                 .FirstOrDefault(c =>
+                     c.Identifier
+                         .ToString()
+                         .Contains(value.Identifier.ToString()))
+             ?? HardwareMonitorService.GetGraphicCards().First()).Identifier
             .ToString();
     }
 
@@ -55,7 +59,7 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
         get => SettingsService.Settings.DefaultCpuFrequency;
         set => SettingsService.Settings.DefaultCpuFrequency = value;
     }
-    
+
     public int DefaultGpuFrequency
     {
         get => SettingsService.Settings.DefaultGpuFrequency;
@@ -66,7 +70,19 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
         : base(settingsService, 1, "Hardware")
     {
         _settingsService = settingsService;
-        SelectedCpu = Processors.First();
-        SelectedGpu = GraphicCards.First();
+        SelectedCpu = HardwareMonitorService
+                          .GetProcessors()
+                          .FirstOrDefault(c =>
+                              c.Identifier
+                                  .ToString()
+                                  .Contains(_settingsService.Settings.CpuId ?? ""))
+                      ?? HardwareMonitorService.GetProcessors().First();
+        SelectedGpu = HardwareMonitorService
+                          .GetGraphicCards()
+                          .FirstOrDefault(c =>
+                              c.Identifier
+                                  .ToString()
+                                  .Contains(_settingsService.Settings.GpuId ?? ""))
+                      ?? HardwareMonitorService.GetGraphicCards().First();
     }
 }

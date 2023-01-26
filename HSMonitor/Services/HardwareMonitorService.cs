@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HSMonitor.Models;
 using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
@@ -28,6 +27,14 @@ public class HardwareMonitorService
     public HardwareMonitorService(SettingsService settingsService)
     {
         _settingsService = settingsService;
+        
+        _settingsService.SettingsSaved += SettingsServiceOnSettingsSaved;
+    }
+
+    private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
+    {
+        if (sender is SettingsService service)
+            _settingsService.Settings = service.Settings;
     }
 
     public Message GetHwInfoMessage()
@@ -57,15 +64,15 @@ public class HardwareMonitorService
 
             var cpuHardware = Computer.Hardware
                 .FirstOrDefault(h =>
-                    h.HardwareType == HardwareType.Cpu ||
-                    (!string.IsNullOrWhiteSpace(_settingsService.Settings.CpuId) &&
-                     h.Identifier.ToString() == _settingsService.Settings.CpuId));
-            
+                    h.HardwareType is HardwareType.Cpu &&
+                    !string.IsNullOrWhiteSpace(_settingsService.Settings.CpuId) &&
+                     h.Identifier.ToString().Contains(_settingsService.Settings.CpuId)) ?? GetProcessors().First();
+
             var gpuHardware = Computer.Hardware
                 .FirstOrDefault(h =>
-                    h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia ||
-                    (!string.IsNullOrWhiteSpace(_settingsService.Settings.GpuId) &&
-                     h.Identifier.ToString() == _settingsService.Settings.GpuId));
+                    h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia &&
+                    !string.IsNullOrWhiteSpace(_settingsService.Settings.GpuId) &&
+                     h.Identifier.ToString().Contains(_settingsService.Settings.GpuId)) ?? GetGraphicCards().First();
             
             Cpu = CpuInformationUpdate(cpuHardware);
             Gpu = GpuInformationUpdate(gpuHardware);
@@ -272,13 +279,32 @@ public class HardwareMonitorService
 
             if (memoryHardwareSensors is null || memoryHardwareSensors.Length == 0)
                 throw new Exception();
+            
+            var temp = new MemoryInformation()
+            {
+                Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                    ? "Default"
+                    : _settingsService.Settings.MemoryCustomType
+                      ?? "Default",
+                Load = (int) Math.Round(
+                    (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
+                        .Value ?? 0), 0, MidpointRounding.AwayFromZero),
+                Available = (double) Math.Round(
+                    (decimal) (memoryHardwareSensors
+                        .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data).Value ?? 0),
+                    1, MidpointRounding.AwayFromZero),
+                Used = (double) Math.Round(
+                    (decimal) (memoryHardwareSensors
+                        .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data).Value ?? 0), 1,
+                    MidpointRounding.AwayFromZero),
+            };
 
             return new MemoryInformation()
             {
                 Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? "Trident"
+                    ? "Default"
                     : _settingsService.Settings.MemoryCustomType
-                      ?? "Trident",
+                      ?? "Default",
                 Load = (int) Math.Round(
                     (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
                         .Value ?? 0), 0, MidpointRounding.AwayFromZero),
@@ -296,7 +322,7 @@ public class HardwareMonitorService
         {
             return new MemoryInformation()
             {
-                Type = "Trident",
+                Type = "Default",
                 Load = 0,
                 Available = 0,
                 Used = 0,

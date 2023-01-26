@@ -31,7 +31,6 @@ public class SerialMonitorService : IDisposable
         _serial = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
-        settingsService.SettingsReset += (_, _) => UpdateSerialSettings();
         _hardwareMonitorService.HardwareInformationUpdated += (_, _) => SendInformationToMonitor();
     }
 

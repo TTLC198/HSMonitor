@@ -56,6 +56,6 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
     public ConnectionSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 0, "Connection")
     {
-        SelectedPort = AvailablePorts.FirstOrDefault() ?? SettingsService.Settings.LastSelectedPort ?? "COM1";
+        SelectedPort = SettingsService.Settings.LastSelectedPort ?? AvailablePorts.FirstOrDefault() ?? "COM1";
     }
 }
