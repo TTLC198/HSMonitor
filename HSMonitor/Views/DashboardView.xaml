@@ -267,7 +267,7 @@
         <Image
             Canvas.Top="268"
             Canvas.Left="16"
-            Width="100"
+            Width="90"
             Height="40"
             Source="{Binding MemoryImageSource, Mode=OneWay}"
             Stretch="Fill"/>

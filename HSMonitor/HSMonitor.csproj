@@ -37,6 +37,8 @@
       <None Update="appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Remove="Resources\Images\DefaultRam.png" />
+      <Resource Include="Resources\Images\DefaultRam.png" />
     </ItemGroup>
 
     <ItemGroup>

@@ -25,11 +25,7 @@ public class DashboardViewModel : INotifyPropertyChanged
         new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", UriKind.Absolute));
 
     private ImageSource _memoryImageSource =
-        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", UriKind.Absolute))
-        {
-            DecodePixelWidth = 80,
-            DecodePixelHeight = 40
-        };
+        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", UriKind.Absolute));
 
     public ImageSource CpuImageSource
     {
@@ -175,12 +171,8 @@ public class DashboardViewModel : INotifyPropertyChanged
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/ViperRam.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
-                    UriKind.Absolute))
-            {
-                DecodePixelWidth = 80,
-                DecodePixelHeight = 40
-            },
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", 
+                    UriKind.Absolute)),
         };
     }
     
@@ -224,12 +216,8 @@ public class DashboardViewModel : INotifyPropertyChanged
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/ViperRam.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
-                    UriKind.Absolute))
-            {
-                DecodePixelWidth = 80,
-                DecodePixelHeight = 40
-            },
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", 
+                    UriKind.Absolute)),
         };
     }
 
