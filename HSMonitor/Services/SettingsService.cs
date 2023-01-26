@@ -30,7 +30,7 @@ public class SettingsService
     
     public event EventHandler? SettingsSaved;
     
-    public ApplicationSettings Settings { get; private set; }
+    public ApplicationSettings Settings { get; set; }
 
     private readonly string _configurationPath = Path.Combine(App.ExecutableDirPath, "appsettings.json");
 
