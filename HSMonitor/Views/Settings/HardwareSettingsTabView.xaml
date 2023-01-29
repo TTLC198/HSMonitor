@@ -5,6 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+             xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DataContext="{d:DesignInstance Type=settings:HardwareSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -44,6 +46,13 @@
             <Setter
                 Property="VerticalAlignment"
                 Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="materialDesign:ValidationAssist.UsePopup" Value="True" />
+                    <Setter Property="materialDesign:ValidationAssist.PopupPlacement" Value="Bottom" />
+                    <Setter Property="materialDesign:ValidationAssist.Background" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <StackPanel
@@ -101,7 +110,7 @@
         </Grid>
         <!--Select default CPU Frequency-->
         <Grid
-            Margin="12, 4">
+            Margin="12, 5">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -114,13 +123,24 @@
             <TextBox
                 x:Name="DefaultCpuFreqTextBox"
                 Grid.Row="1"
-                Text="{Binding DefaultCpuFrequency, Mode=TwoWay}"
-                PreviewTextInput="NumberValidationTextBox"
-                TextAlignment="Left" />
+                TextAlignment="Left" >
+                <TextBox.Text>
+                    <Binding Path="DefaultCpuFrequency"
+                             UpdateSourceTrigger="PropertyChanged" 
+                             Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <validationRules:IntValueRule 
+                                Min="0"
+                                Max="9999"
+                                ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <!--Select default GPU Frequency-->
         <Grid
-            Margin="12, 4">
+            Margin="12, 5">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -133,9 +153,20 @@
             <TextBox
                 x:Name="DefaultGpuFreqTextBox"
                 Grid.Row="1"
-                Text="{Binding DefaultGpuFrequency, Mode=TwoWay}"
-                PreviewTextInput="NumberValidationTextBox"
-                TextAlignment="Left" />
+                TextAlignment="Left" >
+                <TextBox.Text>
+                    <Binding Path="DefaultGpuFrequency"
+                             UpdateSourceTrigger="PropertyChanged" 
+                             Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <validationRules:IntValueRule 
+                                Min="0"
+                                Max="9999"
+                                ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
     </StackPanel>
 </UserControl>

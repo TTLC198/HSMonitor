@@ -5,6 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+             xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DataContext="{d:DesignInstance Type=settings:AppearanceSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -51,6 +53,13 @@
             <Setter
                 Property="VerticalAlignment"
                 Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="materialDesign:ValidationAssist.UsePopup" Value="True" />
+                    <Setter Property="materialDesign:ValidationAssist.PopupPlacement" Value="Bottom" />
+                    <Setter Property="materialDesign:ValidationAssist.Background" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style
             TargetType="{x:Type ToggleButton}"
@@ -110,8 +119,19 @@
             <TextBox
                 x:Name="CpuNameTextBox"
                 Grid.Row="1"
-                Text="{Binding CpuCustomName, Mode=TwoWay}"
-                TextAlignment="Left" />
+                TextAlignment="Left">
+                <TextBox.Text>
+                    <Binding Path="CpuCustomName"
+                             UpdateSourceTrigger="PropertyChanged" 
+                             Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <validationRules:HardwareNameLengthRule 
+                                Max="23"
+                                ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <!--Set custom GPU name-->
         <Grid
@@ -128,8 +148,19 @@
             <TextBox
                 x:Name="GpuNameTextBox"
                 Grid.Row="1"
-                Text="{Binding GpuCustomName, Mode=TwoWay}"
-                TextAlignment="Left" />
+                TextAlignment="Left" >
+                <TextBox.Text>
+                    <Binding Path="GpuCustomName"
+                             UpdateSourceTrigger="PropertyChanged" 
+                             Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <validationRules:HardwareNameLengthRule 
+                                Max="23"
+                                ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <!-- Select custom CPU Type -->
         <Grid

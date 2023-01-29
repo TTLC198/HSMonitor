@@ -4,6 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              d:DataContext="{d:DesignInstance Type=settings:ConnectionSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -43,6 +45,13 @@
             <Setter
                 Property="VerticalAlignment"
                 Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="materialDesign:ValidationAssist.UsePopup" Value="True" />
+                    <Setter Property="materialDesign:ValidationAssist.PopupPlacement" Value="Bottom" />
+                    <Setter Property="materialDesign:ValidationAssist.Background" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <StackPanel
@@ -113,9 +122,20 @@
             <TextBox
                 x:Name="SendIntervalTextBox"
                 Grid.Row="1"
-                Text="{Binding SendInterval, Mode=TwoWay}"
-                PreviewTextInput="NumberValidationTextBox"
-                TextAlignment="Left" />
+                TextAlignment="Left" >
+                <TextBox.Text>
+                    <Binding Path="SendInterval"
+                             UpdateSourceTrigger="PropertyChanged" 
+                             Mode="TwoWay">
+                        <Binding.ValidationRules>
+                            <validationRules:IntValueRule 
+                                Min="500"
+                                Max="9999"
+                                ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <!--Select device display brightness-->
         <Grid
@@ -134,8 +154,20 @@
                     VerticalAlignment="Center"/>
                 <TextBox
                     Margin="2"
-                    Text="{Binding DeviceDisplayBrightness}"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="DeviceDisplayBrightness"
+                                 UpdateSourceTrigger="PropertyChanged" 
+                                 Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <validationRules:IntValueRule 
+                                    Min="0"
+                                    Max="100"
+                                    ValidatesOnTargetUpdated="True"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
             <Slider
                 x:Name="DeviceDisplayBrightnessSlider"
