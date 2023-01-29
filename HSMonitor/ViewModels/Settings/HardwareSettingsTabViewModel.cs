@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HSMonitor.Models;
 using HSMonitor.Services;
 using LibreHardwareMonitor.Hardware;
 
@@ -70,6 +71,7 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
         : base(settingsService, 1, "Hardware")
     {
         _settingsService = settingsService;
+        if (SettingsService is not {Settings: not null}) return;
         SelectedCpu = HardwareMonitorService
                           .GetProcessors()
                           .FirstOrDefault(c =>

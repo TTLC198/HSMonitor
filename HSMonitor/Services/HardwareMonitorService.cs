@@ -233,17 +233,21 @@ public class HardwareMonitorService
                     : string.IsNullOrWhiteSpace(_settingsService.Settings.GpuCustomName)
                         ? gpuHardware.Name
                         : _settingsService.Settings.GpuCustomName,
-                CoreClock = Convert.ToInt32(coreClockSensor is not null ? coreClockSensor.Value ?? 0 : 0),
-                CoreLoad = Convert.ToInt32(coreLoadSensor is not null ? coreLoadSensor.Value ?? 0 : 0),
+                CoreClock = 
+                    Convert.ToInt32(coreClockSensor is not null ? coreClockSensor.Value ?? 0 : 0),
+                CoreLoad = 
+                    Convert.ToInt32(coreLoadSensor is not null ? coreLoadSensor.Value ?? 0 : 0),
                 CoreTemperature =
                     Convert.ToInt32(coreTemperatureSensor is not null ? coreTemperatureSensor.Value ?? 0 : 0),
                 Power = (double) Math.Round(
                     (decimal) (powerSensor is not null ? powerSensor.Value ?? 0 : 0), 1,
                     MidpointRounding.AwayFromZero),
-                VRamClock = Convert.ToInt32(vRamClockSensor is not null ? vRamClockSensor.Value ?? 0 : 0),
+                VRamClock = 
+                    Convert.ToInt32(vRamClockSensor is not null ? vRamClockSensor.Value ?? 0 : 0),
                 VRamMemoryTotal =
                     Convert.ToInt32(vRamMemoryTotalSensor is not null ? vRamMemoryTotalSensor.Value ?? 0 : 0),
-                VRamMemoryUsed = Convert.ToInt32(vRamMemoryUsed is not null ? vRamMemoryUsed.Value ?? 0 : 0),
+                VRamMemoryUsed = 
+                    Convert.ToInt32(vRamMemoryUsed is not null ? vRamMemoryUsed.Value ?? 0 : 0),
                 GpuFans = gpuFans
             };
         }
@@ -279,25 +283,6 @@ public class HardwareMonitorService
 
             if (memoryHardwareSensors is null || memoryHardwareSensors.Length == 0)
                 throw new Exception();
-            
-            var temp = new MemoryInformation()
-            {
-                Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? "Default"
-                    : _settingsService.Settings.MemoryCustomType
-                      ?? "Default",
-                Load = (int) Math.Round(
-                    (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
-                        .Value ?? 0), 0, MidpointRounding.AwayFromZero),
-                Available = (double) Math.Round(
-                    (decimal) (memoryHardwareSensors
-                        .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data).Value ?? 0),
-                    1, MidpointRounding.AwayFromZero),
-                Used = (double) Math.Round(
-                    (decimal) (memoryHardwareSensors
-                        .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data).Value ?? 0), 1,
-                    MidpointRounding.AwayFromZero),
-            };
 
             return new MemoryInformation()
             {

@@ -6,7 +6,6 @@ namespace HSMonitor.Utils;
 
 public static class JsonExtensions
 {
-    public static T? JsonToItem<T>(this string jsonString) => JsonSerializer.Deserialize<T>(jsonString);
     public static (bool result, Exception exception) JsonToFile<T>(this T sender, string fileName, bool format = true)
     {
         try
