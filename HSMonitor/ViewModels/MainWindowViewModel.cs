@@ -21,10 +21,11 @@ public class MainWindowViewModel : Screen
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
-    private readonly DispatcherTimer _updateHardwareMonitorTimer;
     private readonly SettingsService _settingsService;
     private readonly SerialMonitorService _serialMonitorService;
+    private readonly HardwareMonitorService _hardwareMonitorService;
 
+    private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
 
     private bool _isSerialMonitorEnabled = true;
@@ -49,24 +50,10 @@ public class MainWindowViewModel : Screen
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
         _serialMonitorService = serialMonitorService;
 
-        _updateHardwareMonitorTimer = new DispatcherTimer(
-            priority: DispatcherPriority.Background,
-            interval: TimeSpan.FromMilliseconds(settingsService.Settings.SendInterval == 0 ? 500 : settingsService.Settings.SendInterval),
-            callback: (_, _) =>
-            {
-                hardwareMonitorService.HardwareInformationUpdate();
-            },
-            dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException()
-        );
-
-        _settingsService.SettingsSaved += (_, _) =>
-        {
-            _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(settingsService.Settings.SendInterval == 0 ? 500 : settingsService.Settings.SendInterval);
-        };
-        
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
     }
@@ -140,28 +127,66 @@ An error has occurred, the error text is shown below:
         }
     }
 
-    protected override void OnViewLoaded()
-    {
-        base.OnViewLoaded();
-        _updateHardwareMonitorTimer.Start();
-    }
-    
     public async void OnViewFullyLoaded()
     {
-        if (!CheckRole.IsUserAdministrator())
+        if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
-            if (_settingsService.Settings.IsRunAsAdministrator) 
-                RestartAsAdmin();
-            else
-                await ShowAdminPrivilegesRequirement();
+            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: "Some error has occurred",
+                message: $@"
+Application configuration file was not found in the program folder or was modified manually.
+Please reinstall the program to fix the problem".Trim(),
+                okButtonText: "OK",
+                cancelButtonText: null
+            );
+
+            if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                Exit();
+            /*var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: "Some error has occurred",
+                message: $@"
+Application configuration file was not found in the program folder or was modified manually.
+Please reinstall the program to fix the problem".Trim(),
+                okButtonText: "OK",
+                cancelButtonText: null
+            );
+
+            if (_dialogManager.ShowDialogAsync(messageBoxDialog).Result == true)
+                Exit();*/
         }
-        _serialMonitorService.OpenPortAttemptFailed += async (_,_) => await SerialMonitorServiceOnOpenPortAttemptFailed();
-        _serialMonitorService.OpenPortAttemptSuccessful += (_, _) =>
+        else
         {
-            if (IsSerialMonitorEnabled) 
-                return;
-            IsSerialMonitorEnabled = true;
-        };
+            _updateHardwareMonitorTimer = new DispatcherTimer(
+                priority: DispatcherPriority.Background,
+                interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval),
+                callback: (_, _) =>
+                {
+                    _hardwareMonitorService.HardwareInformationUpdate();
+                },
+                dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException()
+            );
+
+            _settingsService.SettingsSaved += (_, _) =>
+            {
+                _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval);
+            };
+            _updateHardwareMonitorTimer.Start();
+        
+            if (!CheckRole.IsUserAdministrator())
+            {
+                if (_settingsService.Settings.IsRunAsAdministrator) 
+                    RestartAsAdmin();
+                else
+                    await ShowAdminPrivilegesRequirement();
+            }
+            _serialMonitorService.OpenPortAttemptFailed += async (_,_) => await SerialMonitorServiceOnOpenPortAttemptFailed();
+            _serialMonitorService.OpenPortAttemptSuccessful += (_, _) =>
+            {
+                if (IsSerialMonitorEnabled) 
+                    return;
+                IsSerialMonitorEnabled = true;
+            };
+        }
     }
 
     public async void ShowSettings()

@@ -89,7 +89,7 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan1
     {
-        get => !_gpu.GpuFans.Any() ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
+        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
         set
         {
             if (!_gpu.GpuFans.Any()) return;
@@ -100,7 +100,7 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan2
     {
-        get => !_gpu.GpuFans.Any() ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
+        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
         set
         {
             if (!_gpu.GpuFans.Any()) return;
@@ -124,6 +124,13 @@ public class DashboardViewModel : INotifyPropertyChanged
         Cpu = HardwareMonitorService.Cpu;
         Gpu = HardwareMonitorService.Gpu;
         Memory = HardwareMonitorService.Memory;
+        
+        if (Cpu.Name is {Length: > 23})
+            Cpu.Name = Cpu.Name[..23];
+        if (Gpu.Name is {Length: > 23})
+            Gpu.Name = Gpu.Name[..23];
+
+        if (_settingsService is {Settings: null}) return;
         if (_settingsService.Settings.IsAutoDetectHardwareEnabled) 
             UpdateImage();
         else 

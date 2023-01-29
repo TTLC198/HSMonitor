@@ -13,12 +13,13 @@ public class Serial : IDisposable
     public Serial(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        _serialPort = new SerialPort(
-            string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort) ? "COM1" : _settingsService.Settings.LastSelectedPort,
-            _settingsService.Settings.LastSelectedBaudRate,
-            Parity.None, 
-            8,
-            StopBits.One);
+        if (_settingsService is {Settings: not null}) 
+            _serialPort = new SerialPort(
+                string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort) ? "COM1" : _settingsService.Settings.LastSelectedPort,
+                _settingsService.Settings.LastSelectedBaudRate,
+                Parity.None, 
+                8,
+                StopBits.One);
     }
 
     public bool CheckAccess()
@@ -56,5 +57,10 @@ public class Serial : IDisposable
         _serialPort.Write(data, 0, data.Length);
     }
 
-    public void Dispose() => _serialPort.Dispose();
+    public void Dispose()
+    {
+        if (_serialPort is not null)
+            _serialPort.Dispose();
+    }
+        
 }

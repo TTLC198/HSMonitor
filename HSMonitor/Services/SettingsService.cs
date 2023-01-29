@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
 using HSMonitor.Models;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Serial;
@@ -30,9 +31,9 @@ public class SettingsService
     
     public event EventHandler? SettingsSaved;
     
-    public ApplicationSettings Settings { get; set; }
+    public ApplicationSettings Settings { get; set; } = null!;
 
-    private readonly string _configurationPath = Path.Combine(App.ExecutableDirPath, "appsettings.json");
+    public readonly string ConfigurationPath = Path.Combine(App.ExecutableDirPath, "appsettings.json");
 
     public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager)
     {
@@ -65,16 +66,36 @@ public class SettingsService
 
     public void Load()
     {
-        var json = File.ReadAllText(_configurationPath);
-        Settings = json.JsonToItem<ApplicationSettings>() ?? throw new InvalidOperationException();
-        Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
-        Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
-        SettingsLoaded?.Invoke(this, EventArgs.Empty);
+        try
+        {
+            var json = File.ReadAllText(ConfigurationPath);
+            Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
+            Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
+            Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
+            SettingsLoaded?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception exception)
+        {
+            Task.Run(async () =>
+            {
+                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: "Some error has occurred",
+                    message: $@"
+An error has occurred, the error text is shown below
+{exception.Message}".Trim(),
+                    okButtonText: "OK",
+                    cancelButtonText: null
+                );
+
+                if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                    Application.Current.Shutdown();
+            });
+        }
     }
 
     public void Save()
     {
-        Settings.JsonToFile(_configurationPath);
+        Settings.JsonToFile(ConfigurationPath);
         
         try
         {
