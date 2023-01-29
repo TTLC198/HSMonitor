@@ -28,8 +28,7 @@
         CloseOnClickAway="False"
         Loaded="{s:Action OnViewFullyLoaded}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
-        DialogMargin="10"
-        DialogBackground="Transparent">
+        DialogMargin="10">
         <Grid
             IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}"
             Background="{DynamicResource PrimaryHueLightBrush}">
@@ -103,6 +102,8 @@
                             Width="*" />
                         <ColumnDefinition
                             Width="Auto" />
+                        <ColumnDefinition
+                            Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <!-- Application Logo -->
@@ -141,9 +142,9 @@
                             Text="{x:Static hsMonitor:App.Name}" />
                         <Run FontWeight="Light" Text="{x:Static hsMonitor:App.VersionString}" />
                     </TextBlock>
-                    <!--  Close button  -->
+                    <!--  Hide button  -->
                     <Button
-                        x:Name="CloseButton"
+                        x:Name="HideButton"
                         Grid.Column="3"
                         Padding="2"
                         VerticalAlignment="Center"
@@ -155,6 +156,28 @@
                         <materialDesign:PackIcon
                             Width="18"
                             Height="18"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                            Kind="WindowMinimize" />
+                    </Button>
+                    <!--  Close button  -->
+                    <Button
+                        x:Name="CloseButton"
+                        Grid.Column="4"
+                        Padding="2"
+                        VerticalAlignment="Center"
+                        Click="Close_OnClick"
+                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                        ToolTip="Close HSMonitor"
+                        Width="24"
+                        Height="24">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                             Kind="WindowClose" />
                     </Button>
                 </Grid>
