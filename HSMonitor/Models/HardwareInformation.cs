@@ -16,14 +16,9 @@ public class Message
 
 public class CpuInformation
 {
-    private string _name;
     public string? Type{ get; set; }
 
-    public string? Name
-    {
-        get => _name.Length > 23 ? _name[..23] : _name;
-        set => _name = value!;
-    }
+    public string? Name { get; set; }
 
     public double Power { get; set; }
     public int Clock { get; set; }
@@ -34,13 +29,8 @@ public class CpuInformation
 
 public class GpuInformation
 {
-    private string _name;
     public string? Type { get; set; }
-    public string? Name
-    {
-        get => _name.Length > 23 ? _name[..23] : _name;
-        set => _name = value!;
-    }
+    public string? Name { get; set; }
     public double Power { get; set; }
     public int CoreClock { get; set; }
     
