@@ -46,4 +46,8 @@ public class ApplicationSettings
     public bool IsAutoStartEnabled { get; set; }
     public bool IsHiddenAutoStartEnabled { get; set; }
     public bool IsRunAsAdministrator { get; set; }
+    
+    // Update
+    
+    public bool IsAutoUpdateEnabled { get; set; }
 }
