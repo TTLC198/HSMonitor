@@ -10,6 +10,7 @@ namespace HSMonitor.ViewModels.Framework;
 
 //COPIED FROM https://github.com/Tyrrrz/LightBulb/blob/master/LightBulb/ViewModels/Framework/DialogManager.cs
 
+#pragma warning disable CA1416
 public class DialogManager : IDisposable
 {
     private readonly IViewManager _viewManager;
@@ -26,7 +27,6 @@ public class DialogManager : IDisposable
     public UIElement GetViewForDialogScreen<T>(DialogScreen<T> dialogScreen)
     {
         var dialogScreenType = dialogScreen.GetType();
-
         if (_dialogScreenViewCache.TryGetValue(dialogScreenType, out var cachedView))
         {
             _viewManager.BindViewToModel(cachedView, dialogScreen);

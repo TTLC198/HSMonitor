@@ -19,135 +19,132 @@
             BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter
                 Property="Margin"
-                Value="0, 4, 4, 4"/>
+                Value="0, 4, 4, 4" />
         </Style>
     </UserControl.Resources>
-    <Border
-        BorderBrush="{DynamicResource MaterialDesignCardBackground}"
-        BorderThickness="1">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="55" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <!--  Settings tab selection  -->
-            <ItemsControl
-                Grid.Column="0"
-                Background="{DynamicResource PrimaryHueMidBrush}"
+        <!--  Settings tab selection  -->
+        <ItemsControl
+            Grid.Column="0"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            ItemsSource="{Binding Tabs}"
+            TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0,0,3,0">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BorderBrush"
+                                                Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Button
+                            Height="Auto"
+                            Margin="4"
+                            Padding="8"
+                            Command="{s:Action ActivateTab}"
+                            Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                            CommandParameter="{Binding}"
+                            ToolTip="{Binding Name}">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                Kind="{Binding Converter={x:Static converters:SettingsTabsToIconConverter.Instance}}" />
+                        </Button>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Active settings tab  -->
+            <materialDesign:Transitioner
+                Grid.Row="0"
                 ItemsSource="{Binding Tabs}"
-                TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
-                <ItemsControl.ItemTemplate>
+                SelectedItem="{Binding ActiveTab, Mode=OneWay}">
+                <materialDesign:Transitioner.Resources>
+                    <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
+                        <Setter Property="BackwardWipe">
+                            <Setter.Value>
+                                <materialDesign:SlideWipe Direction="Down" Duration="0:0:0.2" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="ForwardWipe">
+                            <Setter.Value>
+                                <materialDesign:SlideWipe Direction="Up" Duration="0:0:0.2" />
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </materialDesign:Transitioner.Resources>
+                <materialDesign:Transitioner.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderThickness="0,0,3,0">
-                            <Border.Style>
-                                <Style TargetType="{x:Type Border}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="BorderBrush"
-                                                    Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <Button
-                                Height="Auto"
-                                Margin="4"
-                                Padding="8"
-                                Command="{s:Action ActivateTab}"
-                                CommandParameter="{Binding}"
-                                Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                                ToolTip="{Binding Name}">
-                                <materialDesign:PackIcon
-                                    Width="24"
-                                    Height="24"
-                                    Kind="{Binding Converter={x:Static converters:SettingsTabsToIconConverter.Instance}}" />
-                            </Button>
-                        </Border>
+                        <ScrollViewer
+                            Padding="4"
+                            Background="{DynamicResource MaterialDesignCardBackground}"
+
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto">
+                            <ContentControl s:View.Model="{Binding}" />
+                        </ScrollViewer>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </materialDesign:Transitioner.ItemTemplate>
+            </materialDesign:Transitioner>
 
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <!--  Separator  -->
+            <Rectangle
+                Grid.Row="1"
+                Height="1"
+                HorizontalAlignment="Stretch"
+                Fill="{DynamicResource MaterialDesignDivider}" />
 
-                <!--  Active settings tab  -->
-                <materialDesign:Transitioner
-                    Grid.Row="0"
-                    ItemsSource="{Binding Tabs}"
-                    SelectedItem="{Binding ActiveTab, Mode=OneWay}">
-                    <materialDesign:Transitioner.Resources>
-                        <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
-                            <Setter Property="BackwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideWipe Direction="Down" Duration="0:0:0.2" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ForwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideWipe Direction="Up" Duration="0:0:0.2" />
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </materialDesign:Transitioner.Resources>
-                    <materialDesign:Transitioner.ItemTemplate>
-                        <DataTemplate>
-                            <ScrollViewer
-                                Padding="4"
-                                Background="{DynamicResource MaterialDesignCardBackground}"
-                                HorizontalScrollBarVisibility="Disabled"
-                                VerticalScrollBarVisibility="Auto">
-                                <ContentControl s:View.Model="{Binding}" />
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </materialDesign:Transitioner.ItemTemplate>
-                </materialDesign:Transitioner>
+            <!--  Buttons  -->
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal">
+                <!--  Reset  -->
+                <Button
+                    Command="{s:Action Reset}"
+                    ToolTip="Reset all settings to their defaults">
+                    <materialDesign:PackIcon
+                        Width="26"
+                        Height="26"
+                        Kind="Restart" />
+                </Button>
 
-                <!--  Separator  -->
-                <Rectangle
-                    Grid.Row="1"
-                    Height="1"
-                    HorizontalAlignment="Stretch"
-                    Fill="{DynamicResource MaterialDesignDivider}" />
+                <!--  Cancel  -->
+                <Button
+                    Command="{s:Action Cancel}">
+                    <materialDesign:PackIcon
+                        Width="26"
+                        Height="26"
+                        Kind="Close" />
+                </Button>
 
-                <!--  Buttons  -->
-                <StackPanel
-                    Grid.Row="2"
-                    HorizontalAlignment="Stretch"
-                    Orientation="Horizontal">
-                    <!--  Reset  -->
-                    <Button
-                        Command="{s:Action Reset}"
-                        ToolTip="Reset all settings to their defaults">
-                        <materialDesign:PackIcon
-                            Width="26"
-                            Height="26"
-                            Kind="Restart" />
-                    </Button>
-
-                    <!--  Cancel  -->
-                    <Button
-                        Command="{s:Action Cancel}">
-                        <materialDesign:PackIcon
-                            Width="26"
-                            Height="26"
-                            Kind="Close" />
-                    </Button>
-
-                    <!--  Save  -->
-                    <Button
-                        Command="{s:Action Save}">
-                        <materialDesign:PackIcon
-                            Width="26"
-                            Height="26"
-                            Kind="ContentSave" />
-                    </Button>
-                </StackPanel>
-            </Grid>
+                <!--  Save  -->
+                <Button
+                    Command="{s:Action Save}">
+                    <materialDesign:PackIcon
+                        Width="26"
+                        Height="26"
+                        Kind="ContentSave" />
+                </Button>
+            </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
 </UserControl>

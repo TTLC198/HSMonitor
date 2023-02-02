@@ -33,8 +33,8 @@ public class HardwareMonitorService
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
     {
-        if (sender is SettingsService service)
-            _settingsService.Settings = service.Settings;
+        if (sender is not SettingsService service) return;
+        _settingsService.Settings = service.Settings;
     }
 
     public Message GetHwInfoMessage()

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 
 namespace HSMonitor.Utils;
-
+#pragma warning disable CA1416
 public class RegistryHandler
 {
     private readonly string _registryValue;

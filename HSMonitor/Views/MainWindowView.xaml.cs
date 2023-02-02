@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-
+#pragma warning disable CA1416
 namespace HSMonitor.Views
 {
     /// <summary>

@@ -13,11 +13,14 @@ public class SettingsTabsToIconConverter : IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value switch
     {
+#pragma warning disable CA1416
         ConnectionSettingsTabViewModel => PackIconKind.SerialPort,
         HardwareSettingsTabViewModel => PackIconKind.DesktopTowerMonitor,
         AppearanceSettingsTabViewModel => PackIconKind.Brush,
         AdvancedSettingsTabViewModel => PackIconKind.CheckboxesMarked,
+        UpdateSettingsTabViewModel => PackIconKind.CloudOutline,
         _ => PackIconKind.QuestionMark
+#pragma warning restore CA1416
     };
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

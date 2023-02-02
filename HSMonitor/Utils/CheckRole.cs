@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 
 namespace HSMonitor.Utils;
-
+#pragma warning disable CA1416
 public class CheckRole
 {
     public static bool IsUserAdministrator()

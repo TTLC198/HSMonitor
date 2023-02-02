@@ -13,13 +13,17 @@ public class Serial : IDisposable
     public Serial(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        if (_settingsService is {Settings: not null}) 
+        if (_settingsService is {Settings: not null})
             _serialPort = new SerialPort(
-                string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort) ? "COM1" : _settingsService.Settings.LastSelectedPort,
+                string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort)
+                    ? "COM1"
+                    : _settingsService.Settings.LastSelectedPort,
                 _settingsService.Settings.LastSelectedBaudRate,
-                Parity.None, 
+                Parity.None,
                 8,
                 StopBits.One);
+        else
+            _serialPort = new SerialPort();
     }
 
     public bool CheckAccess()

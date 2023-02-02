@@ -125,7 +125,7 @@ An error has occurred, the error text is shown below
                 okButtonText: "OK",
                 cancelButtonText: null
             );
-            _dialogManager.ShowDialogAsync(messageBoxDialog);
+            _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
         }
         
         SettingsSaved?.Invoke(this, EventArgs.Empty);

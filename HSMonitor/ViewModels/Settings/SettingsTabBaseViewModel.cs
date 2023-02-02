@@ -3,7 +3,7 @@ using HSMonitor.Services;
 using Stylet;
 
 namespace HSMonitor.ViewModels.Settings;
-
+#pragma warning disable CA1416
 public abstract class SettingsTabBaseViewModel : PropertyChangedBase, ISettingsTabViewModel
 {
     public int Order { get; }

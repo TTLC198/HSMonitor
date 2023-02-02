@@ -7,11 +7,11 @@ namespace HSMonitor.Models;
 
 public class Message
 {
-    public CpuInformation CpuInformation { get; set; }
-    public GpuInformation GpuInformation { get; set; }
-    public MemoryInformation MemoryInformation { get; set; }
+    public CpuInformation? CpuInformation { get; set; }
+    public GpuInformation? GpuInformation { get; set; }
+    public MemoryInformation? MemoryInformation { get; set; }
     
-    public DeviceSettings DeviceSettings { get; set; }
+    public DeviceSettings? DeviceSettings { get; set; }
 }
 
 public class CpuInformation
@@ -40,7 +40,7 @@ public class GpuInformation
     public int VRamClock { get; set; }
     public int VRamMemoryTotal { get; set; }
     public int VRamMemoryUsed { get; set; }
-    public IEnumerable<GpuFan> GpuFans { get; set; }
+    public IEnumerable<GpuFan>? GpuFans { get; set; }
 }
 
 public class GpuFan
