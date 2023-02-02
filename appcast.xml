@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="1.0.9" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>HSMonitor 1.0.9</title>
+        <link>https://raw.githubusercontent.com/TTLC198/HSMonitor/master/appcast.xml</link>
+        <description>See full description in github</description>
+        <language>en</language>
+        <item>
+            <title>Version 1.0.9</title>
+            <pubDate>Thu, 2 Feb 2023 10:30:00</pubDate>
+            <enclosure url="https://github.com/TTLC198/HSMonitor/releases/download/1.0.9/HSMonitor-Installer.exe" sparkle:version="1.0.9" length="9157352" type="application/octet-stream"/>
+        </item>
+    </channel>
+</rss>
