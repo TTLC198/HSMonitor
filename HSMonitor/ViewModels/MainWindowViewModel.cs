@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using HSMonitor.Services;
 using HSMonitor.Utils;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
-using Stylet;
+using NetSparkleUpdater.Enums;
+using Application = System.Windows.Application;
+using Screen = Stylet.Screen;
 
 namespace HSMonitor.ViewModels;
 
+#pragma warning disable CA1416
 public class MainWindowViewModel : Screen
 {
     private readonly IViewModelFactory _viewModelFactory;
@@ -24,20 +23,20 @@ public class MainWindowViewModel : Screen
     private readonly SettingsService _settingsService;
     private readonly SerialMonitorService _serialMonitorService;
     private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly UpdateService _updateService;
 
     private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
 
     private bool _isSerialMonitorEnabled = true;
+
     public bool IsSerialMonitorEnabled
     {
         get => _isSerialMonitorEnabled;
         set
         {
             _isSerialMonitorEnabled = value;
-#pragma warning disable CA1416
             OnPropertyChanged(nameof(IsSerialMonitorEnabled));
-#pragma warning restore CA1416
         }
     }
 
@@ -46,13 +45,14 @@ public class MainWindowViewModel : Screen
         DialogManager dialogManager,
         HardwareMonitorService hardwareMonitorService,
         SettingsService settingsService,
-        SerialMonitorService serialMonitorService)
+        SerialMonitorService serialMonitorService, UpdateService updateService)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
         _serialMonitorService = serialMonitorService;
+        _updateService = updateService;
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
@@ -69,7 +69,7 @@ public class MainWindowViewModel : Screen
             okButtonText: "OK",
             cancelButtonText: "CANCEL"
         );
-        
+
         IsSerialMonitorEnabled = false;
 
         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
@@ -123,7 +123,7 @@ An error has occurred, the error text is shown below:
                 okButtonText: "OK",
                 cancelButtonText: null
             );
-            _dialogManager.ShowDialogAsync(messageBoxDialog);
+            _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
         }
     }
 
@@ -142,50 +142,84 @@ Please reinstall the program to fix the problem".Trim(),
 
             if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
                 Exit();
-            /*var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
-                message: $@"
-Application configuration file was not found in the program folder or was modified manually.
-Please reinstall the program to fix the problem".Trim(),
-                okButtonText: "OK",
-                cancelButtonText: null
-            );
-
-            if (_dialogManager.ShowDialogAsync(messageBoxDialog).Result == true)
-                Exit();*/
         }
         else
         {
             _updateHardwareMonitorTimer = new DispatcherTimer(
                 priority: DispatcherPriority.Background,
-                interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval),
-                callback: (_, _) =>
-                {
-                    _hardwareMonitorService.HardwareInformationUpdate();
-                },
+                interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0
+                    ? 500
+                    : _settingsService.Settings.SendInterval),
+                callback: (_, _) => { _hardwareMonitorService.HardwareInformationUpdate(); },
                 dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException()
             );
 
             _settingsService.SettingsSaved += (_, _) =>
             {
-                _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval);
+                _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
+                    _settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval);
             };
-            _updateHardwareMonitorTimer.Start();
-        
+
+            _serialMonitorService.OpenPortAttemptFailed +=
+                async (_, _) => await SerialMonitorServiceOnOpenPortAttemptFailed();
+
+            _serialMonitorService.OpenPortAttemptSuccessful += (_, _) =>
+            {
+                if (IsSerialMonitorEnabled)
+                    return;
+                IsSerialMonitorEnabled = true;
+            };
+
+            try
+            {
+                var updateInfo = await _updateService.CheckForUpdates();
+                if (_settingsService.Settings.IsAutoUpdateEnabled)
+                {
+                    await _updateService.UpdateAsync();
+                }
+                else if (updateInfo.Status is UpdateStatus.UpdateAvailable)
+                {
+                    var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                        title: "New update available!",
+                        message: $@"
+There is new version {updateInfo.Updates.First().Version} available.         
+You are using version {App.Version.ToString(3).Trim()}.
+Do you want to update the application now?".Trim(),
+                        okButtonText: "OK",
+                        cancelButtonText: "Cancel"
+                    );
+                    if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                    {
+                        var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
+                        settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
+
+                        await _dialogManager.ShowDialogAsync(settingsDialog);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: "Some error has occurred",
+                    message: $@"
+An error has occurred, the error text is shown below:
+{exception.Message}".Trim(),
+                    okButtonText: "OK",
+                    cancelButtonText: null
+                );
+
+                await _dialogManager.ShowDialogAsync(errorBoxDialog);
+            }
+
             if (!CheckRole.IsUserAdministrator())
             {
-                if (_settingsService.Settings.IsRunAsAdministrator) 
+                if (_settingsService.Settings.IsRunAsAdministrator)
                     RestartAsAdmin();
                 else
                     await ShowAdminPrivilegesRequirement();
             }
-            _serialMonitorService.OpenPortAttemptFailed += async (_,_) => await SerialMonitorServiceOnOpenPortAttemptFailed();
-            _serialMonitorService.OpenPortAttemptSuccessful += (_, _) =>
-            {
-                if (IsSerialMonitorEnabled) 
-                    return;
-                IsSerialMonitorEnabled = true;
-            };
+
+            _updateHardwareMonitorTimer.Start();
         }
     }
 
