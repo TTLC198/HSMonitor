@@ -23,9 +23,13 @@ UninstallDisplayIcon={app}\{#AppName}.exe
 LicenseFile=..\License.txt
 OutputDir=bin\
 OutputBaseFilename=HSMonitor-Installer
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=commandline dialog
+WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Files]
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -38,7 +42,7 @@ Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{group}\{#AppName} on Github"; Filename: "{#GithubPage}"
 
 [Run]
-Filename: "{app}\{#AppName}.exe"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppName}.exe"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser 
 
 [UninstallDelete]
 Name: "{userappdata}\HSMonitor"; Type: filesandordirs
