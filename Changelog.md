@@ -1,3 +1,14 @@
+### v1.0.9 (date)
+
+- Fixed and updated app installer: new interface, ability to run without admin rights.
+- Added beautiful data validation and fixed a bug with phantom validation labels.
+- Added display of the current brightness of the device display on the main screen.
+- A new menu tab has been added, in which it is possible to view and install program updates.
+- Fixed and updated settings panel interface.
+- Button was added to close the program in the main window.
+- Fixed errors related to missing or incorrectly defined settings in the appsettings.json file.
+- Added and fixed data validation systems in text input lines.
+
 ### v1.0.8 (26.01.2023)
 
 - Added support for multiprocessor systems and systems with multiple graphics cards.
