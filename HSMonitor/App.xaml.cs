@@ -29,7 +29,14 @@ namespace HSMonitor
 
         public static string ExecutableFilePath { get; } = Path.ChangeExtension(typeof(App).Assembly.Location, "exe");
 
-        public static string GitHubProjectUrl { get; } = "https://github.com/TTLC198/HSMonitor";
+        public static string GitHubProjectUrl { get; } = 
+            "https://github.com/TTLC198/HSMonitor";
+        
+        public static string GitHubClientProjectUrl { get; } = 
+            "https://github.com/TTLC198/HSMonitorClient";
+
+        public static string GitHubAutoUpdateConfigUrl { get; } =
+            "https://raw.githubusercontent.com/TTLC198/HSMonitor/master/appcast.xml";
     }
 
     public partial class App
