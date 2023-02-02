@@ -28,6 +28,8 @@
         CloseOnClickAway="False"
         Loaded="{s:Action OnViewFullyLoaded}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
+        DialogBackground="{DynamicResource PrimaryHueMidBrush}"
+        DialogTheme="Light"
         DialogMargin="10">
         <Grid
             IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}"
