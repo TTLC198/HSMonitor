@@ -4,6 +4,11 @@ namespace HSMonitor.ViewModels.Settings;
 
 public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
 {
+    public bool IsAutoUpdateEnabled
+    {
+        get => SettingsService.Settings.IsAutoUpdateEnabled;
+        set => SettingsService.Settings.IsAutoUpdateEnabled = value;
+    }
     public bool IsAutoStartEnabled
     {
         get => SettingsService.Settings.IsAutoStartEnabled;

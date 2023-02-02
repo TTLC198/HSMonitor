@@ -27,6 +27,26 @@
     <StackPanel
         Margin="0, 8"
         Orientation="Vertical">
+        <!--On/Off auto update-->
+        <Grid 
+            Margin="16,8" 
+            ToolTip="On/Off auto update"
+            IsEnabled="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="Enable auto update" />
+            <ToggleButton
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IsAutoUpdateEnabled}" />
+        </Grid>
         <!--Set autostart enabled-->
         <Grid Margin="16,8" ToolTip="Launch HSMonitor at Windows startup">
             <Grid.ColumnDefinitions>
