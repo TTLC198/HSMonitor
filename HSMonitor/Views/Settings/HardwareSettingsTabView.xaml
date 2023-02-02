@@ -34,26 +34,6 @@
                 Property="Margin"
                 Value="8 ,0, 0, 0"/>
         </Style>
-        <Style
-            TargetType="{x:Type TextBox}"
-            BasedOn="{StaticResource MaterialDesignTextBox}">
-            <Setter
-                Property="Margin"
-                Value="0, 2"/>
-            <Setter
-                Property="HorizontalAlignment"
-                Value="Stretch"/>
-            <Setter
-                Property="VerticalAlignment"
-                Value="Center"/>
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="materialDesign:ValidationAssist.UsePopup" Value="True" />
-                    <Setter Property="materialDesign:ValidationAssist.PopupPlacement" Value="Bottom" />
-                    <Setter Property="materialDesign:ValidationAssist.Background" Value="Transparent" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
     <StackPanel
         Margin="0, 8"
@@ -110,7 +90,7 @@
         </Grid>
         <!--Select default CPU Frequency-->
         <Grid
-            Margin="12, 5">
+            Margin="12, 8">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -122,8 +102,7 @@
                 VerticalAlignment="Center"/>
             <TextBox
                 x:Name="DefaultCpuFreqTextBox"
-                Grid.Row="1"
-                TextAlignment="Left" >
+                Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="DefaultCpuFrequency"
                              UpdateSourceTrigger="PropertyChanged" 
@@ -152,8 +131,7 @@
                 VerticalAlignment="Center"/>
             <TextBox
                 x:Name="DefaultGpuFreqTextBox"
-                Grid.Row="1"
-                TextAlignment="Left" >
+                Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="DefaultGpuFrequency"
                              UpdateSourceTrigger="PropertyChanged" 
