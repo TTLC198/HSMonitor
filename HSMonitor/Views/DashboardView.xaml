@@ -53,6 +53,7 @@
         </Style>
     </UserControl.Resources>
     <Canvas
+        Opacity="{Binding DisplayOpacity}"
         Background="Black">
         <Border
             Canvas.Top="0"

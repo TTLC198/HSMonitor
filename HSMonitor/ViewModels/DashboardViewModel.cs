@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using HidSharp;
 using HSMonitor.Models;
 using HSMonitor.Services;
 
@@ -11,12 +12,13 @@ namespace HSMonitor.ViewModels;
 
 public class DashboardViewModel : INotifyPropertyChanged
 {
-    private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly SettingsService _settingsService;
 
     private CpuInformation _cpu = null!;
     private GpuInformation _gpu = null!;
     private MemoryInformation _memory = null!;
+    
+    private double _displayOpacity = 1;
 
     private ImageSource _cpuImageSource =
         new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", UriKind.Absolute));
@@ -92,7 +94,7 @@ public class DashboardViewModel : INotifyPropertyChanged
         get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
         set
         {
-            if (!_gpu.GpuFans.Any()) return;
+            if (_gpu is {GpuFans: null}) return;
             _gpu.GpuFans.ToArray()[0] = value;
             OnPropertyChanged();
         }
@@ -103,17 +105,26 @@ public class DashboardViewModel : INotifyPropertyChanged
         get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
         set
         {
-            if (!_gpu.GpuFans.Any()) return;
+            if (_gpu is {GpuFans: null}) return;
             _gpu.GpuFans.ToArray()[1] = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public double DisplayOpacity
+    {
+        get => _displayOpacity;
+        set
+        {
+            _displayOpacity = value;
             OnPropertyChanged();
         }
     }
 
     public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
     {
-        _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
-        _hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
+        hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
         settingsService.SettingsSaved += UpdateImageFromSettings;
         
         HardwareInformationUpdated();
@@ -124,7 +135,7 @@ public class DashboardViewModel : INotifyPropertyChanged
         Cpu = HardwareMonitorService.Cpu;
         Gpu = HardwareMonitorService.Gpu;
         Memory = HardwareMonitorService.Memory;
-        
+
         if (Cpu.Name is {Length: > 23})
             Cpu.Name = Cpu.Name[..23];
         if (Gpu.Name is {Length: > 23})
@@ -132,94 +143,77 @@ public class DashboardViewModel : INotifyPropertyChanged
 
         if (_settingsService is {Settings: null}) return;
         if (_settingsService.Settings.IsAutoDetectHardwareEnabled) 
-            UpdateImage();
+            UpdateImageFromComputer();
         else 
             UpdateImageFromSettings(_settingsService, EventArgs.Empty);
     }
 
-    private void UpdateImage()
+    private void UpdateImageFromComputer()
     {
         if (_cpu is {Type: not null} and not null)
-            CpuImageSource = Cpu.Type switch
-            {
-                var type when type!.Contains("Amd") => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/AmdLogo.png",
-                        UriKind.Absolute)),
-                var type when type!.Contains("Intel") => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png",
-                        UriKind.Absolute)),
-                _ => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
-                        UriKind.Absolute))
-            };
+            UpdateCpuImage(_cpu.Type);
         if (_gpu is {Type: not null} and not null)
-            GpuImageSource = Gpu.Type switch
-            {
-                var type when type!.Contains("Amd") => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png", 
-                        UriKind.Absolute)),
-                var type when type!.Contains("Intel") => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png", 
-                        UriKind.Absolute)),
-                var type when type!.Contains("Nvidia") => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/NvidiaLogo.png", 
-                        UriKind.Absolute)),
-                _ => new BitmapImage(
-                    new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
-                        UriKind.Absolute)),
-            };
+            UpdateGpuImage(_gpu.Type);
         if (_memory is {Type: not null} and not null)
-            MemoryImageSource = Memory.Type switch
-        {
-            var type when type!.Contains("Trident") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/TridentRam.png", 
-                    UriKind.Absolute)),
-            var type when type!.Contains("Viper") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/ViperRam.png",
-                    UriKind.Absolute)),
-            _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", 
-                    UriKind.Absolute)),
-        };
+            UpdateRamImage(_memory.Type);
     }
     
     private void UpdateImageFromSettings(object? sender, EventArgs eventArgs)
     {
         if (sender is not SettingsService settingsService) return;
+        DisplayOpacity = (double)settingsService.Settings.DeviceDisplayBrightness / 100;
         if (settingsService is {Settings.IsAutoDetectHardwareEnabled: true} or null) return;
-        CpuImageSource = settingsService.Settings.CpuCustomType switch
+        if (settingsService.Settings.CpuCustomType is not null)
+            UpdateCpuImage(settingsService.Settings.CpuCustomType);
+        if (settingsService.Settings.GpuCustomType is not null)
+            UpdateGpuImage(settingsService.Settings.GpuCustomType);
+        if (settingsService.Settings.MemoryCustomType is not null)
+            UpdateRamImage(settingsService.Settings.MemoryCustomType);
+    }
+
+    private void UpdateCpuImage(string cpuType)
+    {
+        CpuImageSource = cpuType switch
         {
-            var type when type!.Contains("Amd") => new BitmapImage(
+            _ when cpuType!.Contains("Amd") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/AmdLogo.png",
                     UriKind.Absolute)),
-            var type when type!.Contains("Intel") => new BitmapImage(
+            _ when cpuType!.Contains("Intel") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
                     UriKind.Absolute))
         };
-        GpuImageSource = settingsService.Settings.GpuCustomType switch
+    }
+    
+    private void UpdateGpuImage(string gpuType)
+    {
+        GpuImageSource = gpuType switch
         {
-            var type when type!.Contains("Amd") => new BitmapImage(
+            _ when gpuType!.Contains("Amd") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png", 
                     UriKind.Absolute)),
-            var type when type!.Contains("Intel") => new BitmapImage(
+            _ when gpuType!.Contains("Intel") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png", 
                     UriKind.Absolute)),
-            var type when type!.Contains("Nvidia") => new BitmapImage(
+            _ when gpuType!.Contains("Nvidia") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/NvidiaLogo.png", 
                     UriKind.Absolute)),
             _ => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
                     UriKind.Absolute)),
         };
-        MemoryImageSource = settingsService.Settings.MemoryCustomType switch
+    }
+    
+    private void UpdateRamImage(string ramType)
+    {
+        MemoryImageSource = ramType switch
         {
-            var type when type!.Contains("Trident") => new BitmapImage(
+            _ when ramType!.Contains("Trident") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/TridentRam.png", 
                     UriKind.Absolute)),
-            var type when type!.Contains("Viper") => new BitmapImage(
+            _ when ramType!.Contains("Viper") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/ViperRam.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
