@@ -31,9 +31,9 @@ public class UpdateService
     {
         try
         {
-            if (_updateInfo is null) throw new InvalidOperationException("UpdateInfo is null");
+            if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
             _updater.DownloadMadeProgress += UpdaterOnDownloadMadeProgress;
-            _updater.DownloadFinished += UpdaterOnDownloadFinished;
+            _updater.DownloadFinished += async (item, path) => await UpdaterOnDownloadFinished(item, path);
             await _updater.InitAndBeginDownload(_updateInfo.Updates.First());
         }
         catch (Exception exception)
@@ -51,14 +51,25 @@ An error has occurred, the error text is shown below:
         }
     }
 
-    private void UpdaterOnDownloadFinished(AppCastItem item, string path)
+    private async Task UpdaterOnDownloadFinished(AppCastItem item, string path)
     {
         try
         {
-            if (_updateInfo is null) throw new InvalidOperationException("UpdateInfo is null");
+            if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
             UpdateDownloadFinishedEvent?.Invoke(this, null!);
             _updater.CloseApplication += UpdaterOnCloseApplication;
-            _updater.InstallUpdate(_updateInfo.Updates.First(), path);
+            
+            var restartBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: "Restart needed",
+                message: "A new update has been downloaded, you need to restart the program to install it.".Trim(),
+                okButtonText: "RESTART",
+                cancelButtonText: "CANCEL"
+            );
+
+            if (await _dialogManager.ShowDialogAsync(restartBoxDialog) == true)
+            {
+                _updater.InstallUpdate(_updateInfo.Updates.First());
+            }
         }
         catch (Exception exception)
         {
@@ -71,7 +82,7 @@ An error has occurred, the error text is shown below:
                 cancelButtonText: null
             );
 
-            _dialogManager.ShowDialogAsync(errorBoxDialog).GetAwaiter();
+            await _dialogManager.ShowDialogAsync(errorBoxDialog);
         }
     }
 
@@ -97,10 +108,24 @@ An error has occurred, the error text is shown below:
         _updater = new SparkleUpdater(App.GitHubAutoUpdateConfigUrl,
             new Ed25519Checker(SecurityMode.Unsafe))
         {
+            SecurityProtocolType = SecurityProtocolType.SystemDefault,
+            UserInteractionMode = UserInteractionMode.DownloadNoInstall,
+            TmpDownloadFilePath = null,
+            RelaunchAfterUpdate = false,
+            CustomInstallerArguments = null,
+            ClearOldInstallers = null,
             UIFactory = null,
-            RelaunchAfterUpdate = true, 
-            CustomInstallerArguments = "",
+            Configuration = null,
+            RestartExecutablePath = null,
+            RestartExecutableName = null,
+            RelaunchAfterUpdateCommandPrefix = null,
+            UseNotificationToast = false,
+            ShowsUIOnMainThread = false,
+            LogWriter = null,
+            CheckServerFileName = false,
+            UpdateDownloader = null,
+            AppCastDataDownloader = null,
+            AppCastHandler = null
         };
-        _updater.SecurityProtocolType = SecurityProtocolType.Tls12;
     }
 }

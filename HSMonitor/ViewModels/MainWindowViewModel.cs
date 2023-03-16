@@ -173,27 +173,34 @@ Please reinstall the program to fix the problem".Trim(),
             try
             {
                 var updateInfo = await _updateService.CheckForUpdates();
-                if (_settingsService.Settings.IsAutoUpdateEnabled)
+                
+                if (updateInfo.Status is UpdateStatus.UpdateAvailable)
                 {
-                    await _updateService.UpdateAsync();
-                }
-                else if (updateInfo.Status is UpdateStatus.UpdateAvailable)
-                {
-                    var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                        title: "New update available!",
-                        message: $@"
-There is new version {updateInfo.Updates.First().Version} available.         
-You are using version {App.Version.ToString(3).Trim()}.
-Do you want to update the application now?".Trim(),
-                        okButtonText: "OK",
-                        cancelButtonText: "Cancel"
-                    );
-                    if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                    if (_settingsService.Settings.IsAutoUpdateEnabled)
                     {
                         var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                         settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
+                        
+                        await _updateService.UpdateAsync();
+                    }
+                    else
+                    {
+                        var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                            title: "New update available!",
+                            message: $@"
+There is new version {updateInfo.Updates.First().Version} available.         
+You are using version {App.Version.ToString(3).Trim()}.
+Do you want to update the application now?".Trim(),
+                            okButtonText: "OK",
+                            cancelButtonText: "Cancel"
+                        );
+                        if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                        {
+                            var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
+                            settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
 
-                        await _dialogManager.ShowDialogAsync(settingsDialog);
+                            await _dialogManager.ShowDialogAsync(settingsDialog);
+                        }
                     }
                 }
             }
