@@ -33,7 +33,7 @@ public class SettingsService
     
     public ApplicationSettings Settings { get; set; } = null!;
 
-    public readonly string ConfigurationPath = Path.Combine(App.ExecutableDirPath, "appsettings.json");
+    public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
 
     public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager)
     {
