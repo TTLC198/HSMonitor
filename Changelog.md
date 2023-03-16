@@ -1,4 +1,13 @@
-### v1.0.9 (date)
+### v1.1.0 (17.03.2023)
+
+- Move application settings file to %LOCALAPPDATA%. Now users without administrator rights will be able to save settings.
+- Added the ability to add the application to startup in the installation wizard.
+- Reduced the size of the executable file and the installer file.
+- Changed behavior of dialog boxes. Now they can be closed by clicking outside their borders.
+- Added the ability to install the program without administrator rights.
+- Updated LibreHardwareMonitor library to version 0.9.2-pre209.
+
+### v1.0.9 (2.02.2023)
 
 - Fixed and updated app installer: new interface, ability to run without admin rights.
 - Added beautiful data validation and fixed a bug with phantom validation labels.
