@@ -39,7 +39,7 @@
             TargetType="{x:Type TextBlock}">
             <Setter
                 Property="FontFamily"
-                Value="{StaticResource VT323}"/>
+                Value="{DynamicResource VT323}"/>
             <Setter
                 Property="VerticalAlignment"
                 Value="Center"/>
@@ -49,7 +49,6 @@
             <Setter
                 Property="Foreground"
                 Value="White"/>
-            <!--{DynamicResource MaterialDesignDarkForeground}-->
         </Style>
     </UserControl.Resources>
     <Canvas

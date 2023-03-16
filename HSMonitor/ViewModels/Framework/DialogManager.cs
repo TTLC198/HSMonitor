@@ -53,7 +53,6 @@ public class DialogManager : IDisposable
         var view = GetViewForDialogScreen(dialogScreen);
 
         void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
-    
         {
             void OnScreenClosed(object? closeSender, EventArgs args)
             {

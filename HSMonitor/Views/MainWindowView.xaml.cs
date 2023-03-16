@@ -22,7 +22,10 @@ namespace HSMonitor.Views
 
         private void MainTaskbarIcon_OnTrayBalloonTipClicked(object sender, RoutedEventArgs e)
         {
-            Visibility = Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            Visibility = 
+                Visibility == Visibility.Visible
+                    ? Visibility.Hidden 
+                    : Visibility.Visible;
         }
         
         private void HeaderBorder_OnMouseDown(object sender, MouseButtonEventArgs e)
