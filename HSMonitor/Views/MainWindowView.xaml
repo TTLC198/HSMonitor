@@ -25,7 +25,7 @@
     mc:Ignorable="d">
     <materialDesign:DialogHost
         x:Name="DialogHost"
-        CloseOnClickAway="False"
+        CloseOnClickAway="True"
         Loaded="{s:Action OnViewFullyLoaded}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
         DialogBackground="{DynamicResource PrimaryHueMidBrush}"
