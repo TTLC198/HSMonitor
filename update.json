@@ -1,9 +1,0 @@
-{
-  "version":"1.0.8.0",
-  "url":"https://github.com/TTLC198/HSMonitor/releases/tag/1.0.8",
-  "changelog":"https://github.com/TTLC198/HSMonitor/blob/master/Changelog.md",
-  "checksum":{
-    "value":"20e59fec8517d3496a8d1216e98c1b1e3aff22ac3a38a0b0ea8b8007ed96092f",
-    "hashingAlgorithm":"SHA256"
-  }
-}
