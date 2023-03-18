@@ -25,7 +25,7 @@ namespace HSMonitor
 
         public static string VersionString { get; } = "v" + Version.ToString(3).Trim();
 
-        public static string SettingsDirPath { get;  } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Name);
+        public static string SettingsDirPath { get;  } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Name);
         
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 
