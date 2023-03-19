@@ -1,4 +1,4 @@
-# [<img src=".assets/favicon.ico" width="40"/>](.assets/favicon.ico) Hardware Serial Monitor
+# [<img src=".assets/favicon.ico" width="40"/>](.assets/favicon.ico) Hardware Sync Monitor
 
 ![Build](https://img.shields.io/github/v/release/TTLC198/HSMonitor)
 ![LastCommit](https://img.shields.io/github/last-commit/TTLC198/HSMonitor)
