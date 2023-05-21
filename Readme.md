@@ -27,4 +27,6 @@ This device allows you to quickly monitor the temperature and degree of CPU and 
 
 ## Preview
 
-![Preview GIF](.assets/Preview.gif)
+![Preview GIF](.assets/Preview_v1_1_0.gif)
+
+![Preview GIF](.assets/Preview_IRL.gif)
