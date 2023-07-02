@@ -1,7 +1,9 @@
 # [<img src=".assets/favicon.ico" width="40"/>](.assets/favicon.ico) Hardware Sync Monitor
 
-![Build](https://img.shields.io/github/v/release/TTLC198/HSMonitor)
-![LastCommit](https://img.shields.io/github/last-commit/TTLC198/HSMonitor)
+[![Build](https://img.shields.io/github/v/release/TTLC198/HSMonitor)](https://github.com/TTLC198/HSMonitor/releases)
+[![LastCommit](https://img.shields.io/github/last-commit/TTLC198/HSMonitor)](https://github.com/TTLC198/HSMonitor/commits/master)
+
+Информация на русском здесь! [Тык.](Readme_RU.md)
 
 **HSMonitor** is an application that is a back-end application that reads PC status data and sends it to a special device based on Arduino. \
 This device allows you to quickly monitor the temperature and degree of CPU and GPU utilization, power consumption, and so on, without being distracted from other things.
@@ -10,6 +12,7 @@ This device allows you to quickly monitor the temperature and degree of CPU and 
 
 - Simple lightweight WPF application
 - Easy to add to startup
+- Auto updates
 - Advanced customization
 - Quick setup
 
@@ -23,7 +26,7 @@ This device allows you to quickly monitor the temperature and degree of CPU and 
 > Supported OS version: Windows 7 and higher. \
 > The latest release is not yet fully tested and awaits your feedback!
 
-- [**Latest release**](https://github.com/TTLC198/HSMonitor/releases)
+- [**Download**](https://github.com/TTLC198/HSMonitor/releases)
 
 ## Preview
 
