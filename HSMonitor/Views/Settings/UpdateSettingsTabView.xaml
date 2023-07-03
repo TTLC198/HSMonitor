@@ -121,41 +121,5 @@
                 </TextBlock>
             </Grid>
         </StackPanel>
-        <!-- Github Client URL -->
-        <StackPanel
-            Margin="12,4" 
-            Orientation="Vertical">
-            <TextBlock
-                Text="Client project URL on GitHub:"
-                VerticalAlignment="Center"/>
-            <Grid 
-                x:Name="GithubClientUrlGrid"
-                ToolTip="Github URL"
-                Background="{DynamicResource PrimaryHueMidBrush}"
-                TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
-                MouseDown="GithubLinkPageOpen">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    Margin="2"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="Github"/>
-                <TextBlock
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    Padding="6">
-                    <Run
-                        FontSize="7"
-                        FontWeight="Medium"
-                        Text="{x:Static hsMonitor:App.GitHubClientProjectUrl}" />
-                </TextBlock>
-            </Grid>
-        </StackPanel>
     </StackPanel>
 </UserControl>
