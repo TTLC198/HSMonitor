@@ -99,5 +99,30 @@
                 Grid.Column="1"
                 IsChecked="{Binding IsRunAsAdministrator}" />
         </Grid>
+        <!-- Select application language -->
+        <Grid
+            Margin="12, 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="Auto"/>
+                <ColumnDefinition
+                    Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Text="{x:Static p:Resources.SelectLanguageText}"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                Grid.Column="1"
+                ItemsSource="{Binding Languages}"
+                SelectedValue="{Binding ApplicationCultureInfo, Mode=TwoWay}"
+                SelectedValuePath="Name">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            Text="{Binding DisplayName}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
     </StackPanel>
 </UserControl>

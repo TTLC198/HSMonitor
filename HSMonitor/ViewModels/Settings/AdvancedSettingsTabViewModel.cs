@@ -1,4 +1,7 @@
-﻿using HSMonitor.Services;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using HSMonitor.Services;
+using HSMonitor.Utils;
 
 namespace HSMonitor.ViewModels.Settings;
 
@@ -24,6 +27,14 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
         get => SettingsService.Settings.IsRunAsAdministrator;
         set => SettingsService.Settings.IsRunAsAdministrator = value;
     }
+    
+    public string? ApplicationCultureInfo
+    {
+        get => SettingsService.Settings.ApplicationCultureInfo;
+        set => SettingsService.Settings.ApplicationCultureInfo = value;
+    }
+    
+    public static IEnumerable<CultureInfo> Languages => LocalizationManager.GetAvailableCultures();
 
     public AdvancedSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 3, "Advanced")
