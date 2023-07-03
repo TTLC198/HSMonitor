@@ -6,6 +6,7 @@
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
+             xmlns:p="clr-namespace:HSMonitor.Properties"
              d:DataContext="{d:DesignInstance Type=settings:ConnectionSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -47,10 +48,9 @@
                     Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock
-                Text="Serial port:"
+                Text="{x:Static p:Resources.SerialPortText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                x:Name="SerialPortsComboBox"
                 Grid.Column="1"
                 ItemsSource="{Binding AvailablePorts}"
                 SelectedValue="{Binding SelectedPort, Mode=TwoWay}">
@@ -72,10 +72,9 @@
                     Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock
-                Text="Baud Rate:"
+                Text="{x:Static p:Resources.BaudRateText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                x:Name="BaudRatesComboBox"
                 Grid.Column="1"
                 ItemsSource="{Binding SupportedBaudRates}"
                 SelectedValue="{Binding SelectedBaudRate, Mode=TwoWay}">
@@ -97,10 +96,9 @@
                     Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock
-                Text="TX Interval(ms):"
+                Text="{x:Static p:Resources.TXIntervalText}"
                 VerticalAlignment="Center"/>
             <TextBox
-                x:Name="SendIntervalTextBox"
                 Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="SendInterval"
@@ -129,7 +127,7 @@
                 Grid.Row="0"
                 Orientation="Horizontal">
                 <TextBlock
-                    Text="Display brightness:"
+                    Text="{x:Static p:Resources.DisplayBrightnessText}"
                     VerticalAlignment="Center"/>
                 <TextBox
                     Margin="2"
@@ -149,7 +147,6 @@
                 </TextBox>
             </StackPanel>
             <Slider
-                x:Name="DeviceDisplayBrightnessSlider"
                 Grid.Row="1"
                 Margin="2"
                 IsSnapToTickEnabled="True"

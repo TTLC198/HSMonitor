@@ -10,6 +10,7 @@
     xmlns:hsMonitor="clr-namespace:HSMonitor"
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+    xmlns:p="clr-namespace:HSMonitor.Properties"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Style="{DynamicResource MaterialDesignRoot}"
@@ -70,15 +71,25 @@
                     <ContextMenu
                         Margin="2">
                         <MenuItem
-                            Header="_Show window"
                             Click="Show_OnClick">
+                            <MenuItem.Header>
+                                <TextBlock>
+                                    <Run Text="_"/>
+                                    <Run Text="{x:Static p:Resources.ShowWindowFromTrayButtonText}"/>
+                                </TextBlock>
+                            </MenuItem.Header>
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="WindowMaximize" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem
-                            Header="_Close application"
                             Click="Close_OnClick">
+                            <MenuItem.Header>
+                                <TextBlock>
+                                    <Run Text="_"/>
+                                    <Run Text="{x:Static p:Resources.CloseAppFromTrayButtonText}"/>
+                                </TextBlock>
+                            </MenuItem.Header>
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="WindowClose" />
                             </MenuItem.Icon>
@@ -171,7 +182,7 @@
                         VerticalAlignment="Center"
                         Click="Close_OnClick"
                         Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                        ToolTip="Close HSMonitor"
+                        ToolTip="{x:Static p:Resources.CloseButtonTooltip}"
                         Width="24"
                         Height="24">
                         <materialDesign:PackIcon
@@ -258,7 +269,7 @@
                 <Button
                     Margin="8"
                     Style="{DynamicResource MaterialDesignFlatButton}"
-                    ToolTip="Open settings"
+                    ToolTip="{x:Static p:Resources.OpenSettingsTooltip}"
                     Command="{s:Action ShowSettings}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon
@@ -268,7 +279,7 @@
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
-                            Text="SETTINGS" />
+                            Text="{x:Static p:Resources.SettingsButtonContent}" />
                     </StackPanel>
                 </Button>
 
@@ -277,7 +288,7 @@
                     Margin="8"
                     Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{s:Action ShowAbout}"
-                    ToolTip="Open project page on GitHub">
+                    ToolTip="{x:Static p:Resources.AboutButtonTooltip}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon
                             Width="24"
@@ -286,7 +297,7 @@
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
-                            Text="ABOUT" />
+                            Text="{x:Static p:Resources.AboutButtonContent}" />
                     </StackPanel>
                 </Button>
             </StackPanel>

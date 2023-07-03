@@ -9,6 +9,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:hsMonitor="clr-namespace:HSMonitor"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:p="clr-namespace:HSMonitor.Properties"
              d:DataContext="{d:DesignInstance Type=settings:UpdateSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -30,7 +31,7 @@
                 Padding="2"
                 VerticalAlignment="Center"
                 Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                ToolTip="Check for updates"
+                ToolTip="{x:Static p:Resources.CheckForUpdatesTooltip}"
                 Width="50"
                 Height="50"
                 Margin="0, 0, 6, 0"
@@ -61,7 +62,7 @@
         <!-- Update Download Progress -->
         <Grid 
             Margin="12,4" 
-            ToolTip="Update Download Progress"
+            ToolTip="{x:Static p:Resources.UpdateDownloadProgressTooltip}"
             Visibility="{Binding IsProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -90,10 +91,9 @@
             Margin="12,4" 
             Orientation="Vertical">
             <TextBlock
-                Text="Project URL on GitHub:"
+                Text="{x:Static p:Resources.ProjectURLText}"
                 VerticalAlignment="Center"/>
             <Grid 
-                x:Name="GithubUrlGrid"
                 ToolTip="Github URL"
                 Background="{DynamicResource PrimaryHueMidBrush}"
                 TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
