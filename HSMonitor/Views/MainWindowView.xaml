@@ -73,10 +73,8 @@
                         <MenuItem
                             Click="Show_OnClick">
                             <MenuItem.Header>
-                                <TextBlock>
-                                    <Run Text="_"/>
-                                    <Run Text="{x:Static p:Resources.ShowWindowFromTrayButtonText}"/>
-                                </TextBlock>
+                                <TextBlock
+                                    Text="{x:Static p:Resources.ShowWindowFromTrayButtonText}"/>
                             </MenuItem.Header>
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="WindowMaximize" />
@@ -85,10 +83,8 @@
                         <MenuItem
                             Click="Close_OnClick">
                             <MenuItem.Header>
-                                <TextBlock>
-                                    <Run Text="_"/>
-                                    <Run Text="{x:Static p:Resources.CloseAppFromTrayButtonText}"/>
-                                </TextBlock>
+                                <TextBlock
+                                    Text="{x:Static p:Resources.CloseAppFromTrayButtonText}"/>
                             </MenuItem.Header>
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="WindowClose" />
@@ -279,6 +275,7 @@
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
+                            Typography.Capitals="AllSmallCaps"
                             Text="{x:Static p:Resources.SettingsButtonContent}" />
                     </StackPanel>
                 </Button>
@@ -297,6 +294,7 @@
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
+                            Typography.Capitals="AllSmallCaps"
                             Text="{x:Static p:Resources.AboutButtonContent}" />
                     </StackPanel>
                 </Button>
