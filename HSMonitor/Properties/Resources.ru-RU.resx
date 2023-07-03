@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutButtonContent" xml:space="preserve">
+    <value>Ещё</value>
+  </data>
+  <data name="AutoDetectHardwareSwitchText" xml:space="preserve">
+    <value>Автоопределение:</value>
+  </data>
+  <data name="BaudRateText" xml:space="preserve">
+    <value>Скорость порта:</value>
+  </data>
+  <data name="CancelButtonTooltip" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CheckForUpdatesTooltip" xml:space="preserve">
+    <value>Проверить обновления</value>
+  </data>
+  <data name="CloseButtonTooltip" xml:space="preserve">
+    <value>Закрыть HSMonitor</value>
+  </data>
+  <data name="CustomCPUIconText" xml:space="preserve">
+    <value>Иконка CPU:</value>
+  </data>
+  <data name="CustomCPUNameText" xml:space="preserve">
+    <value>Пользовательское имя CPU:</value>
+  </data>
+  <data name="CustomGPUNameText" xml:space="preserve">
+    <value>Пользовательское имя GPU:</value>
+  </data>
+  <data name="DefaultCPUFreqText" xml:space="preserve">
+    <value>Частота CPU по умолчанию(МГц):</value>
+  </data>
+  <data name="DefaultGPUFreqText" xml:space="preserve">
+    <value>Частота GPU по умолчанию(МГц):</value>
+  </data>
+  <data name="DisplayBrightnessText" xml:space="preserve">
+    <value>Яркость подсветки дисплея:</value>
+  </data>
+  <data name="AutoUpdateSwitchText" xml:space="preserve">
+    <value>Включить автообновление</value>
+  </data>
+  <data name="CustomGPUIconText" xml:space="preserve">
+    <value>Иконка GPU:</value>
+  </data>
+  <data name="CustomRAMIconText" xml:space="preserve">
+    <value>Иконка RAM:</value>
+  </data>
+  <data name="ProjectURLText" xml:space="preserve">
+    <value>Проект на GitHub:</value>
+  </data>
+  <data name="ResetButtonTooltip" xml:space="preserve">
+    <value>Сброс всех настроек к стандартным</value>
+  </data>
+  <data name="RunAsAdminSwitchText" xml:space="preserve">
+    <value>Запуск от имени админа</value>
+  </data>
+  <data name="SaveButtonTooltip" xml:space="preserve">
+    <value>Сохранить настройки</value>
+  </data>
+  <data name="SelectCPUText" xml:space="preserve">
+    <value>Выбор CPU:</value>
+  </data>
+  <data name="SelectGPUText" xml:space="preserve">
+    <value>Выбор GPU:</value>
+  </data>
+  <data name="SerialPortText" xml:space="preserve">
+    <value>Выбор порта:</value>
+  </data>
+  <data name="SettingsButtonContent" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="HiddenStartSwitchText" xml:space="preserve">
+    <value>Запуск скрыто</value>
+  </data>
+  <data name="AutoStartupSwitchText" xml:space="preserve">
+    <value>Включить автозагрузку</value>
+  </data>
+  <data name="TXIntervalText" xml:space="preserve">
+    <value>Интервал отправки(мс):</value>
+  </data>
+  <data name="UpdateDownloadProgressTooltip" xml:space="preserve">
+    <value>Прогресс загрузки обновления</value>
+  </data>
+  <data name="ShowWindowFromTrayButtonText" xml:space="preserve">
+    <value>Открыть приложение</value>
+  </data>
+  <data name="CloseAppFromTrayButtonText" xml:space="preserve">
+    <value>Закрыть приложение</value>
+  </data>
+  <data name="OpenSettingsTooltip" xml:space="preserve">
+    <value>Открыть настройки</value>
+  </data>
+  <data name="AboutButtonTooltip" xml:space="preserve">
+    <value>Открыть страницу проекта на GitHub</value>
+  </data>
+  <data name="AutoUpdateTooltip" xml:space="preserve">
+    <value>Автообновление приложения</value>
+  </data>
+  <data name="AutoStartupTooltip" xml:space="preserve">
+    <value>Запуск HSMonitor при запуске Windows</value>
+  </data>
+  <data name="HiddenAutoStartupTooltip" xml:space="preserve">
+    <value>Запуск HSMonitor в свернутом режиме при запуске Windows</value>
+  </data>
+  <data name="RunAsAdminTooltip" xml:space="preserve">
+    <value>При запуске приложения будут напрямую запрашиваться права администратора</value>
+  </data>
+  <data name="AutoDetectHardwareTooltip" xml:space="preserve">
+    <value>Автоопределение комплектующих</value>
+  </data>
+</root>
