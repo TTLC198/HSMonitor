@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Utils;
 using HSMonitor.ViewModels.Framework;
@@ -68,10 +69,10 @@ public class MainWindowViewModel : Screen
             return;
 
         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-            title: $"Port {_settingsService.Settings.LastSelectedPort} is busy!",
-            message: @"Please connect a device or choose a different port.",
-            okButtonText: "OK",
-            cancelButtonText: "CANCEL"
+            title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
+            message: Resources.NoConnectionErrorMessageText,
+            okButtonText: Resources.MessageBoxOkButtonText,
+            cancelButtonText: Resources.MessageBoxCancelButtonText
         );
 
         IsSerialMonitorEnabled = false;
@@ -88,13 +89,10 @@ public class MainWindowViewModel : Screen
     private async Task ShowAdminPrivilegesRequirement()
     {
         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-            title: "Less information about PC",
-            message: $@"
-Please run {App.Name} as an administrator so that the library can get complete information about the current state of the computer hardware.
-
-Press OK to restart the application as administrator.".Trim(),
-            okButtonText: "OK",
-            cancelButtonText: "CANCEL"
+            title: Resources.AdminPrivilegesRequirementMessageTitle,
+            message: Resources.AdminPrivilegesRequirementMessageText.Trim(),
+            okButtonText: Resources.MessageBoxOkButtonText,
+            cancelButtonText: Resources.MessageBoxCancelButtonText
         );
 
         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
@@ -120,11 +118,11 @@ Press OK to restart the application as administrator.".Trim(),
         catch (Exception exception)
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
+                title: Resources.MessageBoxErrorTitle,
                 message: $@"
-An error has occurred, the error text is shown below:
+{Resources.MessageBoxErrorText}
 {exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: "OK",
+                okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
             _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
@@ -136,11 +134,9 @@ An error has occurred, the error text is shown below:
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
-                message: $@"
-Application configuration file was not found in the program folder or was modified manually.
-Please reinstall the program to fix the problem".Trim(),
-                okButtonText: "OK",
+                title: Resources.MessageBoxErrorTitle,
+                message: Resources.ConfigurationFileErrorMessageText.Trim(),
+                okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
 
@@ -190,13 +186,13 @@ Please reinstall the program to fix the problem".Trim(),
                     else
                     {
                         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                            title: "New update available!",
+                            title: Resources.NewUpdateMessageTitle,
                             message: $@"
-There is new version {updateInfo.Updates.First().Version} available.         
-You are using version {App.Version.ToString(3).Trim()}.
-Do you want to update the application now?".Trim(),
-                            okButtonText: "OK",
-                            cancelButtonText: "Cancel"
+{Resources.NewUpdateMessageVersionText} {updateInfo.Updates.First().Version}.         
+{Resources.NewUpdateMessageCurrentVersionText} {App.Version.ToString(3).Trim()}.
+{Resources.NewUpdateMessageUpdateText}".Trim(),
+                            okButtonText: Resources.MessageBoxOkButtonText,
+                            cancelButtonText: Resources.MessageBoxCancelButtonText
                         );
                         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
                         {
@@ -211,11 +207,11 @@ Do you want to update the application now?".Trim(),
             catch (Exception exception)
             {
                 var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: "Some error has occurred",
+                    title: Resources.MessageBoxErrorTitle,
                     message: $@"
-An error has occurred, the error text is shown below:
+{Resources.MessageBoxErrorText}
 {exception.Message}".Trim(),
-                    okButtonText: "OK",
+                    okButtonText: Resources.MessageBoxOkButtonText,
                     cancelButtonText: null
                 );
 

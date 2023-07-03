@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using HSMonitor.Properties;
 using HSMonitor.Services;
 using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
@@ -52,9 +53,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             StatusString = 
                 value switch
                 {
-                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => "Update available!",
-                    UpdateStatus.UpdateNotAvailable => "You're up to date",
-                    _ => "No connection!"
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
+                    UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                    _ => Resources.NoConnectionText
                 };
             VersionString = 
                 value switch
@@ -91,7 +92,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
                 IsProgressBarActive = true;
-                StatusString = "Downloading...";
+                StatusString = Resources.DownloadingText;
                 await _updateService.UpdateAsync();
                 break;
             default:
@@ -100,8 +101,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                 StatusString = 
                     UpdateStatus switch
                     {
-                        UpdateStatus.UpdateNotAvailable => "You're up to date",
-                        _ => "No connection"
+                        UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                        _ => Resources.NoConnectionText
                     };
                 VersionString = App.VersionString;
                 break;
@@ -116,9 +117,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         StatusString = 
             UpdateStatus switch
             {
-                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => "Update available!",
-                UpdateStatus.UpdateNotAvailable => "You're up to date",
-                _ => "No connection"
+                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
+                UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                _ => Resources.NoConnectionText
             };
         VersionString = 
             UpdateStatus switch

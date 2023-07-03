@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using HSMonitor.Properties;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 using NetSparkleUpdater;
@@ -39,11 +40,11 @@ public class UpdateService
         catch (Exception exception)
         {
             var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
+                title: Resources.MessageBoxErrorTitle,
                 message: $@"
-An error has occurred, the error text is shown below:
+{Resources.MessageBoxErrorText}
 {exception.Message}".Trim(),
-                okButtonText: "OK",
+                okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
 
@@ -60,10 +61,10 @@ An error has occurred, the error text is shown below:
             _updater.CloseApplication += UpdaterOnCloseApplication;
             
             var restartBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Restart needed",
-                message: "A new update has been downloaded, you need to restart the program to install it.".Trim(),
-                okButtonText: "RESTART",
-                cancelButtonText: "CANCEL"
+                title: Resources.UpdateCompletedTitle,
+                message: Resources.UpdateCompletedText.Trim(),
+                okButtonText: Resources.MessageBoxRestartButtonText,
+                cancelButtonText: Resources.MessageBoxCancelButtonText
             );
 
             if (await _dialogManager.ShowDialogAsync(restartBoxDialog) == true)
@@ -74,11 +75,11 @@ An error has occurred, the error text is shown below:
         catch (Exception exception)
         {
             var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
+                title: Resources.MessageBoxErrorTitle,
                 message: $@"
-An error has occurred, the error text is shown below:
+{Resources.MessageBoxErrorText}
 {exception.Message}".Trim(),
-                okButtonText: "OK",
+                okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
 
