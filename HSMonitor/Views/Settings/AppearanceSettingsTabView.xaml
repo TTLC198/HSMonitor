@@ -14,52 +14,10 @@
              Background="Transparent">
     <UserControl.Resources>
         <Style
-            TargetType="{x:Type ComboBox}"
-            BasedOn="{StaticResource {x:Type ComboBox}}">
-            <Setter
-                Property="HorizontalAlignment"
-                Value="Right"/>
-            <Setter
-                Property="VerticalAlignment"
-                Value="Center"/>
-            <Setter
-                Property="HorizontalContentAlignment"
-                Value="Center"/>
-            <Setter
-                Property="VerticalContentAlignment"
-                Value="Center"/>
-            <Setter
-                Property="Width"
-                Value="80"/>
-            <Setter
-                Property="Margin"
-                Value="8 ,0, 0, 0"/>
-        </Style>
-        <Style
-            TargetType="{x:Type TextBlock}"
-            BasedOn="{StaticResource MaterialDesignTextBlock}">
-            <Setter
-                Property="Margin"
-                Value="0, 0, 0, 2"/>
-        </Style>
-        <Style
-            TargetType="{x:Type ToggleButton}"
-            BasedOn="{StaticResource {x:Type ToggleButton}}">
-            <Setter
-                Property="Margin"
-                Value="8, 0, 0, 0"/>
-            <Setter
-                Property="HorizontalAlignment"
-                Value="Right"/>
-            <Setter
-                Property="VerticalAlignment"
-                Value="Center"/>
-        </Style>
-        <Style
             TargetType="{x:Type Grid}">
             <Setter
                 Property="IsEnabled"
-                Value="{Binding IsAutoDetectHardwareEnabled,Converter={x:Static converters:InverseBoolConverter.Instance}}"/>
+                Value="{Binding IsAutoDetectHardwareEnabled, Converter={x:Static converters:InverseBoolConverter.Instance}}"/>
         </Style>
     </UserControl.Resources>
     <StackPanel

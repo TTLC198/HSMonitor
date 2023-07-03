@@ -9,21 +9,6 @@
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
-    <UserControl.Resources>
-        <Style
-            TargetType="{x:Type ToggleButton}"
-            BasedOn="{StaticResource {x:Type ToggleButton}}">
-            <Setter
-                Property="Margin"
-                Value="8, 0, 0, 0"/>
-            <Setter
-                Property="HorizontalAlignment"
-                Value="Right"/>
-            <Setter
-                Property="VerticalAlignment"
-                Value="Center"/>
-        </Style>
-    </UserControl.Resources>
     <StackPanel
         Margin="0, 8"
         Orientation="Vertical">
@@ -101,18 +86,18 @@
         </Grid>
         <!-- Select application language -->
         <Grid
-            Margin="12, 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
+            Margin="16, 8">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SelectLanguageText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                Grid.Column="1"
+                Grid.Row="1"
                 ItemsSource="{Binding Languages}"
                 SelectedValue="{Binding ApplicationCultureInfo, Mode=TwoWay}"
                 SelectedValuePath="Name">
