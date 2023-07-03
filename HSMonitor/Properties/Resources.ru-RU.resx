@@ -1,64 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -118,177 +59,176 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutButtonContent" xml:space="preserve">
-    <value>About</value>
+    <value>О проекте</value>
   </data>
   <data name="AboutButtonTooltip" xml:space="preserve">
-    <value>Open project page on GitHub</value>
+    <value>Открыть страницу проекта на GitHub</value>
   </data>
   <data name="AdminPrivilegesRequirementMessageText" xml:space="preserve">
-    <value>Please run application as an administrator so that the library can get complete information about the current state of the computer hardware.
+    <value>Пожалуйста, запустите приложение от имени администратора для того, чтобы программа могла получить полную информацию о текущем состоянии ПК.
 
-Press OK to restart the application as administrator.</value>
+Нажмите ОК для перезапуска программы от имени администратора.</value>
   </data>
   <data name="AdminPrivilegesRequirementMessageTitle" xml:space="preserve">
-    <value>Less information about PC</value>
+    <value>Меньше информации о ПК</value>
   </data>
   <data name="AutoDetectHardwareSwitchText" xml:space="preserve">
-    <value>Autodetect Hardware:</value>
+    <value>Автоопределение:</value>
   </data>
   <data name="AutoDetectHardwareTooltip" xml:space="preserve">
-    <value>On/Off autodetect hardware</value>
+    <value>Автоопределение комплектующих</value>
   </data>
   <data name="AutoStartupSwitchText" xml:space="preserve">
-    <value>Start with Windows</value>
+    <value>Автозагрузка</value>
   </data>
   <data name="AutoStartupTooltip" xml:space="preserve">
-    <value>Launch HSMonitor at Windows startup</value>
+    <value>Запуск HSMonitor при запуске Windows</value>
   </data>
   <data name="AutoUpdateSwitchText" xml:space="preserve">
-    <value>Enable auto update</value>
+    <value>Автообновление</value>
   </data>
   <data name="AutoUpdateTooltip" xml:space="preserve">
-    <value>On/Off auto update</value>
+    <value>Автообновление приложения с сервера</value>
   </data>
   <data name="BaudRateText" xml:space="preserve">
-    <value>Baud Rate:</value>
+    <value>Скорость порта:</value>
   </data>
   <data name="CancelButtonTooltip" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Отмена</value>
   </data>
   <data name="CheckForUpdatesTooltip" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>Проверить обновления</value>
   </data>
   <data name="CloseAppFromTrayButtonText" xml:space="preserve">
-    <value>Close application</value>
+    <value>Закрыть приложение</value>
   </data>
   <data name="CloseButtonTooltip" xml:space="preserve">
-    <value>Close HSMonitor</value>
+    <value>Закрыть HSMonitor</value>
   </data>
   <data name="ConfigurationFileErrorMessageText" xml:space="preserve">
-    <value>Application configuration file was not found in the program folder or was modified manually.
-Please reinstall the program to fix the problem.</value>
+    <value>Не найден файл конфигурации программы или он был изменен вручную. Пожалуйста, переустановите программу, чтобы решить проблему.</value>
   </data>
   <data name="CustomCPUIconText" xml:space="preserve">
-    <value>CPU icon:</value>
+    <value>Иконка CPU:</value>
   </data>
   <data name="CustomCPUNameText" xml:space="preserve">
-    <value>Custom CPU name:</value>
+    <value>Кастомное имя CPU:</value>
   </data>
   <data name="CustomGPUIconText" xml:space="preserve">
-    <value>GPU icon:</value>
+    <value>Иконка GPU:</value>
   </data>
   <data name="CustomGPUNameText" xml:space="preserve">
-    <value>Custom GPU name:</value>
+    <value>Кастомное имя GPU:</value>
   </data>
   <data name="CustomRAMIconText" xml:space="preserve">
-    <value>RAM icon:</value>
+    <value>Иконка RAM:</value>
   </data>
   <data name="DefaultCPUFreqText" xml:space="preserve">
-    <value>Default CPU Frequency(MHz):</value>
+    <value>Частота CPU без разгона(МГц):</value>
   </data>
   <data name="DefaultGPUFreqText" xml:space="preserve">
-    <value>Default GPU Frequency(MHz):</value>
+    <value>Частота GPU без разгона(МГц):</value>
   </data>
   <data name="DisplayBrightnessText" xml:space="preserve">
-    <value>Display brightness:</value>
+    <value>Яркость дисплея:</value>
   </data>
   <data name="DownloadingText" xml:space="preserve">
-    <value>Downloading...</value>
+    <value>Скачивание...</value>
   </data>
   <data name="HiddenAutoStartupTooltip" xml:space="preserve">
-    <value>Launch HSMonitor hidden at Windows startup</value>
+    <value>Запуск HSMonitor в свернутом режиме при запуске Windows</value>
   </data>
   <data name="HiddenStartSwitchText" xml:space="preserve">
-    <value>Start hidden</value>
+    <value>Запуск скрыто</value>
   </data>
   <data name="MessageBoxCancelButtonText" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Отмена</value>
   </data>
   <data name="MessageBoxErrorText" xml:space="preserve">
-    <value>An error has occurred, the error text is shown below:</value>
+    <value>Произошла следующая ошибка:</value>
   </data>
   <data name="MessageBoxErrorTitle" xml:space="preserve">
-    <value>Some error has occurred</value>
+    <value>Произошла ошибка</value>
   </data>
   <data name="MessageBoxOkButtonText" xml:space="preserve">
-    <value>OK</value>
+    <value>ОК</value>
   </data>
   <data name="MessageBoxRestartButtonText" xml:space="preserve">
-    <value>Restart</value>
+    <value>Перезапуск</value>
   </data>
   <data name="NewUpdateMessageCurrentVersionText" xml:space="preserve">
-    <value>You are using version</value>
+    <value>Сейчас установлена версия</value>
   </data>
   <data name="NewUpdateMessageTitle" xml:space="preserve">
-    <value>New update available!</value>
+    <value>Доступно обновление!</value>
   </data>
   <data name="NewUpdateMessageUpdateText" xml:space="preserve">
-    <value>Do you want to update the application now?</value>
+    <value>Вы хотите установить обновление сейчас?</value>
   </data>
   <data name="NewUpdateMessageVersionText" xml:space="preserve">
-    <value>There is new version available:</value>
+    <value>Доступна новая версия:</value>
   </data>
   <data name="NoConnectionBusyMessageText" xml:space="preserve">
-    <value>is busy!</value>
+    <value>занят!</value>
   </data>
   <data name="NoConnectionErrorMessageText" xml:space="preserve">
-    <value>Please connect a device or choose a different port.</value>
+    <value>Пожалуйста, подключите устройство в другой порт.</value>
   </data>
   <data name="NoConnectionText" xml:space="preserve">
-    <value>No connection!</value>
+    <value>Нет доступа!</value>
   </data>
   <data name="OpenSettingsTooltip" xml:space="preserve">
-    <value>Open settings</value>
+    <value>Открыть настройки</value>
   </data>
   <data name="ProjectURLText" xml:space="preserve">
-    <value>Project URL on GitHub:</value>
+    <value>Проект на GitHub:</value>
   </data>
   <data name="ResetButtonTooltip" xml:space="preserve">
-    <value>Reset all settings to their defaults</value>
+    <value>Сброс всех настроек к стандартным</value>
   </data>
   <data name="RunAsAdminSwitchText" xml:space="preserve">
-    <value>Run as administrator</value>
+    <value>Запуск от админа</value>
   </data>
   <data name="RunAsAdminTooltip" xml:space="preserve">
-    <value>Launch HSMonitor as administrator directly</value>
+    <value>При запуске приложения будут напрямую запрашиваться права администратора</value>
   </data>
   <data name="SaveButtonTooltip" xml:space="preserve">
-    <value>Save settings</value>
+    <value>Сохранить настройки</value>
   </data>
   <data name="SelectCPUText" xml:space="preserve">
-    <value>Select CPU:</value>
+    <value>Выбор CPU:</value>
   </data>
   <data name="SelectGPUText" xml:space="preserve">
-    <value>Select GPU:</value>
+    <value>Выбор GPU:</value>
   </data>
   <data name="SelectLanguageText" xml:space="preserve">
-    <value>Select language:</value>
+    <value>Выбор языка:</value>
   </data>
   <data name="SerialPortText" xml:space="preserve">
-    <value>Serial port:</value>
+    <value>Выбор порта:</value>
   </data>
   <data name="SettingsButtonContent" xml:space="preserve">
-    <value>Settings</value>
+    <value>Настройки</value>
   </data>
   <data name="ShowWindowFromTrayButtonText" xml:space="preserve">
-    <value>Show window</value>
+    <value>Открыть приложение</value>
   </data>
   <data name="TXIntervalText" xml:space="preserve">
-    <value>TX Interval(ms):</value>
+    <value>Интервал отправки(мс):</value>
   </data>
   <data name="UpdateAvailableText" xml:space="preserve">
-    <value>Update available!</value>
+    <value>Доступно обновление!</value>
   </data>
   <data name="UpdateCompletedText" xml:space="preserve">
-    <value>A new update has been downloaded, you need to restart the program to install it.</value>
+    <value>Новое обновление скачано, необходим перезапуск для установки.</value>
   </data>
   <data name="UpdateCompletedTitle" xml:space="preserve">
-    <value>Restart needed</value>
+    <value>Необходим перезапуск</value>
   </data>
   <data name="UpdateDownloadProgressTooltip" xml:space="preserve">
-    <value>Update Download Progress</value>
+    <value>Прогресс загрузки обновления</value>
   </data>
   <data name="UpToDateText" xml:space="preserve">
-    <value>You're up to date</value>
+    <value>Нет обновлений</value>
   </data>
 </root>
