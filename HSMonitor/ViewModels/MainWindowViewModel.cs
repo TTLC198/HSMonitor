@@ -56,6 +56,10 @@ public class MainWindowViewModel : Screen
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
+        
+        var culture = new System.Globalization.CultureInfo(_settingsService.Settings.ApplicationCultureInfo ?? "en");
+        
+        LocalizationManager.ChangeCurrentCulture(culture);
     }
 
     private async Task SerialMonitorServiceOnOpenPortAttemptFailed()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -22,7 +23,7 @@ public class SettingsService
     private readonly RegistryHandler _autoStartSwitch = new(
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
         $"\"{App.ExecutableFilePath}\"",
-        new string[] {App.HiddenOnLaunchArgument}
+        new [] {App.HiddenOnLaunchArgument}
     );
 
     public event EventHandler? SettingsReset;
@@ -59,6 +60,7 @@ public class SettingsService
             IsAutoDetectHardwareEnabled = true,
             IsHiddenAutoStartEnabled = true,
             IsAutoStartEnabled = false,
+            ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
         };
         Save();
         SettingsReset?.Invoke(this, EventArgs.Empty);
