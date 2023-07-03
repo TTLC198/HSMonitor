@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true"></xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CloseButtonTooltip" xml:space="preserve">
+    <value>Close HSMonitor</value>
+  </data>
+  <data name="SettingsButtonContent" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="AboutButtonContent" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AutoUpdateSwitchText" xml:space="preserve">
+    <value>Enable auto update</value>
+  </data>
+  <data name="AutoStartupSwitchText" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="HiddentStartSwitchText" xml:space="preserve">
+    <value>Start hidden</value>
+  </data>
+  <data name="RunAsAdminSwitchText" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
+  <data name="AutoDetectHardwareSwitchText" xml:space="preserve">
+    <value>Autodetect Hardware:</value>
+  </data>
+  <data name="CustomCPUNameText" xml:space="preserve">
+    <value>Custom CPU name:</value>
+  </data>
+  <data name="CustomGPUNameText" xml:space="preserve">
+    <value>Custom GPU name:</value>
+  </data>
+  <data name="CustomCPUIconText" xml:space="preserve">
+    <value>CPU icon:</value>
+  </data>
+  <data name="CustomGPUIconText" xml:space="preserve">
+    <value>GPU icon:</value>
+  </data>
+  <data name="CustomRAMIconText" xml:space="preserve">
+    <value>RAM icon:</value>
+  </data>
+  <data name="SerialPortText" xml:space="preserve">
+    <value>Serial port:</value>
+  </data>
+  <data name="BaudRateText" xml:space="preserve">
+    <value>Baud Rate:</value>
+  </data>
+  <data name="TXIntervalText" xml:space="preserve">
+    <value>TX Interval(ms):</value>
+  </data>
+  <data name="DisplayBrightnessText" xml:space="preserve">
+    <value>Display brightness:</value>
+  </data>
+  <data name="SelectCPUText" xml:space="preserve">
+    <value>Select CPU:</value>
+  </data>
+  <data name="SelectGPUText" xml:space="preserve">
+    <value>Select GPU:</value>
+  </data>
+  <data name="DefaultCPUFreqText" xml:space="preserve">
+    <value>Default CPU Frequency(MHz):</value>
+  </data>
+  <data name="DefaultGPUFreqText" xml:space="preserve">
+    <value>Default GPU Frequency(MHz):</value>
+  </data>
+  <data name="ResetButtonTooltip" xml:space="preserve">
+    <value>Reset all settings to their defaults</value>
+  </data>
+  <data name="SaveButtonTooltip" xml:space="preserve">
+    <value>Save settings</value>
+  </data>
+  <data name="CancelButtonTooltip" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UpdateDownloadProgressTooltip" xml:space="preserve">
+    <value>Update Download Progress</value>
+  </data>
+  <data name="CheckForUpdatesTooltip" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="ProjectURLText" xml:space="preserve">
+    <value>Project URL on GitHub:</value>
+  </data>
+</root>
