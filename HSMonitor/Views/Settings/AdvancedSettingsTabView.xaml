@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:p="clr-namespace:HSMonitor.Properties"
+             xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              d:DataContext="{d:DesignInstance Type=settings:AdvancedSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -104,8 +105,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                            Typography.Capitals="Titling"
-                            Text="{Binding DisplayName}"/>
+                            Text="{Binding DisplayName, Converter={x:Static converters:StringToTitleConverter.Instance}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
