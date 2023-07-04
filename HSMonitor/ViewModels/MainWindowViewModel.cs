@@ -232,7 +232,7 @@ public class MainWindowViewModel : Screen
 
     public async void ShowSettings()
     {
-        _settingsService.Load();
+        await _settingsService.Load();
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
