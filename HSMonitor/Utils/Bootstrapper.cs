@@ -33,12 +33,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     
     protected override void Launch()
     {
-        // Load settings (this has to come before any view is loaded because bindings are not updated)
-        GetInstance<SettingsService>().Load();
-        
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate();
-
-        // Stylet/WPF is slow, so we preload all dialogs, including descendants, for smoother UX
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
 
         base.Launch();
