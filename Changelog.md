@@ -1,3 +1,10 @@
+### v1.1.1 (04.07.2023) 
+ 
+- Added localization for two languages: **Russian** and **English**.
+- Added language change function.
+- Removed link to HSMonitor client project.
+- Minor bugs fixed.
+
 ### v1.1.0 (17.03.2023)
 
 - Move application settings file to %LOCALAPPDATA%. Now users without administrator rights will be able to save settings.
