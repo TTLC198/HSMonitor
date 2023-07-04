@@ -187,6 +187,12 @@ Please reinstall the program to fix the problem.</value>
   <data name="ResetButtonTooltip" xml:space="preserve">
     <value>Reset all settings to their defaults</value>
   </data>
+  <data name="RestartRequirementMessageText" xml:space="preserve">
+    <value>You need to restart the program to change the language.</value>
+  </data>
+  <data name="RestartRequirementMessageTitle" xml:space="preserve">
+    <value>Restart required</value>
+  </data>
   <data name="RunAsAdminSwitchText" xml:space="preserve">
     <value>Run as administrator</value>
   </data>

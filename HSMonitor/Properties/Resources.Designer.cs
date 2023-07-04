@@ -571,5 +571,23 @@ namespace HSMonitor.Properties {
                 return ResourceManager.GetString("DownloadingText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RestartRequirementMessageTitle.
+        /// </summary>
+        public static string RestartRequirementMessageTitle {
+            get {
+                return ResourceManager.GetString("RestartRequirementMessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RestartRequirementMessageText.
+        /// </summary>
+        public static string RestartRequirementMessageText {
+            get {
+                return ResourceManager.GetString("RestartRequirementMessageText", resourceCulture);
+            }
+        }
     }
 }
