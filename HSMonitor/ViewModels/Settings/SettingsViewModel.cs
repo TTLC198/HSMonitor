@@ -46,8 +46,8 @@ public class SettingsViewModel : DialogScreen
 
     public async void Save()
     {
-        await _settingsService.Save();
         Close(true);
+        await _settingsService.Save();
     }
 
     public async void Cancel()

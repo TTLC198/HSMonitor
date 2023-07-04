@@ -100,6 +100,19 @@ public class SettingsService
         
         try
         {
+            if (LocalizationManager.GetCurrentCulture().Name != Settings.ApplicationCultureInfo)
+            {
+                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: Resources.RestartRequirementMessageTitle,
+                    message: Resources.RestartRequirementMessageText.Trim(),
+                    okButtonText: Resources.MessageBoxOkButtonText,
+                    cancelButtonText: Resources.MessageBoxCancelButtonText
+                );
+
+                if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                    RestartApplication();
+            }
+            
             if (Settings.IsAutoStartEnabled)
             {
                 if (Settings.IsHiddenAutoStartEnabled)
@@ -139,8 +152,7 @@ public class SettingsService
             UseShellExecute = true,
             WorkingDirectory = Environment.CurrentDirectory,
             FileName = App.ExecutableFilePath,
-            Arguments = "restart" + (App.IsHiddenOnLaunch ? " " + App.HiddenOnLaunchArgument : null),
-            Verb = "runas"
+            Arguments = "restart"
         };
 
         try
