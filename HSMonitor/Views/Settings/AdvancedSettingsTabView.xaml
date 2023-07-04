@@ -104,6 +104,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
+                            Typography.Capitals="Titling"
                             Text="{Binding DisplayName}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

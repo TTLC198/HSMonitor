@@ -2,6 +2,7 @@
 using System.Globalization;
 using HSMonitor.Services;
 using HSMonitor.Utils;
+using HSMonitor.ViewModels.Framework;
 
 namespace HSMonitor.ViewModels.Settings;
 
