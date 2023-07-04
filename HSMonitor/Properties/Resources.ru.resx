@@ -70,7 +70,7 @@
 Нажмите ОК для перезапуска программы от имени администратора.</value>
   </data>
   <data name="AdminPrivilegesRequirementMessageTitle" xml:space="preserve">
-    <value>Меньше информации о ПК</value>
+    <value>Недостаточно прав</value>
   </data>
   <data name="AutoDetectHardwareSwitchText" xml:space="preserve">
     <value>Автоопределение:</value>
@@ -185,6 +185,12 @@
   </data>
   <data name="ResetButtonTooltip" xml:space="preserve">
     <value>Сброс всех настроек к стандартным</value>
+  </data>
+  <data name="RestartRequirementMessageText" xml:space="preserve">
+    <value>Для изменения языка необходимо перезапустить программу.</value>
+  </data>
+  <data name="RestartRequirementMessageTitle" xml:space="preserve">
+    <value>Необходим перезапуск</value>
   </data>
   <data name="RunAsAdminSwitchText" xml:space="preserve">
     <value>Запуск от админа</value>
