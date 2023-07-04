@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -8,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Models;
+using HSMonitor.Properties;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Serial;
 using HSMonitor.ViewModels;
@@ -22,7 +25,7 @@ public class SettingsService
     private readonly RegistryHandler _autoStartSwitch = new(
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
         $"\"{App.ExecutableFilePath}\"",
-        new string[] {App.HiddenOnLaunchArgument}
+        new [] {App.HiddenOnLaunchArgument}
     );
 
     public event EventHandler? SettingsReset;
@@ -39,10 +42,10 @@ public class SettingsService
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
-        Load();
+        Load().Wait();
     }
     
-    public void Reset()
+    public async Task Reset()
     {
         Settings = new ApplicationSettings()
         {
@@ -59,12 +62,13 @@ public class SettingsService
             IsAutoDetectHardwareEnabled = true,
             IsHiddenAutoStartEnabled = true,
             IsAutoStartEnabled = false,
+            ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
         };
-        Save();
+        await Save();
         SettingsReset?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Load()
+    public async Task Load()
     {
         try
         {
@@ -76,29 +80,39 @@ public class SettingsService
         }
         catch (Exception exception)
         {
-            Task.Run(async () =>
-            {
-                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: "Some error has occurred",
-                    message: $@"
-An error has occurred, the error text is shown below
-{exception.Message}".Trim(),
-                    okButtonText: "OK",
-                    cancelButtonText: null
-                );
+            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: Resources.MessageBoxErrorTitle,
+                message: $@"
+{Resources.MessageBoxErrorText}
+{exception.Message.Split('\'').Last()}".Trim(),
+                okButtonText: "OK",
+                cancelButtonText: null
+            );
 
-                if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
-                    Application.Current.Shutdown();
-            });
+            if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                Application.Current.Shutdown();
         }
     }
 
-    public void Save()
+    public async Task Save()
     {
         Settings.JsonToFile(ConfigurationPath);
         
         try
         {
+            if (LocalizationManager.GetCurrentCulture().Name != Settings.ApplicationCultureInfo)
+            {
+                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: Resources.RestartRequirementMessageTitle,
+                    message: Resources.RestartRequirementMessageText.Trim(),
+                    okButtonText: Resources.MessageBoxOkButtonText,
+                    cancelButtonText: Resources.MessageBoxCancelButtonText
+                );
+
+                if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                    RestartApplication();
+            }
+            
             if (Settings.IsAutoStartEnabled)
             {
                 if (Settings.IsHiddenAutoStartEnabled)
@@ -118,16 +132,45 @@ An error has occurred, the error text is shown below
         catch (Exception exception)
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: "Some error has occurred",
+                title: Resources.MessageBoxErrorTitle,
                 message: $@"
-An error has occurred, the error text is shown below
-{exception.Message}".Trim(),
+{Resources.MessageBoxErrorText}
+{exception.Message.Split('\'').Last()}".Trim(),
                 okButtonText: "OK",
                 cancelButtonText: null
             );
-            _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
+            await _dialogManager.ShowDialogAsync(messageBoxDialog);
         }
         
         SettingsSaved?.Invoke(this, EventArgs.Empty);
+    }
+    
+    private async void RestartApplication()
+    {
+        var startInfo = new ProcessStartInfo
+        {
+            UseShellExecute = true,
+            WorkingDirectory = Environment.CurrentDirectory,
+            FileName = App.ExecutableFilePath,
+            Arguments = "restart"
+        };
+
+        try
+        {
+            Process.Start(startInfo);
+            Application.Current.Shutdown();
+        }
+        catch (Exception exception)
+        {
+            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: Resources.MessageBoxErrorTitle,
+                message: $@"
+{Resources.MessageBoxErrorText}
+{exception.Message.Split('\'').Last()}".Trim(),
+                okButtonText: Resources.MessageBoxOkButtonText,
+                cancelButtonText: null
+            );
+            await _dialogManager.ShowDialogAsync(messageBoxDialog);
+        }
     }
 }

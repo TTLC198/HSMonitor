@@ -8,6 +8,7 @@
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+    xmlns:p="clr-namespace:HSMonitor.Properties"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
     Height="260"
     Style="{DynamicResource MaterialDesignRoot}"
@@ -120,7 +121,7 @@
                 <!--  Reset  -->
                 <Button
                     Command="{s:Action Reset}"
-                    ToolTip="Reset all settings to their defaults">
+                    ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
                     <materialDesign:PackIcon
                         Width="26"
                         Height="26"
@@ -129,7 +130,8 @@
 
                 <!--  Cancel  -->
                 <Button
-                    Command="{s:Action Cancel}">
+                    Command="{s:Action Cancel}"
+                    ToolTip="{x:Static p:Resources.CancelButtonTooltip}">
                     <materialDesign:PackIcon
                         Width="26"
                         Height="26"
@@ -138,7 +140,8 @@
 
                 <!--  Save  -->
                 <Button
-                    Command="{s:Action Save}">
+                    Command="{s:Action Save}"
+                    ToolTip="{x:Static p:Resources.SaveButtonTooltip}">
                     <materialDesign:PackIcon
                         Width="26"
                         Height="26"

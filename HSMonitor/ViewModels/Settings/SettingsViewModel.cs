@@ -41,17 +41,18 @@ public class SettingsViewModel : DialogScreen
             ActivateTab(tab);
     }
 
-    public void Reset() => _settingsService.Reset();
+    public async void Reset() => 
+        await _settingsService.Reset();
 
-    public void Save()
+    public async void Save()
     {
-        _settingsService.Save();
         Close(true);
+        await _settingsService.Save();
     }
 
-    public void Cancel()
+    public async void Cancel()
     {
-        _settingsService.Load();
+        await _settingsService.Load();
         Close(false);
     }
 }

@@ -44,6 +44,7 @@ public class ApplicationSettings
     // Advanced
     [JsonIgnore]
     public bool IsAutoStartEnabled { get; set; }
+    public string? ApplicationCultureInfo { get; set; }
     public bool IsHiddenAutoStartEnabled { get; set; }
     public bool IsRunAsAdministrator { get; set; }
     

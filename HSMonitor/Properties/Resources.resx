@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutButtonContent" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutButtonTooltip" xml:space="preserve">
+    <value>Open project page on GitHub</value>
+  </data>
+  <data name="AdminPrivilegesRequirementMessageText" xml:space="preserve">
+    <value>Please run application as an administrator so that the library can get complete information about the current state of the computer hardware.
+
+Press OK to restart the application as administrator.</value>
+  </data>
+  <data name="AdminPrivilegesRequirementMessageTitle" xml:space="preserve">
+    <value>Less information about PC</value>
+  </data>
+  <data name="AutoDetectHardwareSwitchText" xml:space="preserve">
+    <value>Autodetect Hardware:</value>
+  </data>
+  <data name="AutoDetectHardwareTooltip" xml:space="preserve">
+    <value>On/Off autodetect hardware</value>
+  </data>
+  <data name="AutoStartupSwitchText" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="AutoStartupTooltip" xml:space="preserve">
+    <value>Launch HSMonitor at Windows startup</value>
+  </data>
+  <data name="AutoUpdateSwitchText" xml:space="preserve">
+    <value>Enable auto update</value>
+  </data>
+  <data name="AutoUpdateTooltip" xml:space="preserve">
+    <value>On/Off auto update</value>
+  </data>
+  <data name="BaudRateText" xml:space="preserve">
+    <value>Baud Rate:</value>
+  </data>
+  <data name="CancelButtonTooltip" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CheckForUpdatesTooltip" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="CloseAppFromTrayButtonText" xml:space="preserve">
+    <value>Close application</value>
+  </data>
+  <data name="CloseButtonTooltip" xml:space="preserve">
+    <value>Close HSMonitor</value>
+  </data>
+  <data name="ConfigurationFileErrorMessageText" xml:space="preserve">
+    <value>Application configuration file was not found in the program folder or was modified manually.
+Please reinstall the program to fix the problem.</value>
+  </data>
+  <data name="CustomCPUIconText" xml:space="preserve">
+    <value>CPU icon:</value>
+  </data>
+  <data name="CustomCPUNameText" xml:space="preserve">
+    <value>Custom CPU name:</value>
+  </data>
+  <data name="CustomGPUIconText" xml:space="preserve">
+    <value>GPU icon:</value>
+  </data>
+  <data name="CustomGPUNameText" xml:space="preserve">
+    <value>Custom GPU name:</value>
+  </data>
+  <data name="CustomRAMIconText" xml:space="preserve">
+    <value>RAM icon:</value>
+  </data>
+  <data name="DefaultCPUFreqText" xml:space="preserve">
+    <value>Default CPU Frequency(MHz):</value>
+  </data>
+  <data name="DefaultGPUFreqText" xml:space="preserve">
+    <value>Default GPU Frequency(MHz):</value>
+  </data>
+  <data name="DisplayBrightnessText" xml:space="preserve">
+    <value>Display brightness:</value>
+  </data>
+  <data name="DownloadingText" xml:space="preserve">
+    <value>Downloading...</value>
+  </data>
+  <data name="HiddenAutoStartupTooltip" xml:space="preserve">
+    <value>Launch HSMonitor hidden at Windows startup</value>
+  </data>
+  <data name="HiddenStartSwitchText" xml:space="preserve">
+    <value>Start hidden</value>
+  </data>
+  <data name="MessageBoxCancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="MessageBoxErrorText" xml:space="preserve">
+    <value>An error has occurred, the error text is shown below:</value>
+  </data>
+  <data name="MessageBoxErrorTitle" xml:space="preserve">
+    <value>Some error has occurred</value>
+  </data>
+  <data name="MessageBoxOkButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="MessageBoxRestartButtonText" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="NewUpdateMessageCurrentVersionText" xml:space="preserve">
+    <value>You are using version</value>
+  </data>
+  <data name="NewUpdateMessageTitle" xml:space="preserve">
+    <value>New update available!</value>
+  </data>
+  <data name="NewUpdateMessageUpdateText" xml:space="preserve">
+    <value>Do you want to update the application now?</value>
+  </data>
+  <data name="NewUpdateMessageVersionText" xml:space="preserve">
+    <value>There is new version available:</value>
+  </data>
+  <data name="NoConnectionBusyMessageText" xml:space="preserve">
+    <value>is busy!</value>
+  </data>
+  <data name="NoConnectionErrorMessageText" xml:space="preserve">
+    <value>Please connect a device or choose a different port.</value>
+  </data>
+  <data name="NoConnectionText" xml:space="preserve">
+    <value>No connection!</value>
+  </data>
+  <data name="OpenSettingsTooltip" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
+  <data name="ProjectURLText" xml:space="preserve">
+    <value>Project URL on GitHub:</value>
+  </data>
+  <data name="ResetButtonTooltip" xml:space="preserve">
+    <value>Reset all settings to their defaults</value>
+  </data>
+  <data name="RestartRequirementMessageText" xml:space="preserve">
+    <value>You need to restart the program to change the language.</value>
+  </data>
+  <data name="RestartRequirementMessageTitle" xml:space="preserve">
+    <value>Restart required</value>
+  </data>
+  <data name="RunAsAdminSwitchText" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
+  <data name="RunAsAdminTooltip" xml:space="preserve">
+    <value>Launch HSMonitor as administrator directly</value>
+  </data>
+  <data name="SaveButtonTooltip" xml:space="preserve">
+    <value>Save settings</value>
+  </data>
+  <data name="SelectCPUText" xml:space="preserve">
+    <value>Select CPU:</value>
+  </data>
+  <data name="SelectGPUText" xml:space="preserve">
+    <value>Select GPU:</value>
+  </data>
+  <data name="SelectLanguageText" xml:space="preserve">
+    <value>Select language:</value>
+  </data>
+  <data name="SerialPortText" xml:space="preserve">
+    <value>Serial port:</value>
+  </data>
+  <data name="SettingsButtonContent" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ShowWindowFromTrayButtonText" xml:space="preserve">
+    <value>Show window</value>
+  </data>
+  <data name="TXIntervalText" xml:space="preserve">
+    <value>TX Interval(ms):</value>
+  </data>
+  <data name="UpdateAvailableText" xml:space="preserve">
+    <value>Update available!</value>
+  </data>
+  <data name="UpdateCompletedText" xml:space="preserve">
+    <value>A new update has been downloaded, you need to restart the program to install it.</value>
+  </data>
+  <data name="UpdateCompletedTitle" xml:space="preserve">
+    <value>Restart needed</value>
+  </data>
+  <data name="UpdateDownloadProgressTooltip" xml:space="preserve">
+    <value>Update Download Progress</value>
+  </data>
+  <data name="UpToDateText" xml:space="preserve">
+    <value>You're up to date</value>
+  </data>
+</root>
