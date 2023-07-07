@@ -45,4 +45,3 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         base.OnExit(e);
     }
 }
-#pragma warning restore CA1416
