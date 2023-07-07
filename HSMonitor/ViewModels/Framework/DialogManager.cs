@@ -8,9 +8,6 @@ using Stylet;
 
 namespace HSMonitor.ViewModels.Framework;
 
-//COPIED FROM https://github.com/Tyrrrz/LightBulb/blob/master/LightBulb/ViewModels/Framework/DialogManager.cs
-
-#pragma warning disable CA1416
 public class DialogManager : IDisposable
 {
     private readonly IViewManager _viewManager;
@@ -52,29 +49,10 @@ public class DialogManager : IDisposable
     {
         var view = GetViewForDialogScreen(dialogScreen);
 
-        void OnDialogOpened(object? openSender, DialogOpenedEventArgs openArgs)
-        {
-            void OnScreenClosed(object? closeSender, EventArgs args)
-            {
-                try
-                {
-                    openArgs.Session.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
-
-                dialogScreen.Closed -= OnScreenClosed;
-            }
-
-            dialogScreen.Closed += OnScreenClosed;
-        }
-
         await _dialogLock.WaitAsync();
         try
         {
-            await DialogHost.Show(view, OnDialogOpened);
+            await DialogHost.Show(view);
             return dialogScreen.DialogResult;
         }
         finally
@@ -83,8 +61,5 @@ public class DialogManager : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        _dialogLock.Dispose();
-    }
+    public void Dispose() => _dialogLock.Dispose();
 }
