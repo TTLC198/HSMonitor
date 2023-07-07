@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HSMonitor.Models;
+using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
 
@@ -14,6 +15,7 @@ public class HardwareMonitorService
     public static MemoryInformation Memory = new();
 
     private readonly SettingsService _settingsService;
+    private readonly ILogger<HardwareMonitorService> _logger;
 
     public event EventHandler? HardwareInformationUpdated;
 
@@ -24,10 +26,11 @@ public class HardwareMonitorService
         IsMemoryEnabled = true
     };
 
-    public HardwareMonitorService(SettingsService settingsService)
+    public HardwareMonitorService(SettingsService settingsService, ILogger<HardwareMonitorService> logger)
     {
         _settingsService = settingsService;
-        
+        _logger = logger;
+
         _settingsService.SettingsSaved += SettingsServiceOnSettingsSaved;
     }
 
@@ -51,7 +54,7 @@ public class HardwareMonitorService
 
     public static IEnumerable<IHardware> GetProcessors() => Computer.Hardware.Where(h =>
         h.HardwareType == HardwareType.Cpu);
-    
+
     public static IEnumerable<IHardware> GetGraphicCards() => Computer.Hardware.Where(h =>
         h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia);
 
@@ -66,14 +69,14 @@ public class HardwareMonitorService
                 .FirstOrDefault(h =>
                     h.HardwareType is HardwareType.Cpu &&
                     !string.IsNullOrWhiteSpace(_settingsService.Settings.CpuId) &&
-                     h.Identifier.ToString().Contains(_settingsService.Settings.CpuId)) ?? GetProcessors().First();
+                    h.Identifier.ToString().Contains(_settingsService.Settings.CpuId)) ?? GetProcessors().First();
 
             var gpuHardware = Computer.Hardware
                 .FirstOrDefault(h =>
                     h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia &&
                     !string.IsNullOrWhiteSpace(_settingsService.Settings.GpuId) &&
-                     h.Identifier.ToString().Contains(_settingsService.Settings.GpuId)) ?? GetGraphicCards().First();
-            
+                    h.Identifier.ToString().Contains(_settingsService.Settings.GpuId)) ?? GetGraphicCards().First();
+
             Cpu = CpuInformationUpdate(cpuHardware);
             Gpu = GpuInformationUpdate(gpuHardware);
             Memory = MemoryInformationUpdate(Computer.Hardware
@@ -83,9 +86,9 @@ public class HardwareMonitorService
             Cpu.DefaultClock = _settingsService.Settings.DefaultCpuFrequency;
             Gpu.DefaultCoreClock = _settingsService.Settings.DefaultGpuFrequency;
         }
-        catch
+        catch (Exception exception)
         {
-            // ignored
+            _logger.Error(exception);
         }
         finally
         {
@@ -103,7 +106,15 @@ public class HardwareMonitorService
         try
         {
             if (cpuHardware is null)
-                throw new Exception();
+                return new CpuInformation()
+                {
+                    Type = "Unknown type",
+                    Name = "Unknown CPU",
+                    Clock = 0,
+                    Load = 0,
+                    Power = 0,
+                    Temperature = 0,
+                };
 
             var cpuHardwareSensors = cpuHardware
                 .Sensors
@@ -111,8 +122,16 @@ public class HardwareMonitorService
                     or SensorType.Temperature or SensorType.Power)
                 .ToArray();
 
-            if (cpuHardwareSensors is null || cpuHardwareSensors.Length == 0)
-                throw new Exception();
+            if (cpuHardwareSensors is null or {Length: 0})
+                return new CpuInformation()
+                {
+                    Type = "Unknown type",
+                    Name = "Unknown CPU",
+                    Clock = 0,
+                    Load = 0,
+                    Power = 0,
+                    Temperature = 0,
+                };
 
             var clockSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Clock);
@@ -143,8 +162,9 @@ public class HardwareMonitorService
                     Convert.ToInt32(temperatureSensor is not null ? temperatureSensor.Value ?? 0 : 0),
             };
         }
-        catch
+        catch (Exception exception)
         {
+            _logger.Error(exception);
             return new CpuInformation()
             {
                 Type = "Unknown type",
@@ -162,7 +182,19 @@ public class HardwareMonitorService
         try
         {
             if (gpuHardware is null)
-                throw new Exception();
+                return new GpuInformation()
+                {
+                    Type = "Unknown type",
+                    Name = "Unknown GPU",
+                    CoreClock = 0,
+                    CoreLoad = 0,
+                    CoreTemperature = 0,
+                    Power = 0,
+                    VRamClock = 0,
+                    VRamMemoryTotal = 0,
+                    VRamMemoryUsed = 0,
+                    GpuFans = new List<GpuFan>()
+                };
 
             var gpuHardwareSensors = gpuHardware
                 .Sensors
@@ -170,8 +202,20 @@ public class HardwareMonitorService
                     or SensorType.Temperature or SensorType.Power or SensorType.Fan or SensorType.Control)
                 .ToArray();
 
-            if (gpuHardwareSensors is null || gpuHardwareSensors.Length == 0)
-                throw new Exception();
+            if (gpuHardwareSensors is null or {Length: 0})
+                return new GpuInformation()
+                {
+                    Type = "Unknown type",
+                    Name = "Unknown GPU",
+                    CoreClock = 0,
+                    CoreLoad = 0,
+                    CoreTemperature = 0,
+                    Power = 0,
+                    VRamClock = 0,
+                    VRamMemoryTotal = 0,
+                    VRamMemoryUsed = 0,
+                    GpuFans = new List<GpuFan>()
+                };
 
             var gpuFans = new List<GpuFan>();
 
@@ -233,26 +277,27 @@ public class HardwareMonitorService
                     : string.IsNullOrWhiteSpace(_settingsService.Settings.GpuCustomName)
                         ? gpuHardware.Name
                         : _settingsService.Settings.GpuCustomName,
-                CoreClock = 
+                CoreClock =
                     Convert.ToInt32(coreClockSensor is not null ? coreClockSensor.Value ?? 0 : 0),
-                CoreLoad = 
+                CoreLoad =
                     Convert.ToInt32(coreLoadSensor is not null ? coreLoadSensor.Value ?? 0 : 0),
                 CoreTemperature =
                     Convert.ToInt32(coreTemperatureSensor is not null ? coreTemperatureSensor.Value ?? 0 : 0),
                 Power = (double) Math.Round(
                     (decimal) (powerSensor is not null ? powerSensor.Value ?? 0 : 0), 1,
                     MidpointRounding.AwayFromZero),
-                VRamClock = 
+                VRamClock =
                     Convert.ToInt32(vRamClockSensor is not null ? vRamClockSensor.Value ?? 0 : 0),
                 VRamMemoryTotal =
                     Convert.ToInt32(vRamMemoryTotalSensor is not null ? vRamMemoryTotalSensor.Value ?? 0 : 0),
-                VRamMemoryUsed = 
+                VRamMemoryUsed =
                     Convert.ToInt32(vRamMemoryUsed is not null ? vRamMemoryUsed.Value ?? 0 : 0),
                 GpuFans = gpuFans
             };
         }
-        catch
+        catch (Exception exception)
         {
+            _logger.Error(exception);
             return new GpuInformation()
             {
                 Type = "Unknown type",
@@ -274,15 +319,28 @@ public class HardwareMonitorService
         try
         {
             if (memoryHardware is null)
-                throw new Exception();
+                return new MemoryInformation()
+                {
+                    Type = "Default",
+                    Load = 0,
+                    Available = 0,
+                    Used = 0,
+                };
 
             var memoryHardwareSensors = memoryHardware
                 .Sensors
                 .Where(s => s.SensorType is SensorType.Load or SensorType.Data)
                 .ToArray();
 
-            if (memoryHardwareSensors is null || memoryHardwareSensors.Length == 0)
-                throw new Exception();
+            if (memoryHardwareSensors is null or {Length: 0})
+                return new MemoryInformation()
+                {
+                    Type = "Default",
+                    Load = 0,
+                    Available = 0,
+                    Used = 0,
+                };
+
 
             return new MemoryInformation()
             {
@@ -303,8 +361,9 @@ public class HardwareMonitorService
                     MidpointRounding.AwayFromZero),
             };
         }
-        catch
+        catch (Exception exception)
         {
+            _logger.Error(exception);
             return new MemoryInformation()
             {
                 Type = "Default",
