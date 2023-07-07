@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Windows;
 using HSMonitor.Services;
+using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using Stylet;
 using StyletIoC;
-using MessageBoxViewModel = HSMonitor.ViewModels.MessageBoxViewModel;
 
 namespace HSMonitor.Utils;
 #pragma warning disable CA1416
@@ -18,6 +18,8 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     {
         base.ConfigureIoC(builder);
 
+        builder.Bind(typeof(ILogger<>)).To(typeof(FileLogger<>));
+        
         builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<SerialMonitorService>().ToSelf().InSingletonScope();
@@ -37,6 +39,13 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
 
         base.Launch();
+    }
+
+    protected override void OnStart()
+    {
+        Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
+        Stylet.Logging.LogManager.Enabled = true;
+        base.OnStart();
     }
 
     protected override void OnExit(ExitEventArgs e)
