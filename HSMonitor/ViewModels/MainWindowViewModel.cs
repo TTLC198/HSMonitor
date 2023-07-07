@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Utils;
+using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using NetSparkleUpdater.Enums;
@@ -25,6 +26,7 @@ public class MainWindowViewModel : Screen
     private readonly SerialMonitorService _serialMonitorService;
     private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly UpdateService _updateService;
+    private readonly ILogger<MainWindowViewModel> _logger;
 
     private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
@@ -46,7 +48,9 @@ public class MainWindowViewModel : Screen
         DialogManager dialogManager,
         HardwareMonitorService hardwareMonitorService,
         SettingsService settingsService,
-        SerialMonitorService serialMonitorService, UpdateService updateService)
+        SerialMonitorService serialMonitorService,
+        UpdateService updateService, 
+        ILogger<MainWindowViewModel> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
@@ -54,6 +58,7 @@ public class MainWindowViewModel : Screen
         _settingsService = settingsService;
         _serialMonitorService = serialMonitorService;
         _updateService = updateService;
+        _logger = logger;
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
@@ -123,6 +128,8 @@ public class MainWindowViewModel : Screen
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
@@ -204,6 +211,8 @@ public class MainWindowViewModel : Screen
             }
             catch (Exception exception)
             {
+                _logger.Error(exception);
+                
                 var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                     title: Resources.MessageBoxErrorTitle,
                     message: $@"

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Properties;
+using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 using NetSparkleUpdater;
@@ -19,6 +20,7 @@ public class UpdateService
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SparkleUpdater _updater;
+    private readonly ILogger<UpdateService> _logger;
 
     private UpdateInfo? _updateInfo;
     
@@ -39,6 +41,8 @@ public class UpdateService
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
@@ -74,6 +78,8 @@ public class UpdateService
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
@@ -102,10 +108,11 @@ public class UpdateService
         Application.Current.Shutdown();
 
 
-    public UpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager)
+    public UpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<UpdateService> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _logger = logger;
         _updater = new SparkleUpdater(App.GitHubAutoUpdateConfigUrl,
             new Ed25519Checker(SecurityMode.Unsafe))
         {

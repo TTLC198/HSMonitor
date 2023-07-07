@@ -12,6 +12,7 @@ using System.Windows;
 using HSMonitor.Models;
 using HSMonitor.Properties;
 using HSMonitor.Utils;
+using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
@@ -37,11 +38,13 @@ public class SettingsService
     public ApplicationSettings Settings { get; set; } = null!;
 
     public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
+    private readonly ILogger<SettingsService> _logger;
 
-    public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager)
+    public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<SettingsService> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
+        _logger = logger;
         Load().Wait();
     }
     
@@ -80,6 +83,8 @@ public class SettingsService
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
@@ -131,6 +136,8 @@ public class SettingsService
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
@@ -162,6 +169,8 @@ public class SettingsService
         }
         catch (Exception exception)
         {
+            _logger.Error(exception);
+            
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
