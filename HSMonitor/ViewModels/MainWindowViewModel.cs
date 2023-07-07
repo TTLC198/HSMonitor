@@ -28,8 +28,8 @@ public class MainWindowViewModel : Screen
 
     private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
-
-    private bool _isSerialMonitorEnabled = true;
+    
+    private bool _isSerialMonitorEnabled = false;
 
     public bool IsSerialMonitorEnabled
     {
@@ -62,20 +62,19 @@ public class MainWindowViewModel : Screen
         
         LocalizationManager.ChangeCurrentCulture(culture);
     }
-
-    private async Task SerialMonitorServiceOnOpenPortAttemptFailed()
+    
+    private async void SerialMonitorServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
     {
-        if (!IsSerialMonitorEnabled)
-            return;
-
+        IsSerialMonitorEnabled = false;
+        _serialMonitorService.OpenPortAttemptFailed -= SerialMonitorServiceOnOpenPortAttemptFailed;
+        _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
+        
         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
             title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
             message: Resources.NoConnectionErrorMessageText,
             okButtonText: Resources.MessageBoxOkButtonText,
             cancelButtonText: Resources.MessageBoxCancelButtonText
         );
-
-        IsSerialMonitorEnabled = false;
 
         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
         {
@@ -84,6 +83,13 @@ public class MainWindowViewModel : Screen
 
             await _dialogManager.ShowDialogAsync(settingsDialog);
         }
+    }
+    
+    private void SerialMonitorServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
+    {
+        IsSerialMonitorEnabled = true;
+        _serialMonitorService.OpenPortAttemptFailed += SerialMonitorServiceOnOpenPortAttemptFailed;
+        _serialMonitorService.OpenPortAttemptSuccessful -= SerialMonitorServiceOnOpenPortAttemptSuccessful;
     }
 
     private async Task ShowAdminPrivilegesRequirement()
@@ -160,15 +166,7 @@ public class MainWindowViewModel : Screen
                     _settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval);
             };
 
-            _serialMonitorService.OpenPortAttemptFailed +=
-                async (_, _) => await SerialMonitorServiceOnOpenPortAttemptFailed();
-
-            _serialMonitorService.OpenPortAttemptSuccessful += (_, _) =>
-            {
-                if (IsSerialMonitorEnabled)
-                    return;
-                IsSerialMonitorEnabled = true;
-            };
+            _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
 
             try
             {
