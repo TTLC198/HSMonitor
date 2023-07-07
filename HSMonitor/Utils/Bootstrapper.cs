@@ -44,7 +44,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     protected override void OnStart()
     {
         Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
-        Stylet.Logging.LogManager.Enabled = true;
+        Stylet.Logging.LogManager.Enabled = false;
         base.OnStart();
     }
 
