@@ -69,13 +69,13 @@ public class HardwareMonitorService
                 .FirstOrDefault(h =>
                     h.HardwareType is HardwareType.Cpu &&
                     !string.IsNullOrWhiteSpace(_settingsService.Settings.CpuId) &&
-                    h.Identifier.ToString().Contains(_settingsService.Settings.CpuId)) ?? GetProcessors().First();
+                    h.Identifier.ToString()!.Contains(_settingsService.Settings.CpuId)) ?? GetProcessors().First();
 
             var gpuHardware = Computer.Hardware
                 .FirstOrDefault(h =>
                     h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia &&
                     !string.IsNullOrWhiteSpace(_settingsService.Settings.GpuId) &&
-                    h.Identifier.ToString().Contains(_settingsService.Settings.GpuId)) ?? GetGraphicCards().First();
+                    h.Identifier.ToString()!.Contains(_settingsService.Settings.GpuId)) ?? GetGraphicCards().First();
 
             Cpu = CpuInformationUpdate(cpuHardware);
             Gpu = GpuInformationUpdate(gpuHardware);
@@ -103,18 +103,20 @@ public class HardwareMonitorService
 
     private CpuInformation CpuInformationUpdate(IHardware? cpuHardware)
     {
+        var cpuInfo = new CpuInformation()
+        {
+            Type = "Unknown type",
+            Name = "Unknown CPU",
+            Clock = 0,
+            Load = 0,
+            Power = 0,
+            Temperature = 0,
+        };
+        
         try
         {
             if (cpuHardware is null)
-                return new CpuInformation()
-                {
-                    Type = "Unknown type",
-                    Name = "Unknown CPU",
-                    Clock = 0,
-                    Load = 0,
-                    Power = 0,
-                    Temperature = 0,
-                };
+                return cpuInfo;
 
             var cpuHardwareSensors = cpuHardware
                 .Sensors
@@ -123,16 +125,8 @@ public class HardwareMonitorService
                 .ToArray();
 
             if (cpuHardwareSensors is null or {Length: 0})
-                return new CpuInformation()
-                {
-                    Type = "Unknown type",
-                    Name = "Unknown CPU",
-                    Clock = 0,
-                    Load = 0,
-                    Power = 0,
-                    Temperature = 0,
-                };
-
+                return cpuInfo;
+            
             var clockSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Clock);
             var loadSensor = cpuHardwareSensors
@@ -142,59 +136,58 @@ public class HardwareMonitorService
             var temperatureSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Temperature);
 
-            return new CpuInformation()
-            {
-                Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? (cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown")
-                    : _settingsService.Settings.CpuCustomType ??
-                      (cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"),
-                Name = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? (cpuHardware.Name ?? "Unknown")
-                    : string.IsNullOrWhiteSpace(_settingsService.Settings.CpuCustomName)
-                        ? cpuHardware.Name
-                        : _settingsService.Settings.CpuCustomName,
-                Clock = Convert.ToInt32(clockSensor is not null ? clockSensor.Value ?? 0 : 0),
-                Load = Convert.ToInt32(loadSensor is not null ? loadSensor.Value ?? 0 : 0),
-                Power = Math.Round(
-                    Convert.ToDouble(powerSensor is not null ? powerSensor.Value ?? 0 : 0), 1,
-                    MidpointRounding.ToEven),
-                Temperature =
-                    Convert.ToInt32(temperatureSensor is not null ? temperatureSensor.Value ?? 0 : 0),
-            };
+            cpuInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                ? cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"
+                : _settingsService.Settings.CpuCustomType ??
+                  (cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown");
+
+            cpuInfo.Name = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                ? (cpuHardware.Name ?? "Unknown")
+                : string.IsNullOrWhiteSpace(_settingsService.Settings.CpuCustomName)
+                    ? cpuHardware.Name
+                    : _settingsService.Settings.CpuCustomName;
+
+            if (clockSensor is not null and {Value: not null})
+                cpuInfo.Clock = double.TryParse($"{clockSensor.Value}", out var clock) ? Convert.ToInt32(clock) : 0;
+            if (loadSensor is not null and {Value: not null})
+                cpuInfo.Load = double.TryParse($"{loadSensor.Value}", out var load) ? Convert.ToInt32(load) : 0;
+            if (powerSensor is not null and {Value: not null})
+                cpuInfo.Power = Math.Round(
+                    double.TryParse($"{powerSensor.Value}", out var power) ? power : 0,
+                    1,
+                    MidpointRounding.ToEven);
+            if (temperatureSensor is not null and {Value: not null})
+                cpuInfo.Temperature = double.TryParse($"{temperatureSensor.Value}", out var temp) ? Convert.ToInt32(temp) : 0;
+
+            return cpuInfo;
         }
         catch (Exception exception)
         {
             _logger.Error(exception);
-            return new CpuInformation()
-            {
-                Type = "Unknown type",
-                Name = "Unknown CPU",
-                Clock = 0,
-                Load = 0,
-                Power = 0,
-                Temperature = 0,
-            };
+            return cpuInfo;
         }
     }
 
     private GpuInformation GpuInformationUpdate(IHardware? gpuHardware)
     {
+        var gpuInfo = new GpuInformation()
+        {
+            Type = "Unknown type",
+            Name = "Unknown GPU",
+            CoreClock = 0,
+            CoreLoad = 0,
+            CoreTemperature = 0,
+            Power = 0,
+            VRamClock = 0,
+            VRamMemoryTotal = 0,
+            VRamMemoryUsed = 0,
+            GpuFans = new List<GpuFan>()
+        };
+        
         try
         {
             if (gpuHardware is null)
-                return new GpuInformation()
-                {
-                    Type = "Unknown type",
-                    Name = "Unknown GPU",
-                    CoreClock = 0,
-                    CoreLoad = 0,
-                    CoreTemperature = 0,
-                    Power = 0,
-                    VRamClock = 0,
-                    VRamMemoryTotal = 0,
-                    VRamMemoryUsed = 0,
-                    GpuFans = new List<GpuFan>()
-                };
+                return gpuInfo;
 
             var gpuHardwareSensors = gpuHardware
                 .Sensors
@@ -203,19 +196,7 @@ public class HardwareMonitorService
                 .ToArray();
 
             if (gpuHardwareSensors is null or {Length: 0})
-                return new GpuInformation()
-                {
-                    Type = "Unknown type",
-                    Name = "Unknown GPU",
-                    CoreClock = 0,
-                    CoreLoad = 0,
-                    CoreTemperature = 0,
-                    Power = 0,
-                    VRamClock = 0,
-                    VRamMemoryTotal = 0,
-                    VRamMemoryUsed = 0,
-                    GpuFans = new List<GpuFan>()
-                };
+                return gpuInfo;
 
             var gpuFans = new List<GpuFan>();
 
@@ -262,70 +243,60 @@ public class HardwareMonitorService
                 .FirstOrDefault(s => s.Name.Contains("Memory") && s.SensorType == SensorType.Clock);
             var vRamMemoryTotalSensor = gpuHardwareSensors
                 .FirstOrDefault(s => s.Name.Contains("Memory Total") && s.SensorType == SensorType.SmallData);
-            var vRamMemoryUsed = gpuHardwareSensors
+            var vRamMemoryUsedSensor = gpuHardwareSensors
                 .FirstOrDefault(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.SmallData);
 
+            gpuInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                ? (gpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown")
+                : _settingsService.Settings.GpuCustomType
+                  ?? (gpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown");
+            
+            gpuInfo.Name = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                ? (gpuHardware.Name ?? "Unknown")
+                : string.IsNullOrWhiteSpace(_settingsService.Settings.GpuCustomName)
+                    ? gpuHardware.Name
+                    : _settingsService.Settings.GpuCustomName;
+            
+            if (coreClockSensor is not null and {Value: not null})
+                gpuInfo.CoreClock = double.TryParse($"{coreClockSensor.Value}", out var clock) ? Convert.ToInt32(clock) : 0;
+            if (coreLoadSensor is not null and {Value: not null})
+                gpuInfo.CoreLoad = double.TryParse($"{coreLoadSensor.Value}", out var load) ? Convert.ToInt32(load) : 0;
+            if (coreTemperatureSensor is not null and {Value: not null})
+                gpuInfo.CoreTemperature = double.TryParse($"{coreTemperatureSensor.Value}", out var temp) ? Convert.ToInt32(temp) : 0;
+            if (powerSensor is not null and {Value: not null})
+                gpuInfo.Power = double.TryParse($"{powerSensor.Value}", out var power) ? Convert.ToInt32(power) : 0;
+            if (vRamClockSensor is not null and {Value: not null})
+                gpuInfo.VRamClock = double.TryParse($"{vRamClockSensor.Value}", out var vRamClock) ? Convert.ToInt32(vRamClock) : 0;
+            if (vRamMemoryTotalSensor is not null and {Value: not null})
+                gpuInfo.VRamMemoryTotal = double.TryParse($"{vRamMemoryTotalSensor.Value}", out var vRamMemoryTotal) ? Convert.ToInt32(vRamMemoryTotal) : 0;
+            if (vRamMemoryUsedSensor is not null and {Value: not null})
+                gpuInfo.VRamMemoryUsed = double.TryParse($"{vRamMemoryUsedSensor.Value}", out var vRamMemoryUsed) ? Convert.ToInt32(vRamMemoryUsed) : 0;
+            
+            gpuInfo.GpuFans = gpuFans;
 
-            return new GpuInformation()
-            {
-                Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? (gpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown")
-                    : _settingsService.Settings.GpuCustomType
-                      ?? (gpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"),
-                Name = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? (gpuHardware.Name ?? "Unknown")
-                    : string.IsNullOrWhiteSpace(_settingsService.Settings.GpuCustomName)
-                        ? gpuHardware.Name
-                        : _settingsService.Settings.GpuCustomName,
-                CoreClock =
-                    Convert.ToInt32(coreClockSensor is not null ? coreClockSensor.Value ?? 0 : 0),
-                CoreLoad =
-                    Convert.ToInt32(coreLoadSensor is not null ? coreLoadSensor.Value ?? 0 : 0),
-                CoreTemperature =
-                    Convert.ToInt32(coreTemperatureSensor is not null ? coreTemperatureSensor.Value ?? 0 : 0),
-                Power = (double) Math.Round(
-                    (decimal) (powerSensor is not null ? powerSensor.Value ?? 0 : 0), 1,
-                    MidpointRounding.AwayFromZero),
-                VRamClock =
-                    Convert.ToInt32(vRamClockSensor is not null ? vRamClockSensor.Value ?? 0 : 0),
-                VRamMemoryTotal =
-                    Convert.ToInt32(vRamMemoryTotalSensor is not null ? vRamMemoryTotalSensor.Value ?? 0 : 0),
-                VRamMemoryUsed =
-                    Convert.ToInt32(vRamMemoryUsed is not null ? vRamMemoryUsed.Value ?? 0 : 0),
-                GpuFans = gpuFans
-            };
+            return gpuInfo;
         }
         catch (Exception exception)
         {
             _logger.Error(exception);
-            return new GpuInformation()
-            {
-                Type = "Unknown type",
-                Name = "Unknown GPU",
-                CoreClock = 0,
-                CoreLoad = 0,
-                CoreTemperature = 0,
-                Power = 0,
-                VRamClock = 0,
-                VRamMemoryTotal = 0,
-                VRamMemoryUsed = 0,
-                GpuFans = new List<GpuFan>()
-            };
+            return gpuInfo;
         }
     }
 
     private MemoryInformation MemoryInformationUpdate(IHardware? memoryHardware)
     {
+        var memoryInfo = new MemoryInformation()
+        {
+            Type = "Default",
+            Load = 0,
+            Available = 0,
+            Used = 0,
+        };
+
         try
         {
             if (memoryHardware is null)
-                return new MemoryInformation()
-                {
-                    Type = "Default",
-                    Load = 0,
-                    Available = 0,
-                    Used = 0,
-                };
+                return memoryInfo;
 
             var memoryHardwareSensors = memoryHardware
                 .Sensors
@@ -333,44 +304,30 @@ public class HardwareMonitorService
                 .ToArray();
 
             if (memoryHardwareSensors is null or {Length: 0})
-                return new MemoryInformation()
-                {
-                    Type = "Default",
-                    Load = 0,
-                    Available = 0,
-                    Used = 0,
-                };
+                return memoryInfo;
 
+            memoryInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
+                ? "Default"
+                : _settingsService.Settings.MemoryCustomType
+                  ?? "Default";
+            memoryInfo.Load = (int) Math.Round(
+                (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
+                    .Value ?? 0), 0, MidpointRounding.AwayFromZero);
+            memoryInfo.Available = (double) Math.Round(
+                (decimal) (memoryHardwareSensors
+                    .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data).Value ?? 0),
+                1, MidpointRounding.AwayFromZero);
+            memoryInfo.Used = (double) Math.Round(
+                (decimal) (memoryHardwareSensors
+                    .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data).Value ?? 0), 1,
+                MidpointRounding.AwayFromZero);
 
-            return new MemoryInformation()
-            {
-                Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
-                    ? "Default"
-                    : _settingsService.Settings.MemoryCustomType
-                      ?? "Default",
-                Load = (int) Math.Round(
-                    (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
-                        .Value ?? 0), 0, MidpointRounding.AwayFromZero),
-                Available = (double) Math.Round(
-                    (decimal) (memoryHardwareSensors
-                        .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data).Value ?? 0),
-                    1, MidpointRounding.AwayFromZero),
-                Used = (double) Math.Round(
-                    (decimal) (memoryHardwareSensors
-                        .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data).Value ?? 0), 1,
-                    MidpointRounding.AwayFromZero),
-            };
+            return memoryInfo;
         }
         catch (Exception exception)
         {
             _logger.Error(exception);
-            return new MemoryInformation()
-            {
-                Type = "Default",
-                Load = 0,
-                Available = 0,
-                Used = 0,
-            };
+            return memoryInfo;
         }
     }
 }

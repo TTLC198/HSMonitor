@@ -16,7 +16,7 @@ public class Message
 
 public class CpuInformation
 {
-    public string? Type{ get; set; }
+    public string? Type { get; set; }
 
     public string? Name { get; set; }
 
