@@ -160,7 +160,7 @@
     <value>Сейчас установлена версия</value>
   </data>
   <data name="NewUpdateMessageTitle" xml:space="preserve">
-    <value>Доступно обновление!</value>
+    <value>Обновление!</value>
   </data>
   <data name="NewUpdateMessageUpdateText" xml:space="preserve">
     <value>Вы хотите установить обновление сейчас?</value>
