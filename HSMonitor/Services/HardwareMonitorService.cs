@@ -10,9 +10,9 @@ namespace HSMonitor.Services;
 
 public class HardwareMonitorService
 {
-    public static CpuInformation Cpu = new();
-    public static GpuInformation Gpu = new();
-    public static MemoryInformation Memory = new();
+    public CpuInformation Cpu = new();
+    public GpuInformation Gpu = new();
+    public MemoryInformation Memory = new();
 
     private readonly SettingsService _settingsService;
     private readonly ILogger<HardwareMonitorService> _logger;

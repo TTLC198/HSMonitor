@@ -1,15 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using HSMonitor.Models;
 using HSMonitor.Utils.Serial;
-using HSMonitor.ViewModels;
-using HSMonitor.ViewModels.Framework;
 
 namespace HSMonitor.Services;
 

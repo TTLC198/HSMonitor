@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using HidSharp;
 using HSMonitor.Models;
 using HSMonitor.Services;
 
@@ -13,6 +12,7 @@ namespace HSMonitor.ViewModels;
 public class DashboardViewModel : INotifyPropertyChanged
 {
     private readonly SettingsService _settingsService;
+    private readonly HardwareMonitorService _hardwareMonitorService;
 
     private CpuInformation _cpu = null!;
     private GpuInformation _gpu = null!;
@@ -123,6 +123,7 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
     {
+        _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
         hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
         settingsService.SettingsSaved += UpdateImageFromSettings;
@@ -132,9 +133,9 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     private void HardwareInformationUpdated()
     {
-        Cpu = HardwareMonitorService.Cpu;
-        Gpu = HardwareMonitorService.Gpu;
-        Memory = HardwareMonitorService.Memory;
+        Cpu = _hardwareMonitorService.Cpu;
+        Gpu = _hardwareMonitorService.Gpu;
+        Memory = _hardwareMonitorService.Memory;
 
         if (Cpu.Name is {Length: > 23})
             Cpu.Name = Cpu.Name[..23];
