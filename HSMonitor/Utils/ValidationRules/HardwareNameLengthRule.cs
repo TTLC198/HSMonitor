@@ -8,10 +8,6 @@ public class HardwareNameLengthRule: ValidationRule
 {
     public int Max { get; set; }
 
-    public HardwareNameLengthRule()
-    {
-    }
-    
     public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
         try

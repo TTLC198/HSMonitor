@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using HSMonitor.Models;
 using HSMonitor.Services;
 using LibreHardwareMonitor.Hardware;
 

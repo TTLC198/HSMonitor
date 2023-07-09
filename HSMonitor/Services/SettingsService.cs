@@ -4,16 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Models;
 using HSMonitor.Properties;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 

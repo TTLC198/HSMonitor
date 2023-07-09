@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using HSMonitor.Services;
-using HSMonitor.Utils.Serial;
 
 namespace HSMonitor.ViewModels.Settings;
 
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
-    public IEnumerable<string> AvailablePorts 
+    public static IEnumerable<string> AvailablePorts 
         => SerialPort.GetPortNames();
 
     public static IEnumerable<int> SupportedBaudRates => new List<int>()

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using HSMonitor.Services;
+﻿using HSMonitor.Services;
 using Stylet;
 
 namespace HSMonitor.ViewModels.Settings;

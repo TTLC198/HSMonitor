@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using HSMonitor.Services;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
