@@ -2,13 +2,19 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <RootNamespace>HSMonitor</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <ApplicationIcon>Resources/Images/favicon.ico</ApplicationIcon>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <IsPackable>false</IsPackable>
+        <PublishSingleFile>false</PublishSingleFile>
+        <SelfContained>false</SelfContained>
+        <_SuppressWpfTrimError>true</_SuppressWpfTrimError>
+        <PublishTrimmed>false</PublishTrimmed>
+        <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup>
@@ -89,4 +95,12 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
       </EmbeddedResource>
     </ItemGroup>
+
+    <Target Name="ConfigureTrimming" BeforeTargets="PrepareForILLink">
+        <ItemGroup>
+            <ManagedAssemblyToLink Condition="'%(Filename)' == 'System.Runtime' Or '%(Filename)' == 'System.Runtime.Extensions' Or '%(Filename)' == 'System.Diagnostics.Debug'">
+                <IsTrimmable>false</IsTrimmable>
+            </ManagedAssemblyToLink>
+        </ItemGroup>
+    </Target>
 </Project>
