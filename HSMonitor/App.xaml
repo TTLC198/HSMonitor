@@ -15,7 +15,6 @@
                 <ResourceDictionary Source="Resources/StylesResource.xaml"/>
                 <!--Material Design Themes-->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </s:ApplicationLoader>
     </Application.Resources>
