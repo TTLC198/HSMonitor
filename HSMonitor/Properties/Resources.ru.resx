@@ -141,6 +141,9 @@
   <data name="HiddenStartSwitchText" xml:space="preserve">
     <value>Запуск скрыто</value>
   </data>
+  <data name="HideButtonTooltip" xml:space="preserve">
+    <value>Скрыть HSMonitor</value>
+  </data>
   <data name="MessageBoxCancelButtonText" xml:space="preserve">
     <value>Отмена</value>
   </data>

@@ -589,5 +589,14 @@ namespace HSMonitor.Properties {
                 return ResourceManager.GetString("RestartRequirementMessageText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HideButtonTooltip.
+        /// </summary>
+        public static string HideButtonTooltip {
+            get {
+                return ResourceManager.GetString("HideButtonTooltip", resourceCulture);
+            }
+        }
     }
 }

@@ -158,7 +158,7 @@
                         VerticalAlignment="Center"
                         Click="Hide_OnClick"
                         Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                        ToolTip="Hide HSMonitor"
+                        ToolTip="{x:Static p:Resources.HideButtonTooltip}"
                         Width="24"
                         Height="24">
                         <materialDesign:PackIcon

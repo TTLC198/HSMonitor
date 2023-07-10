@@ -142,6 +142,9 @@ Please reinstall the program to fix the problem.</value>
   <data name="HiddenStartSwitchText" xml:space="preserve">
     <value>Start hidden</value>
   </data>
+  <data name="HideButtonTooltip" xml:space="preserve">
+    <value>Hide HSMonitor</value>
+  </data>
   <data name="MessageBoxCancelButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
