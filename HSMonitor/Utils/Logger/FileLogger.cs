@@ -28,7 +28,7 @@ public class FileLogger<T> : ILogger<T>
         Log(nameof(Warn).ToUpper(), message: format);
     }
 
-    public void Error(Exception exception, string message = null)
+    public void Error(Exception exception, string? message = null)
     {
         Log(nameof(Error).ToUpper(), exception, message);
     }

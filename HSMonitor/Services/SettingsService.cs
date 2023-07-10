@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
@@ -20,6 +21,7 @@ public class SettingsService
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
+    [UnconditionalSuppressMessage("SingleFile", "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file", Justification = "<Pending>")]
     private readonly RegistryHandler _autoStartSwitch = new(
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
         $"\"{App.ExecutableFilePath}\"",
