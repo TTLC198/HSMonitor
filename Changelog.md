@@ -1,3 +1,11 @@
+### v1.1.2 (10.07.2023)
+
+- Updated libraries for interaction with PC,
+- Added logging of errors and other information,
+- Fixed and optimized the code of the service for obtaining data about the PC,
+- Fixed a bug with the inability to close the dialog box when clicking on the corresponding buttons,
+- Minor localization bugs fixed.
+
 ### v1.1.1 (04.07.2023) 
  
 - Added localization for two languages: **Russian** and **English**.
