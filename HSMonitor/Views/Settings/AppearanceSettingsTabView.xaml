@@ -6,7 +6,6 @@
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:p="clr-namespace:HSMonitor.Properties"
              d:DataContext="{d:DesignInstance Type=settings:AppearanceSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"

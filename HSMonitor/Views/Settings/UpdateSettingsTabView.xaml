@@ -5,7 +5,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:HSMonitor.ViewModels.Settings"
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
-             xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:hsMonitor="clr-namespace:HSMonitor"
              xmlns:s="https://github.com/canton7/Stylet"
