@@ -16,17 +16,17 @@
         <!--Select CPU-->
         <Grid
             Margin="12, 8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SelectCPUText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                Grid.Column="1"
+                Grid.Row="1"
                 ItemsSource="{Binding Processors}"
                 SelectedValue="{Binding SelectedCpu, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
@@ -40,17 +40,17 @@
         <!--Select GPU-->
         <Grid
             Margin="12, 8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SelectGPUText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                Grid.Column="1"
+                Grid.Row="1"
                 ItemsSource="{Binding GraphicCards}"
                 SelectedValue="{Binding SelectedGpu, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
