@@ -7,6 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              xmlns:p="clr-namespace:HSMonitor.Properties"
+             xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:ConnectionSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
@@ -17,41 +18,62 @@
         <!--Select COM port-->
         <Grid
             Margin="12, 8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SerialPortText}"
                 VerticalAlignment="Center"/>
-            <ComboBox
-                Grid.Column="1"
-                ItemsSource="{Binding AvailablePorts}"
-                SelectedValue="{Binding SelectedPort, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock
-                            Text="{Binding }"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+            <Grid
+                Grid.Row="1">
+                <ComboBox
+                    ItemsSource="{Binding AvailablePorts}"
+                    SelectedValue="{Binding SelectedPort, Mode=TwoWay}"
+                    materialDesign:ComboBoxAssist.ShowSelectedItem="True">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Text="{Binding }"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <DockPanel
+                    LastChildFill="False"
+                    Margin="0, 0, 10, 0">
+                    <Button
+                        DockPanel.Dock="Right"
+                        Width="28"
+                        Padding="-1"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                        Command="{s:Action UpdateAvailablePorts}"
+                        ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
+                        <!--TODO tooltip-->
+                        <materialDesign:PackIcon
+                            Width="14"
+                            Height="14"
+                            Kind="Refresh" />
+                    </Button>
+                </DockPanel>
+            </Grid>
         </Grid>
         <!--Select Baud Rate-->
         <Grid
             Margin="12, 8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"/>
+                <RowDefinition
+                    Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.BaudRateText}"
                 VerticalAlignment="Center"/>
             <ComboBox
-                Grid.Column="1"
+                Grid.Row="1"
                 ItemsSource="{Binding SupportedBaudRates}"
                 SelectedValue="{Binding SelectedBaudRate, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>

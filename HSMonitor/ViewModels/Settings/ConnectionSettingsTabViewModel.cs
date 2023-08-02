@@ -7,8 +7,16 @@ namespace HSMonitor.ViewModels.Settings;
 
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
-    public static IEnumerable<string> AvailablePorts 
-        => SerialPort.GetPortNames();
+    private IEnumerable<string> _availablePorts = SerialPort.GetPortNames();
+    public IEnumerable<string> AvailablePorts
+    {
+        get => _availablePorts;
+        private set
+        {
+            _availablePorts = value;
+            OnPropertyChanged(nameof(AvailablePorts));
+        }
+    }
 
     public static IEnumerable<int> SupportedBaudRates => new List<int>()
     {
@@ -29,7 +37,7 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 
     public string SelectedPort
     {
-        get => SettingsService.Settings.LastSelectedPort ?? AvailablePorts.FirstOrDefault() ?? "COM1";
+        get => SettingsService.Settings.LastSelectedPort ?? "COM1";
         set => SettingsService.Settings.LastSelectedPort = value;
     }
     
@@ -49,6 +57,11 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
     {
         get => SettingsService.Settings.DeviceDisplayBrightness;
         set => SettingsService.Settings.DeviceDisplayBrightness = value;
+    }
+
+    public void UpdateAvailablePorts()
+    {
+        AvailablePorts = SerialPort.GetPortNames();
     }
     
     public ConnectionSettingsTabViewModel(SettingsService settingsService) 
