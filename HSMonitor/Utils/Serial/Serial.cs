@@ -37,33 +37,48 @@ public class Serial : IDisposable
         }
     }
 
-    public bool Open()
+    private bool Open()
     {
         if (_serialPort.IsOpen)
             return true;
 
-        _serialPort.PortName = _settingsService.Settings.LastSelectedPort ?? "COM1";
-        _serialPort.Open();
+        try
+        {
+            _serialPort.PortName = _settingsService.Settings.LastSelectedPort ?? "COM1";
+            _serialPort.Open();
+        }
+        catch
+        {
+            _serialPort.Close();
+            throw;
+        }
 
         return _serialPort.IsOpen;
     }
 
     public void Close()
     {
-        if (_serialPort.IsOpen)
-            _serialPort.Close();
+        if (!_serialPort.IsOpen) return;
+        _serialPort.Close();
     }
 
     public void Write(byte[] data)
     {
         if (!_serialPort.IsOpen) return;
-        _serialPort.Write(data, 0, data.Length);
+        try
+        {
+            _serialPort.Write(data, 0, data.Length);
+        }
+        catch
+        {
+            _serialPort.Close();
+            throw;
+        }
     }
 
     public void Dispose()
     {
-        if (_serialPort is not null)
-            _serialPort.Dispose();
+        _serialPort.Dispose();
     }
         
 }
