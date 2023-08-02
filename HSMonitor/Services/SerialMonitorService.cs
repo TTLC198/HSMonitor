@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 
 namespace HSMonitor.Services;
@@ -9,6 +10,7 @@ public class SerialMonitorService : IDisposable
 {
     private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly SettingsService _settingsService;
+    private readonly ILogger<SerialMonitorService> _logger;
 
     private Serial _serial;
     public event EventHandler? OpenPortAttemptFailed;
@@ -16,10 +18,12 @@ public class SerialMonitorService : IDisposable
 
     public SerialMonitorService(
         SettingsService settingsService,
-        HardwareMonitorService hardwareMonitorService)
+        HardwareMonitorService hardwareMonitorService,
+        ILogger<SerialMonitorService> logger)
     {
         _settingsService = settingsService;
         _hardwareMonitorService = hardwareMonitorService;
+        _logger = logger;
         _serial = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
@@ -41,12 +45,21 @@ public class SerialMonitorService : IDisposable
             message.GpuInformation.Name = message.GpuInformation.Name[..23];
         var jsonData = JsonSerializer
             .Serialize(message)
+            .Append('\0')
             .Select(s => (byte)s)
             .ToArray();
         if (_serial.CheckAccess())
         {
-            _serial.Write(jsonData);
-            OpenPortAttemptSuccessful?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                _serial.Write(jsonData);
+                OpenPortAttemptSuccessful?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+                OpenPortAttemptFailed?.Invoke(this, EventArgs.Empty);
+            }
         }
         else
         {
