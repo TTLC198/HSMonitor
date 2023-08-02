@@ -17,7 +17,7 @@
         Orientation="Vertical">
         <!--Select COM port-->
         <Grid
-            Margin="12, 8">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -50,8 +50,7 @@
                         Style="{StaticResource MaterialDesignFlatButton}"
                         s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                         Command="{s:Action UpdateAvailablePorts}"
-                        ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
-                        <!--TODO tooltip-->
+                        ToolTip="{x:Static p:Resources.RefreshPortsButtonTooltip}">
                         <materialDesign:PackIcon
                             Width="14"
                             Height="14"
@@ -62,7 +61,7 @@
         </Grid>
         <!--Select Baud Rate-->
         <Grid
-            Margin="12, 8">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
