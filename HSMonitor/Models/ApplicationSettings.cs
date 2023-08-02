@@ -47,6 +47,7 @@ public class ApplicationSettings
     public string? ApplicationCultureInfo { get; set; }
     public bool IsHiddenAutoStartEnabled { get; set; }
     public bool IsRunAsAdministrator { get; set; }
+    public bool IsDeviceBackwardCompatibilityEnabled { get; set; }
     
     // Update
     

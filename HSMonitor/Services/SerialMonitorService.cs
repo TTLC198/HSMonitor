@@ -45,14 +45,14 @@ public class SerialMonitorService : IDisposable
             message.GpuInformation.Name = message.GpuInformation.Name[..23];
         var jsonData = JsonSerializer
             .Serialize(message)
-            .Append('\0')
-            .Select(s => (byte)s)
-            .ToArray();
+            .Select(s => (byte) s);
+        if (!_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
+            jsonData = jsonData.Append((byte)'\0');
         if (_serial.CheckAccess())
         {
             try
             {
-                _serial.Write(jsonData);
+                _serial.Write(jsonData.ToArray());
                 OpenPortAttemptSuccessful?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception exception)

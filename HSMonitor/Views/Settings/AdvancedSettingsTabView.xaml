@@ -85,6 +85,23 @@
                 Grid.Column="1"
                 IsChecked="{Binding IsRunAsAdministrator}" />
         </Grid>
+        <!--Enable device backward compability-->
+        <Grid 
+            Margin="16,8" 
+            ToolTip="{x:Static p:Resources.BackwardCompabilityTooltip}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="{x:Static p:Resources.BackwardCompabilityText}" />
+            <ToggleButton
+                Grid.Column="1"
+                IsChecked="{Binding IsDeviceBackwardCompatibilityEnabled}" />
+        </Grid>
         <!-- Select application language -->
         <Grid
             Margin="16, 8">

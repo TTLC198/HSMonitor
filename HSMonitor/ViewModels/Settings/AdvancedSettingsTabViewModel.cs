@@ -28,6 +28,12 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
         set => SettingsService.Settings.IsRunAsAdministrator = value;
     }
     
+    public bool IsDeviceBackwardCompatibilityEnabled
+    {
+        get => SettingsService.Settings.IsDeviceBackwardCompatibilityEnabled;
+        set => SettingsService.Settings.IsDeviceBackwardCompatibilityEnabled = value;
+    }
+    
     public string? ApplicationCultureInfo
     {
         get => SettingsService.Settings.ApplicationCultureInfo;

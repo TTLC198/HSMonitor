@@ -64,6 +64,7 @@ public class SettingsService
             IsAutoDetectHardwareEnabled = true,
             IsHiddenAutoStartEnabled = true,
             IsAutoStartEnabled = false,
+            IsDeviceBackwardCompatibilityEnabled = false,
             ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
         };
         await Save();
