@@ -598,5 +598,32 @@ namespace HSMonitor.Properties {
                 return ResourceManager.GetString("HideButtonTooltip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RefreshPortsButtonTooltip.
+        /// </summary>
+        public static string RefreshPortsButtonTooltip {
+            get {
+                return ResourceManager.GetString("RefreshPortsButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BackwardCompabilityTooltip.
+        /// </summary>
+        public static string BackwardCompabilityTooltip {
+            get {
+                return ResourceManager.GetString("BackwardCompabilityTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BackwardCompabilityText.
+        /// </summary>
+        public static string BackwardCompabilityText {
+            get {
+                return ResourceManager.GetString("BackwardCompabilityText", resourceCulture);
+            }
+        }
     }
 }

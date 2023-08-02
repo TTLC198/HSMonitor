@@ -90,6 +90,12 @@
   <data name="AutoUpdateTooltip" xml:space="preserve">
     <value>Автообновление приложения с сервера</value>
   </data>
+  <data name="BackwardCompabilityText" xml:space="preserve">
+    <value>Обратная совместимость</value>
+  </data>
+  <data name="BackwardCompabilityTooltip" xml:space="preserve">
+    <value>Включить обратную совместимость для устройств с версией ПО 1.1.4 и ниже</value>
+  </data>
   <data name="BaudRateText" xml:space="preserve">
     <value>Скорость порта:</value>
   </data>
@@ -185,6 +191,9 @@
   </data>
   <data name="ProjectURLText" xml:space="preserve">
     <value>Проект на GitHub:</value>
+  </data>
+  <data name="RefreshPortsButtonTooltip" xml:space="preserve">
+    <value>Обновить все доступные порты</value>
   </data>
   <data name="ResetButtonTooltip" xml:space="preserve">
     <value>Сброс всех настроек к стандартным</value>

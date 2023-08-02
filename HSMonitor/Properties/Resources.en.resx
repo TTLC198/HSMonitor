@@ -149,6 +149,12 @@ Press OK to restart the application as administrator.</value>
   <data name="AutoUpdateTooltip" xml:space="preserve">
     <value>On/Off auto update</value>
   </data>
+  <data name="BackwardCompabilityText" xml:space="preserve">
+    <value>Backward compability</value>
+  </data>
+  <data name="BackwardCompabilityTooltip" xml:space="preserve">
+    <value>Enable backward compatibility for devices with software version 1.1.4 and below</value>
+  </data>
   <data name="BaudRateText" xml:space="preserve">
     <value>Baud Rate:</value>
   </data>
@@ -245,6 +251,9 @@ Please reinstall the program to fix the problem.</value>
   </data>
   <data name="ProjectURLText" xml:space="preserve">
     <value>Project URL on GitHub:</value>
+  </data>
+  <data name="RefreshPortsButtonTooltip" xml:space="preserve">
+    <value>Refresh all available ports</value>
   </data>
   <data name="ResetButtonTooltip" xml:space="preserve">
     <value>Reset all settings to their defaults</value>
