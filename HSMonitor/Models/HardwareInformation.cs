@@ -21,6 +21,7 @@ public class CpuInformation
     public string? Name { get; set; }
 
     public double Power { get; set; }
+    public double Voltage { get; set; }
     public int Clock { get; set; }
     public int DefaultClock { get; set; }
     public int Temperature { get; set; }

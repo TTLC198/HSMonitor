@@ -121,7 +121,7 @@ public class HardwareMonitorService
             var cpuHardwareSensors = cpuHardware
                 .Sensors
                 .Where(s => s.SensorType is SensorType.Clock or SensorType.SmallData or SensorType.Load
-                    or SensorType.Temperature or SensorType.Power)
+                    or SensorType.Temperature or SensorType.Power or SensorType.Voltage)
                 .ToArray();
 
             if (cpuHardwareSensors is null or {Length: 0})
@@ -133,6 +133,8 @@ public class HardwareMonitorService
                 .FirstOrDefault(s => s.Name.Contains("Total") && s.SensorType == SensorType.Load);
             var powerSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Power);
+            var voltageSensor = cpuHardwareSensors
+                .FirstOrDefault(s => s.SensorType == SensorType.Voltage);
             var temperatureSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Temperature);
 
@@ -155,6 +157,11 @@ public class HardwareMonitorService
                 cpuInfo.Power = Math.Round(
                     double.TryParse($"{powerSensor.Value}", out var power) ? power : 0,
                     1,
+                    MidpointRounding.ToEven);
+            if (voltageSensor is not null and {Value: not null})
+                cpuInfo.Power = Math.Round(
+                    double.TryParse($"{voltageSensor.Value}", out var voltage) ? voltage : 0,
+                    2,
                     MidpointRounding.ToEven);
             if (temperatureSensor is not null and {Value: not null})
                 cpuInfo.Temperature = double.TryParse($"{temperatureSensor.Value}", out var temp) ? Convert.ToInt32(temp) : 0;
