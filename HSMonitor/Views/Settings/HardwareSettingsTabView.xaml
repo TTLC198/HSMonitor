@@ -15,7 +15,7 @@
         Orientation="Vertical">
         <!--Select CPU-->
         <Grid
-            Margin="12, 8">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
@@ -39,7 +39,7 @@
         </Grid>
         <!--Select GPU-->
         <Grid
-            Margin="12, 8">
+            Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto"/>
