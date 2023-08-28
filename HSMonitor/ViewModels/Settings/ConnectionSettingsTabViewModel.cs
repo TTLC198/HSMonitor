@@ -61,6 +61,7 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 
     public void UpdateAvailablePorts()
     {
+        AvailablePorts = new List<string>();
         AvailablePorts = SerialPort.GetPortNames();
     }
     
