@@ -39,10 +39,13 @@ public class SerialMonitorService : IDisposable
     private void SendInformationToMonitor()
     {
         var message = _hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
-        if (message.CpuInformation is {Name.Length: > 23})
-            message.CpuInformation.Name = message.CpuInformation.Name[..23];
-        if (message.GpuInformation is {Name.Length: > 23})
-            message.GpuInformation.Name = message.GpuInformation.Name[..23];
+        if (_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
+        {
+            if (message.CpuInformation is {Name.Length: > 23})
+                message.CpuInformation.Name = message.CpuInformation.Name[..23];
+            if (message.GpuInformation is {Name.Length: > 23})
+                message.GpuInformation.Name = message.GpuInformation.Name[..23];
+        }
         var jsonData = JsonSerializer
             .Serialize(message)
             .Select(s => (byte) s);
