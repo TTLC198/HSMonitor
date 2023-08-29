@@ -159,7 +159,7 @@ public class HardwareMonitorService
                     1,
                     MidpointRounding.ToEven);
             if (voltageSensor is not null and {Value: not null})
-                cpuInfo.Power = Math.Round(
+                cpuInfo.Voltage = Math.Round(
                     double.TryParse($"{voltageSensor.Value}", out var voltage) ? voltage : 0,
                     2,
                     MidpointRounding.ToEven);
