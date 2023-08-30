@@ -30,6 +30,7 @@
         Loaded="{s:Action OnViewFullyLoaded}"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
         DialogBackground="{DynamicResource PrimaryHueMidBrush}"
+        Background="{DynamicResource PrimaryHueLightBrush}"
         DialogTheme="Light"
         DialogMargin="10">
         <Grid
@@ -69,6 +70,7 @@
                 </tb:TaskbarIcon.Style>
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu
+                        Background="{DynamicResource PrimaryHueLightBrush}"
                         Margin="2">
                         <MenuItem
                             Click="Show_OnClick">
