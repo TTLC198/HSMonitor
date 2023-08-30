@@ -45,8 +45,9 @@
                     Margin="0, 0, 10, 0">
                     <Button
                         DockPanel.Dock="Right"
-                        Width="28"
-                        Padding="-1"
+                        Width="26"
+                        Height="26"
+                        Padding="-2"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                         Command="{s:Action UpdateAvailablePorts}"
