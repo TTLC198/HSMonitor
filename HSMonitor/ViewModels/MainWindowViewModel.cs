@@ -30,6 +30,8 @@ public class MainWindowViewModel : Screen
 
     private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
+
+    private bool _isConnectionErrorWindowOpened;
     
     private bool _isSerialMonitorEnabled = false;
 
@@ -74,24 +76,39 @@ public class MainWindowViewModel : Screen
         _serialMonitorService.OpenPortAttemptFailed -= SerialMonitorServiceOnOpenPortAttemptFailed;
         _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
         
-        var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-            title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
-            message: Resources.NoConnectionErrorMessageText,
-            okButtonText: Resources.MessageBoxOkButtonText,
-            cancelButtonText: Resources.MessageBoxCancelButtonText
-        );
-
-        if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+        if (_isConnectionErrorWindowOpened)
+            return;
+        
+        try
         {
-            var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
-            settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
+                message: Resources.NoConnectionErrorMessageText,
+                okButtonText: Resources.MessageBoxOkButtonText,
+                cancelButtonText: Resources.MessageBoxCancelButtonText
+            );
 
-            await _dialogManager.ShowDialogAsync(settingsDialog);
+            _isConnectionErrorWindowOpened = true;
+            var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
+            if (dialogResult == true)
+            {
+                var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
+                settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+
+                await _dialogManager.ShowDialogAsync(settingsDialog);
+            }
+            _isConnectionErrorWindowOpened = dialogResult is null;
+        }
+        catch 
+        {
+            _isConnectionErrorWindowOpened = false;
         }
     }
     
     private void SerialMonitorServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
     {
+        if (IsSerialMonitorEnabled)
+            return;
         IsSerialMonitorEnabled = true;
         _serialMonitorService.OpenPortAttemptFailed += SerialMonitorServiceOnOpenPortAttemptFailed;
         _serialMonitorService.OpenPortAttemptSuccessful -= SerialMonitorServiceOnOpenPortAttemptSuccessful;
