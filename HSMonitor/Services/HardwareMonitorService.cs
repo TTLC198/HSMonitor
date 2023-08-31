@@ -134,10 +134,10 @@ public class HardwareMonitorService
             var powerSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Power);
             var voltageSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Voltage);
+                .FirstOrDefault(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID"));
             var temperatureSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Temperature);
-
+            
             cpuInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
                 ? cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"
                 : _settingsService.Settings.CpuCustomType ??
