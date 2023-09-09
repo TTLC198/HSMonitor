@@ -7,6 +7,8 @@ namespace HSMonitor.Utils.ValidationRules;
 public class HardwareNameLengthRule: ValidationRule
 {
     public int Max { get; set; }
+    
+    public int Min { get; set; }
 
     public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
@@ -15,6 +17,10 @@ public class HardwareNameLengthRule: ValidationRule
             if (((string)value).Length > Max)
                 return new ValidationResult(false,
                     $"Please enter a string less than {Max}.");
+            
+            if (((string)value).Length < Min)
+                return new ValidationResult(false,
+                    $"Please enter a string more than {Min}.");
         }
         catch (Exception e)
         {
