@@ -62,7 +62,8 @@
                              Mode="TwoWay">
                         <Binding.ValidationRules>
                             <validationRules:HardwareNameLengthRule 
-                                Max="23"
+                                Max="{Binding CustomNameMaxLength}"
+                                Min="5"
                                 ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
                     </Binding>
@@ -90,7 +91,8 @@
                              Mode="TwoWay">
                         <Binding.ValidationRules>
                             <validationRules:HardwareNameLengthRule 
-                                Max="23"
+                                Max="{Binding CustomNameMaxLength}"
+                                Min="5"
                                 ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
                     </Binding>
