@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+
 #pragma warning disable CA1416
 namespace HSMonitor.Views
 {
@@ -11,6 +13,8 @@ namespace HSMonitor.Views
         public MainWindowView()
         {
             InitializeComponent();
+            
+            RenderOptions.SetBitmapScalingMode(DashboardImage, BitmapScalingMode.LowQuality);
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

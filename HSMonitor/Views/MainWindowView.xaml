@@ -195,6 +195,7 @@
             <Grid
                 Grid.Row="2">
                 <Image
+                    x:Name="DashboardImage"
                     Width="280"
                     Height="320"
                     Margin="0,2,0,2"
