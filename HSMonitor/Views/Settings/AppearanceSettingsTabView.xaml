@@ -7,11 +7,13 @@
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              xmlns:p="clr-namespace:HSMonitor.Properties"
+             xmlns:utils="clr-namespace:HSMonitor.Utils"
              d:DataContext="{d:DesignInstance Type=settings:AppearanceSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
     <UserControl.Resources>
+        <utils:BindingProxy x:Key="MaxProxy" Data="{Binding CustomNameMaxLength, Mode=OneWay}"/>
         <Style
             TargetType="{x:Type Grid}">
             <Setter
@@ -61,10 +63,12 @@
                              UpdateSourceTrigger="PropertyChanged" 
                              Mode="TwoWay">
                         <Binding.ValidationRules>
-                            <validationRules:HardwareNameLengthRule 
-                                Max="{Binding CustomNameMaxLength}"
-                                Min="5"
-                                ValidatesOnTargetUpdated="True"/>
+                            <validationRules:HardwareNameLengthRule
+                                ValidatesOnTargetUpdated="True">
+                                <validationRules:HardwareNameLengthRuleValue
+                                    Min="5"
+                                    Max="{Binding Data, Source={StaticResource MaxProxy}}"/>
+                            </validationRules:HardwareNameLengthRule>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -90,10 +94,12 @@
                              UpdateSourceTrigger="PropertyChanged" 
                              Mode="TwoWay">
                         <Binding.ValidationRules>
-                            <validationRules:HardwareNameLengthRule 
-                                Max="{Binding CustomNameMaxLength}"
-                                Min="5"
-                                ValidatesOnTargetUpdated="True"/>
+                            <validationRules:HardwareNameLengthRule
+                                ValidatesOnTargetUpdated="True">
+                                <validationRules:HardwareNameLengthRuleValue
+                                    Min="5"
+                                    Max="{Binding Data, Source={StaticResource MaxProxy}}"/>
+                            </validationRules:HardwareNameLengthRule>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
