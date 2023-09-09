@@ -76,10 +76,9 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
         }
     }
 
-    public int CustomNameMaxLength => 
-        SettingsService.Settings.IsDeviceBackwardCompatibilityEnabled 
+    public int CustomNameMaxLength => SettingsService.Settings.IsDeviceBackwardCompatibilityEnabled 
         ? 23 
-        : 50;
+        : 30;
 
     public AppearanceSettingsTabViewModel(SettingsService settingsService, HardwareMonitorService hardwareMonitorService) 
         : base(settingsService, 2, "Appearance")
