@@ -27,7 +27,7 @@ public class SerialMonitorService : IDisposable
         _serial = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
-        _hardwareMonitorService.HardwareInformationUpdated += (_, _) => SendInformationToMonitor();
+        _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
     }
 
     private void UpdateSerialSettings()
@@ -36,9 +36,10 @@ public class SerialMonitorService : IDisposable
         _serial = new Serial(_settingsService ?? throw new InvalidOperationException());
     }
 
-    private void SendInformationToMonitor()
+    private void SendInformationToMonitor(object? sender, EventArgs args)
     {
-        var message = _hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
+        if (sender is not HardwareMonitorService hardwareMonitorService) return;
+        var message = hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
         if (_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
         {
             if (message.CpuInformation is {Name.Length: > 23})
