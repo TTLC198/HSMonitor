@@ -11,7 +11,7 @@ using System.Windows;
 )]
 
 [assembly: AssemblyTitle("HSMonitor")]
-[assembly: AssemblyDescription("Server part of the program for monitoring the state of computer hardware on a separate screen.")]
+[assembly: AssemblyDescription("Companion application for the device monitoring PC parameters on a separate screen.")]
 [assembly: AssemblyConfiguration("release")]
 [assembly: AssemblyCompany("ttlc198")]
 [assembly: AssemblyProduct("HSMonitor")]
@@ -19,4 +19,4 @@ using System.Windows;
 [assembly: AssemblyTrademark("")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.2")]
+[assembly: AssemblyVersion("1.1.3")]
