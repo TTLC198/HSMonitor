@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using HSMonitor.Models;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
+using MaterialDesignThemes.Wpf;
 
 namespace HSMonitor.Services;
 
@@ -18,6 +22,8 @@ public class HardwareMonitorService
     private readonly ILogger<HardwareMonitorService> _logger;
 
     public event EventHandler? HardwareInformationUpdated;
+
+    private DispatcherTimer _updateHardwareMonitorTimer = new();
 
     private static readonly Computer Computer = new()
     {
@@ -34,10 +40,30 @@ public class HardwareMonitorService
         _settingsService.SettingsSaved += SettingsServiceOnSettingsSaved;
     }
 
+    public async Task Start()
+    {
+        _updateHardwareMonitorTimer = new DispatcherTimer(
+            priority: DispatcherPriority.Background,
+            interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0
+                ? 500
+                : _settingsService.Settings.SendInterval),
+            callback: HardwareInformationUpdate,
+            dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException("Current thread is null")
+        );
+        await Task.Run(() =>
+        {
+            _updateHardwareMonitorTimer.Start();
+        });
+    }
+
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
     {
         if (sender is not SettingsService service) return;
         _settingsService.Settings = service.Settings;
+        _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
+            _settingsService.Settings.SendInterval == 0 
+                ? 500 
+                :_settingsService.Settings.SendInterval);
     }
 
     public Message GetHwInfoMessage()
@@ -58,7 +84,7 @@ public class HardwareMonitorService
     public static IEnumerable<IHardware> GetGraphicCards() => Computer.Hardware.Where(h =>
         h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia);
 
-    public void HardwareInformationUpdate()
+    public async void HardwareInformationUpdate(object? sender, EventArgs eventArgs)
     {
         try
         {

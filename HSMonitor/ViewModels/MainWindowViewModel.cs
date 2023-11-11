@@ -27,8 +27,6 @@ public class MainWindowViewModel : Screen
     private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
-
-    private DispatcherTimer _updateHardwareMonitorTimer = null!;
     public DashboardViewModel Dashboard { get; }
 
     private bool _isConnectionErrorWindowOpened;
@@ -175,21 +173,6 @@ public class MainWindowViewModel : Screen
         }
         else
         {
-            _updateHardwareMonitorTimer = new DispatcherTimer(
-                priority: DispatcherPriority.Background,
-                interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0
-                    ? 500
-                    : _settingsService.Settings.SendInterval),
-                callback: (_, _) => { _hardwareMonitorService.HardwareInformationUpdate(); },
-                dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException()
-            );
-
-            _settingsService.SettingsSaved += (_, _) =>
-            {
-                _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
-                    _settingsService.Settings.SendInterval == 0 ? 500 : _settingsService.Settings.SendInterval);
-            };
-
             _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
 
             try
@@ -250,7 +233,7 @@ public class MainWindowViewModel : Screen
                     await ShowAdminPrivilegesRequirement();
             }
 
-            _updateHardwareMonitorTimer.Start();
+            await _hardwareMonitorService.Start();
         }
     }
 
