@@ -27,19 +27,42 @@
             <TextBlock
                 Text="{x:Static p:Resources.SerialPortText}"
                 VerticalAlignment="Center"/>
-            <Grid
-                Grid.Row="1">
-                <ComboBox
-                    ItemsSource="{Binding AvailablePorts}"
-                    SelectedValue="{Binding SelectedPort, Mode=TwoWay}"
-                    materialDesign:ComboBoxAssist.ShowSelectedItem="True">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock
-                                Text="{Binding }"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+            <ComboBox
+                Grid.Row="1"
+                ItemsSource="{Binding AvailablePorts}"
+                SelectedValue="{Binding SelectedDevice, Mode=TwoWay}"
+                materialDesign:ComboBoxAssist.ShowSelectedItem="True"
+                DropDownOpened="{s:Action UpdateAvailablePorts}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <Run
+                                Text="{Binding PortName}"/>
+                            <Run
+                                Text=" - "/>
+                            <Run
+                                Text="{Binding BusDescription}"/>
+                            <TextBlock.Resources>
+                                <Style
+                                    TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsHsMonitorDevice}"
+                                            Value="True">
+                                            <Setter
+                                                Property="FontWeight"
+                                                Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Resources>
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <!--<Grid
+                >
+                
                 <DockPanel
                     LastChildFill="False"
                     Margin="0, 0, 10, 0">
@@ -58,7 +81,7 @@
                             Kind="Refresh" />
                     </Button>
                 </DockPanel>
-            </Grid>
+            </Grid>-->
         </Grid>
         <!--Select Baud Rate-->
         <Grid
