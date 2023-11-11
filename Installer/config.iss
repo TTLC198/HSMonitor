@@ -1,5 +1,5 @@
 ﻿#define AppName "HSMonitor"
-#define AppVersion "1.1.2"
+#define AppVersion "1.1.3"
 #define GithubPage "https://github.com/TTLC198/HSMonitor"
 
 #define RegistryStartup "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"

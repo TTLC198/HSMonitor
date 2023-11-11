@@ -1,3 +1,10 @@
+### v1.1.3 (11.11.2023)
+
+- Added support for devices with a new type of software based on ESP-IDF,
+- Fixed a bug related to reducing the weight of the program in the previous update,
+- Fixed and improved device selection in the connection settings page,
+- Improved performance when interacting with dropdown fields.
+
 ### v1.1.2 (10.07.2023)
 
 - Updated libraries for interaction with PC,
