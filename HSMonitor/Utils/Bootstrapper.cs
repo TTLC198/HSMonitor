@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using HSMonitor.Services;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
@@ -34,7 +35,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     
     protected override void Launch()
     {
-        GetInstance<HardwareMonitorService>().HardwareInformationUpdate();
+        GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
 
         base.Launch();
