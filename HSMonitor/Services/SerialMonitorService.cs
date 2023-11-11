@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
+using HSMonitor.Utils.Usb.Serial;
 
 namespace HSMonitor.Services;
 
@@ -50,8 +51,6 @@ public class SerialMonitorService : IDisposable
         var jsonData = JsonSerializer
             .Serialize(message)
             .Select(s => (byte) s);
-        if (!_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
-            jsonData = jsonData.Append((byte)'\0');
         if (_serial.CheckAccess())
         {
             try
