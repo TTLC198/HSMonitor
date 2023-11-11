@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using HSMonitor.Models;
 using HSMonitor.Services;
+using HSMonitor.Utils.Serial;
+using HSMonitor.Utils.Usb.Serial;
 
 namespace HSMonitor.ViewModels.Settings;
 
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
-    private IEnumerable<string> _availablePorts = SerialPort.GetPortNames();
-    public IEnumerable<string> AvailablePorts
+    private IEnumerable<DeviceInfo> _availablePorts = Serial.GetPorts();
+    public IEnumerable<DeviceInfo> AvailablePorts
     {
         get => _availablePorts;
         private set
@@ -35,10 +38,12 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
         921600
     };
 
-    public string SelectedPort
+    public DeviceInfo SelectedDevice
     {
-        get => SettingsService.Settings.LastSelectedPort ?? "COM1";
-        set => SettingsService.Settings.LastSelectedPort = value;
+        get =>
+            AvailablePorts.FirstOrDefault(p => p.PortName ==
+                                               (SettingsService.Settings.LastSelectedPort ?? "COM1")) ?? new DeviceInfo();
+        set => SettingsService.Settings.LastSelectedPort = value.PortName;
     }
     
     public int SelectedBaudRate
@@ -61,14 +66,12 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 
     public void UpdateAvailablePorts()
     {
-        AvailablePorts = new List<string>();
-        AvailablePorts = SerialPort.GetPortNames();
+        AvailablePorts = new List<DeviceInfo>();
+        AvailablePorts = Serial.GetPorts();
     }
     
-    public ConnectionSettingsTabViewModel(SettingsService settingsService) 
+    public ConnectionSettingsTabViewModel(SettingsService settingsService, Serial serial) 
         : base(settingsService, 0, "Connection")
     {
-        if (SettingsService is {Settings: not null}) 
-            SelectedPort = SettingsService.Settings.LastSelectedPort ?? (AvailablePorts.FirstOrDefault() ?? "COM1");
     }
 }
