@@ -8,12 +8,10 @@
         <RootNamespace>HSMonitor</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <ApplicationIcon>Resources/Images/favicon.ico</ApplicationIcon>
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <RuntimeIdentifiers>win10-x64;win10-x86</RuntimeIdentifiers>
         <IsPackable>false</IsPackable>
         <PublishSingleFile>false</PublishSingleFile>
         <SelfContained>false</SelfContained>
-        <_SuppressWpfTrimError>true</_SuppressWpfTrimError>
-        <PublishTrimmed>false</PublishTrimmed>
         <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
     </PropertyGroup>
 
