@@ -14,9 +14,6 @@ public partial class UpdateSettingsTabView : UserControl
 
     private void GithubLinkPageOpen(object sender, MouseButtonEventArgs e)
     {
-        if (sender is Grid {Name: "GithubClientUrlGrid"})
-            OpenUrl.Open(App.GitHubClientProjectUrl);
-        if (sender is Grid {Name: "GithubUrlGrid"})
-            OpenUrl.Open(App.GitHubProjectUrl);
+        OpenUrl.Open(App.GitHubProjectUrl);
     }
 }
