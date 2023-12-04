@@ -37,7 +37,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     {
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
-
+        GetInstance<SettingsService>().Load();
         base.Launch();
     }
 

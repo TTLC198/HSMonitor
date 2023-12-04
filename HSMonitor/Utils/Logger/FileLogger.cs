@@ -15,6 +15,8 @@ public class FileLogger<T> : ILogger<T>
     public FileLogger()
     {
         _fullFilePath = Path.Combine(App.LogsDirPath, DateTime.Now.ToString("yyyy-MM-dd") + "_log.txt");
+        if (!Directory.Exists(App.LogsDirPath))
+            Directory.CreateDirectory(App.LogsDirPath);
         DeleteOldLogFiles();
     }
 
@@ -40,18 +42,20 @@ public class FileLogger<T> : ILogger<T>
             var n = Environment.NewLine;
             if (exception != null) 
                 message += $"{n} {exception.GetType()} - {exception.Message} - {exception.StackTrace}";
-            Directory.CreateDirectory(App.LogsDirPath);
+            if (!Directory.Exists(App.LogsDirPath))
+                Directory.CreateDirectory(App.LogsDirPath);
             File.AppendAllText(_fullFilePath, $"{DateTime.Now} | {logLevel} | {typeof(T)} - {message} {n}");
         }
     }
 
-    private void DeleteOldLogFiles()
+    private static void DeleteOldLogFiles()
     {
-        Directory
-            .GetFiles(App.LogsDirPath)
-            .Select(f => new FileInfo(f))
-            .Where(f => f.CreationTime < DateTime.Now.AddMonths(-3))
-            .ToList()
-            .ForEach(f => f.Delete());
+        if (Directory.Exists(App.LogsDirPath))
+            Directory
+                .GetFiles(App.LogsDirPath)
+                .Select(f => new FileInfo(f))
+                .Where(f => f.CreationTime < DateTime.Now.AddMonths(-3))
+                .ToList()
+                .ForEach(f => f.Delete());
     }
 }

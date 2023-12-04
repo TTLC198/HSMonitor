@@ -34,7 +34,26 @@ public class SettingsService
     
     public event EventHandler? SettingsSaved;
     
-    public ApplicationSettings Settings { get; set; } = null!;
+    public ApplicationSettings Settings { get; set; } = DefaultSettings;
+
+    private static readonly ApplicationSettings DefaultSettings = new ApplicationSettings()
+    {
+        LastSelectedPort = null,
+        LastSelectedBaudRate = 115200,
+        SendInterval = 1000,
+        DeviceDisplayBrightness = 100,
+        CpuId = "",
+        GpuId = "",
+        CpuCustomName = "",
+        GpuCustomName = "",
+        CpuCustomType = "",
+        GpuCustomType = "",
+        IsAutoDetectHardwareEnabled = true,
+        IsHiddenAutoStartEnabled = true,
+        IsAutoStartEnabled = false,
+        IsDeviceBackwardCompatibilityEnabled = false,
+        ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
+    };
 
     public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
     private readonly ILogger<SettingsService> _logger;
@@ -44,29 +63,11 @@ public class SettingsService
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _logger = logger;
-        Load().Wait();
     }
     
     public async Task Reset()
     {
-        Settings = new ApplicationSettings()
-        {
-            LastSelectedPort = null,
-            LastSelectedBaudRate = 115200,
-            SendInterval = 1000,
-            DeviceDisplayBrightness = 100,
-            CpuId = "",
-            GpuId = "",
-            CpuCustomName = "",
-            GpuCustomName = "",
-            CpuCustomType = "",
-            GpuCustomType = "",
-            IsAutoDetectHardwareEnabled = true,
-            IsHiddenAutoStartEnabled = true,
-            IsAutoStartEnabled = false,
-            IsDeviceBackwardCompatibilityEnabled = false,
-            ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
-        };
+        Settings = DefaultSettings;
         await Save();
         SettingsReset?.Invoke(this, EventArgs.Empty);
     }
@@ -75,7 +76,10 @@ public class SettingsService
     {
         try
         {
-            var json = File.ReadAllText(ConfigurationPath);
+            if (!File.Exists(ConfigurationPath))
+                Settings.JsonToFile(ConfigurationPath);
+            
+            var json = await File.ReadAllTextAsync(ConfigurationPath);
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
             Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
