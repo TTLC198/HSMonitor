@@ -91,10 +91,10 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan1
     {
-        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[0];
+        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray().ElementAtOrDefault(0) ?? new GpuFan();
         set
         {
-            if (_gpu is {GpuFans: null}) return;
+            if (_gpu is {GpuFans: null} || _gpu.GpuFans.ToArray().ElementAtOrDefault(0) is null) return;
             _gpu.GpuFans.ToArray()[0] = value;
             OnPropertyChanged();
         }
@@ -102,10 +102,10 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public GpuFan GpuFan2
     {
-        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray()[1];
+        get => _gpu is {GpuFans: null} ? new GpuFan() : _gpu.GpuFans.ToArray().ElementAtOrDefault(1) ?? new GpuFan();
         set
         {
-            if (_gpu is {GpuFans: null}) return;
+            if (_gpu is {GpuFans: null} || _gpu.GpuFans.ToArray().ElementAtOrDefault(1) is null) return;
             _gpu.GpuFans.ToArray()[1] = value;
             OnPropertyChanged();
         }
