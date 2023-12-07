@@ -28,7 +28,7 @@ LicenseFile=..\License.txt
 OutputDir=bin\
 Compression=lzma2
 SolidCompression=yes
-OutputBaseFilename=HSMonitor-Installer
+OutputBaseFilename=HSMonitor-1-1-3
 PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
