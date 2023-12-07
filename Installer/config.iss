@@ -43,6 +43,9 @@ ru.StartupDescription=Запуск приложения при входе пол
 ru.MinimizeDescription=Запуск приложения свернутым
 ru.StartupGroupDescription=Автозагрузка
 
+[Dirs]
+Name: "{userappdata}\{#AppName}";
+
 [Files]
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\HSMonitor\appsettings.json"; DestDir: "{userappdata}\{#AppName}"; Flags: ignoreversion
