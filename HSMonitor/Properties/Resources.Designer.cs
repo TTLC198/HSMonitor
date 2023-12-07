@@ -78,6 +78,26 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please run application as an administrator so that the library can get complete information about the current state of the computer hardware.
+        ///
+        ///Press OK to restart the application as administrator..
+        /// </summary>
+        public static string AdminPrivilegesRequirementMessageText {
+            get {
+                return ResourceManager.GetString("AdminPrivilegesRequirementMessageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less information about PC.
+        /// </summary>
+        public static string AdminPrivilegesRequirementMessageTitle {
+            get {
+                return ResourceManager.GetString("AdminPrivilegesRequirementMessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodetect Hardware:.
         /// </summary>
         public static string AutoDetectHardwareSwitchText {
@@ -132,6 +152,24 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backward compability.
+        /// </summary>
+        public static string BackwardCompabilityText {
+            get {
+                return ResourceManager.GetString("BackwardCompabilityText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable backward compatibility for devices with software version 1.1.4 and below.
+        /// </summary>
+        public static string BackwardCompabilityTooltip {
+            get {
+                return ResourceManager.GetString("BackwardCompabilityTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Baud Rate:.
         /// </summary>
         public static string BaudRateText {
@@ -159,7 +197,7 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close application.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string CloseAppFromTrayButtonText {
             get {
@@ -173,6 +211,16 @@ namespace HSMonitor.Properties {
         public static string CloseButtonTooltip {
             get {
                 return ResourceManager.GetString("CloseButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application configuration file was not found in the program folder or was modified manually.
+        ///Please reinstall the program to fix the problem..
+        /// </summary>
+        public static string ConfigurationFileErrorMessageText {
+            get {
+                return ResourceManager.GetString("ConfigurationFileErrorMessageText", resourceCulture);
             }
         }
         
@@ -249,6 +297,15 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading....
+        /// </summary>
+        public static string DownloadingText {
+            get {
+                return ResourceManager.GetString("DownloadingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch HSMonitor hidden at Windows startup.
         /// </summary>
         public static string HiddenAutoStartupTooltip {
@@ -263,6 +320,123 @@ namespace HSMonitor.Properties {
         public static string HiddenStartSwitchText {
             get {
                 return ResourceManager.GetString("HiddenStartSwitchText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide HSMonitor.
+        /// </summary>
+        public static string HideButtonTooltip {
+            get {
+                return ResourceManager.GetString("HideButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string MessageBoxCancelButtonText {
+            get {
+                return ResourceManager.GetString("MessageBoxCancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred, the error text is shown below:.
+        /// </summary>
+        public static string MessageBoxErrorText {
+            get {
+                return ResourceManager.GetString("MessageBoxErrorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some error has occurred.
+        /// </summary>
+        public static string MessageBoxErrorTitle {
+            get {
+                return ResourceManager.GetString("MessageBoxErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string MessageBoxOkButtonText {
+            get {
+                return ResourceManager.GetString("MessageBoxOkButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart.
+        /// </summary>
+        public static string MessageBoxRestartButtonText {
+            get {
+                return ResourceManager.GetString("MessageBoxRestartButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are using version.
+        /// </summary>
+        public static string NewUpdateMessageCurrentVersionText {
+            get {
+                return ResourceManager.GetString("NewUpdateMessageCurrentVersionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New update available!.
+        /// </summary>
+        public static string NewUpdateMessageTitle {
+            get {
+                return ResourceManager.GetString("NewUpdateMessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to update the application now?.
+        /// </summary>
+        public static string NewUpdateMessageUpdateText {
+            get {
+                return ResourceManager.GetString("NewUpdateMessageUpdateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is new version available:.
+        /// </summary>
+        public static string NewUpdateMessageVersionText {
+            get {
+                return ResourceManager.GetString("NewUpdateMessageVersionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is busy!.
+        /// </summary>
+        public static string NoConnectionBusyMessageText {
+            get {
+                return ResourceManager.GetString("NoConnectionBusyMessageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please connect a device or choose a different port..
+        /// </summary>
+        public static string NoConnectionErrorMessageText {
+            get {
+                return ResourceManager.GetString("NoConnectionErrorMessageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No connection!.
+        /// </summary>
+        public static string NoConnectionText {
+            get {
+                return ResourceManager.GetString("NoConnectionText", resourceCulture);
             }
         }
         
@@ -285,11 +459,38 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh all available ports.
+        /// </summary>
+        public static string RefreshPortsButtonTooltip {
+            get {
+                return ResourceManager.GetString("RefreshPortsButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset all settings to their defaults.
         /// </summary>
         public static string ResetButtonTooltip {
             get {
                 return ResourceManager.GetString("ResetButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to restart the program to change the language..
+        /// </summary>
+        public static string RestartRequirementMessageText {
+            get {
+                return ResourceManager.GetString("RestartRequirementMessageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart required.
+        /// </summary>
+        public static string RestartRequirementMessageTitle {
+            get {
+                return ResourceManager.GetString("RestartRequirementMessageTitle", resourceCulture);
             }
         }
         
@@ -366,7 +567,7 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show window.
+        ///   Looks up a localized string similar to Show.
         /// </summary>
         public static string ShowWindowFromTrayButtonText {
             get {
@@ -384,6 +585,33 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update available!.
+        /// </summary>
+        public static string UpdateAvailableText {
+            get {
+                return ResourceManager.GetString("UpdateAvailableText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new update has been downloaded, you need to restart the program to install it..
+        /// </summary>
+        public static string UpdateCompletedText {
+            get {
+                return ResourceManager.GetString("UpdateCompletedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart needed.
+        /// </summary>
+        public static string UpdateCompletedTitle {
+            get {
+                return ResourceManager.GetString("UpdateCompletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update Download Progress.
         /// </summary>
         public static string UpdateDownloadProgressTooltip {
@@ -393,236 +621,11 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin Privileges Requirement Message Text.
-        /// </summary>
-        public static string AdminPrivilegesRequirementMessageText {
-            get {
-                return ResourceManager.GetString("AdminPrivilegesRequirementMessageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Admin Privileges Requirement Message Title.
-        /// </summary>
-        public static string AdminPrivilegesRequirementMessageTitle {
-            get {
-                return ResourceManager.GetString("AdminPrivilegesRequirementMessageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message Box Ok Button Text.
-        /// </summary>
-        public static string MessageBoxOkButtonText {
-            get {
-                return ResourceManager.GetString("MessageBoxOkButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message Box Cancel Button Text.
-        /// </summary>
-        public static string MessageBoxCancelButtonText {
-            get {
-                return ResourceManager.GetString("MessageBoxCancelButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message Box Error Title.
-        /// </summary>
-        public static string MessageBoxErrorTitle {
-            get {
-                return ResourceManager.GetString("MessageBoxErrorTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Connection Error Message Text.
-        /// </summary>
-        public static string NoConnectionErrorMessageText {
-            get {
-                return ResourceManager.GetString("NoConnectionErrorMessageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Connection Busy Message Text.
-        /// </summary>
-        public static string NoConnectionBusyMessageText {
-            get {
-                return ResourceManager.GetString("NoConnectionBusyMessageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message Box Error Text.
-        /// </summary>
-        public static string MessageBoxErrorText {
-            get {
-                return ResourceManager.GetString("MessageBoxErrorText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configuration File Error Message Text.
-        /// </summary>
-        public static string ConfigurationFileErrorMessageText {
-            get {
-                return ResourceManager.GetString("ConfigurationFileErrorMessageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New Update Message Title.
-        /// </summary>
-        public static string NewUpdateMessageTitle {
-            get {
-                return ResourceManager.GetString("NewUpdateMessageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NewUpdateMessageVersionText.
-        /// </summary>
-        public static string NewUpdateMessageVersionText {
-            get {
-                return ResourceManager.GetString("NewUpdateMessageVersionText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NewUpdateMessageCurrentVersionText.
-        /// </summary>
-        public static string NewUpdateMessageCurrentVersionText {
-            get {
-                return ResourceManager.GetString("NewUpdateMessageCurrentVersionText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NewUpdateMessageUpdateText.
-        /// </summary>
-        public static string NewUpdateMessageUpdateText {
-            get {
-                return ResourceManager.GetString("NewUpdateMessageUpdateText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UpdateCompletedTitle.
-        /// </summary>
-        public static string UpdateCompletedTitle {
-            get {
-                return ResourceManager.GetString("UpdateCompletedTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UpdateCompletedTitle.
-        /// </summary>
-        public static string UpdateCompletedText {
-            get {
-                return ResourceManager.GetString("UpdateCompletedText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MessageBoxRestartButtonText.
-        /// </summary>
-        public static string MessageBoxRestartButtonText {
-            get {
-                return ResourceManager.GetString("MessageBoxRestartButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UpToDateText.
+        ///   Looks up a localized string similar to You&apos;re up to date.
         /// </summary>
         public static string UpToDateText {
             get {
                 return ResourceManager.GetString("UpToDateText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UpdateAvailableText.
-        /// </summary>
-        public static string UpdateAvailableText {
-            get {
-                return ResourceManager.GetString("UpdateAvailableText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NoConnectionText.
-        /// </summary>
-        public static string NoConnectionText {
-            get {
-                return ResourceManager.GetString("NoConnectionText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DownloadingText.
-        /// </summary>
-        public static string DownloadingText {
-            get {
-                return ResourceManager.GetString("DownloadingText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to RestartRequirementMessageTitle.
-        /// </summary>
-        public static string RestartRequirementMessageTitle {
-            get {
-                return ResourceManager.GetString("RestartRequirementMessageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to RestartRequirementMessageText.
-        /// </summary>
-        public static string RestartRequirementMessageText {
-            get {
-                return ResourceManager.GetString("RestartRequirementMessageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to HideButtonTooltip.
-        /// </summary>
-        public static string HideButtonTooltip {
-            get {
-                return ResourceManager.GetString("HideButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to RefreshPortsButtonTooltip.
-        /// </summary>
-        public static string RefreshPortsButtonTooltip {
-            get {
-                return ResourceManager.GetString("RefreshPortsButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BackwardCompabilityTooltip.
-        /// </summary>
-        public static string BackwardCompabilityTooltip {
-            get {
-                return ResourceManager.GetString("BackwardCompabilityTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BackwardCompabilityText.
-        /// </summary>
-        public static string BackwardCompabilityText {
-            get {
-                return ResourceManager.GetString("BackwardCompabilityText", resourceCulture);
             }
         }
     }

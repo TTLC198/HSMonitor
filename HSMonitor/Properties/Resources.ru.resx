@@ -106,7 +106,7 @@
     <value>Проверить обновления</value>
   </data>
   <data name="CloseAppFromTrayButtonText" xml:space="preserve">
-    <value>Закрыть приложение</value>
+    <value>Закрыть</value>
   </data>
   <data name="CloseButtonTooltip" xml:space="preserve">
     <value>Закрыть HSMonitor</value>
@@ -229,7 +229,7 @@
     <value>Настройки</value>
   </data>
   <data name="ShowWindowFromTrayButtonText" xml:space="preserve">
-    <value>Открыть приложение</value>
+    <value>Открыть</value>
   </data>
   <data name="TXIntervalText" xml:space="preserve">
     <value>Интервал отправки(мс):</value>

@@ -165,7 +165,7 @@ Press OK to restart the application as administrator.</value>
     <value>Check for updates</value>
   </data>
   <data name="CloseAppFromTrayButtonText" xml:space="preserve">
-    <value>Close application</value>
+    <value>Close</value>
   </data>
   <data name="CloseButtonTooltip" xml:space="preserve">
     <value>Close HSMonitor</value>
@@ -289,7 +289,7 @@ Please reinstall the program to fix the problem.</value>
     <value>Settings</value>
   </data>
   <data name="ShowWindowFromTrayButtonText" xml:space="preserve">
-    <value>Show window</value>
+    <value>Show</value>
   </data>
   <data name="TXIntervalText" xml:space="preserve">
     <value>TX Interval(ms):</value>
