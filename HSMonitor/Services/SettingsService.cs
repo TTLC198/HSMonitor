@@ -72,10 +72,33 @@ public class SettingsService
         SettingsReset?.Invoke(this, EventArgs.Empty);
     }
 
-    public async Task Load()
+    public void Load()
     {
         try
         {
+            if (!Directory.Exists(App.SettingsDirPath))
+                Directory.CreateDirectory(App.SettingsDirPath);
+            if (!File.Exists(ConfigurationPath))
+                Settings.JsonToFile(ConfigurationPath);
+            
+            var json = File.ReadAllText(ConfigurationPath);
+            Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
+            Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
+            Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
+            SettingsLoaded?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception exception)
+        {
+            _logger.Error(exception);
+        }
+    }
+
+    public async Task LoadAsync()
+    {
+        try
+        {
+            if (!Directory.Exists(App.SettingsDirPath))
+                Directory.CreateDirectory(App.SettingsDirPath);
             if (!File.Exists(ConfigurationPath))
                 Settings.JsonToFile(ConfigurationPath);
             

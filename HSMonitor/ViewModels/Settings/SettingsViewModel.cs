@@ -52,7 +52,7 @@ public class SettingsViewModel : DialogScreen
 
     public async void Cancel()
     {
-        await _settingsService.Load();
+        await _settingsService.LoadAsync();
         Close(false);
     }
 }
