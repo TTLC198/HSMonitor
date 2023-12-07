@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using HSMonitor.Models;
+using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
@@ -176,21 +177,21 @@ public class HardwareMonitorService
                     : _settingsService.Settings.CpuCustomName;
 
             if (clockSensor is not null and {Value: not null})
-                cpuInfo.Clock = double.TryParse($"{clockSensor.Value}", out var clock) ? Convert.ToInt32(clock) : 0;
+                cpuInfo.Clock = Convert.ToInt32(clockSensor.Value.GetFloatAsCorrectNumber());
             if (loadSensor is not null and {Value: not null})
-                cpuInfo.Load = double.TryParse($"{loadSensor.Value}", out var load) ? Convert.ToInt32(load) : 0;
+                cpuInfo.Load = Convert.ToInt32(loadSensor.Value.GetFloatAsCorrectNumber());
             if (powerSensor is not null and {Value: not null})
                 cpuInfo.Power = Math.Round(
-                    double.TryParse($"{powerSensor.Value}", out var power) ? power : 0,
+                    powerSensor.Value.GetFloatAsCorrectNumber(),
                     1,
                     MidpointRounding.ToEven);
             if (voltageSensor is not null and {Value: not null})
                 cpuInfo.Voltage = Math.Round(
-                    double.TryParse($"{voltageSensor.Value}", out var voltage) ? voltage : 0,
+                    voltageSensor.Value.GetFloatAsCorrectNumber(),
                     2,
                     MidpointRounding.ToEven);
             if (temperatureSensor is not null and {Value: not null})
-                cpuInfo.Temperature = double.TryParse($"{temperatureSensor.Value}", out var temp) ? Convert.ToInt32(temp) : 0;
+                cpuInfo.Temperature = Convert.ToInt32(temperatureSensor.Value.GetFloatAsCorrectNumber());
 
             return cpuInfo;
         }
@@ -242,23 +243,23 @@ public class HardwareMonitorService
                     switch (fan.SensorType)
                     {
                         case SensorType.Fan when gpuFans.Any(gf => gf.Name == fan.Name):
-                            gpuFans.First(gf => gf.Name == fan.Name).Rpm = Convert.ToInt32(fan.Value);
+                            gpuFans.First(gf => gf.Name == fan.Name).Rpm = Convert.ToInt32(fan.Value.GetFloatAsCorrectNumber());
                             break;
                         case SensorType.Fan:
                             gpuFans.Add(new GpuFan()
                             {
                                 Name = fan.Name,
-                                Rpm = Convert.ToInt32(fan.Value)
+                                Rpm = Convert.ToInt32(fan.Value.GetFloatAsCorrectNumber())
                             });
                             break;
                         case SensorType.Control when gpuFans.Any(gf => gf.Name == fan.Name):
-                            gpuFans.First(gf => gf.Name == fan.Name).Load = Convert.ToInt32(fan.Value);
+                            gpuFans.First(gf => gf.Name == fan.Name).Load = Convert.ToInt32(fan.Value.GetFloatAsCorrectNumber());
                             break;
                         case SensorType.Control:
                             gpuFans.Add(new GpuFan()
                             {
                                 Name = fan.Name,
-                                Rpm = Convert.ToInt32(fan.Value)
+                                Rpm = Convert.ToInt32(fan.Value.GetFloatAsCorrectNumber())
                             });
                             break;
                     }
@@ -291,19 +292,19 @@ public class HardwareMonitorService
                     : _settingsService.Settings.GpuCustomName;
             
             if (coreClockSensor is not null and {Value: not null})
-                gpuInfo.CoreClock = double.TryParse($"{coreClockSensor.Value}", out var clock) ? Convert.ToInt32(clock) : 0;
+                gpuInfo.CoreClock = Convert.ToInt32(coreClockSensor.Value.GetFloatAsCorrectNumber());
             if (coreLoadSensor is not null and {Value: not null})
-                gpuInfo.CoreLoad = double.TryParse($"{coreLoadSensor.Value}", out var load) ? Convert.ToInt32(load) : 0;
+                gpuInfo.CoreLoad = Convert.ToInt32(coreLoadSensor.Value.GetFloatAsCorrectNumber());
             if (coreTemperatureSensor is not null and {Value: not null})
-                gpuInfo.CoreTemperature = double.TryParse($"{coreTemperatureSensor.Value}", out var temp) ? Convert.ToInt32(temp) : 0;
+                gpuInfo.CoreTemperature = Convert.ToInt32(coreTemperatureSensor.Value.GetFloatAsCorrectNumber());
             if (powerSensor is not null and {Value: not null})
-                gpuInfo.Power = double.TryParse($"{powerSensor.Value}", out var power) ? Convert.ToInt32(power) : 0;
+                gpuInfo.Power = Convert.ToInt32(powerSensor.Value.GetFloatAsCorrectNumber());
             if (vRamClockSensor is not null and {Value: not null})
-                gpuInfo.VRamClock = double.TryParse($"{vRamClockSensor.Value}", out var vRamClock) ? Convert.ToInt32(vRamClock) : 0;
+                gpuInfo.VRamClock = Convert.ToInt32(vRamClockSensor.Value.GetFloatAsCorrectNumber());
             if (vRamMemoryTotalSensor is not null and {Value: not null})
-                gpuInfo.VRamMemoryTotal = double.TryParse($"{vRamMemoryTotalSensor.Value}", out var vRamMemoryTotal) ? Convert.ToInt32(vRamMemoryTotal) : 0;
+                gpuInfo.VRamMemoryTotal = Convert.ToInt32(vRamMemoryTotalSensor.Value.GetFloatAsCorrectNumber());
             if (vRamMemoryUsedSensor is not null and {Value: not null})
-                gpuInfo.VRamMemoryUsed = double.TryParse($"{vRamMemoryUsedSensor.Value}", out var vRamMemoryUsed) ? Convert.ToInt32(vRamMemoryUsed) : 0;
+                gpuInfo.VRamMemoryUsed = Convert.ToInt32(vRamMemoryUsedSensor.Value.GetFloatAsCorrectNumber());
             
             gpuInfo.GpuFans = gpuFans;
 
@@ -344,15 +345,21 @@ public class HardwareMonitorService
                 : _settingsService.Settings.MemoryCustomType
                   ?? "Default";
             memoryInfo.Load = (int) Math.Round(
-                (decimal) (memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
-                    .Value ?? 0), 0, MidpointRounding.AwayFromZero);
+                memoryHardwareSensors.First(s => s.Name == "Memory" && s.SensorType == SensorType.Load)
+                    .Value.GetFloatAsCorrectNumber(),
+                0,
+                MidpointRounding.AwayFromZero);
             memoryInfo.Available = (double) Math.Round(
-                (decimal) (memoryHardwareSensors
-                    .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data).Value ?? 0),
-                1, MidpointRounding.AwayFromZero);
+                memoryHardwareSensors
+                    .First(s => s.Name.Contains("Memory Available") && s.SensorType == SensorType.Data)
+                    .Value.GetFloatAsCorrectNumber(),
+                1,
+                MidpointRounding.AwayFromZero);
             memoryInfo.Used = (double) Math.Round(
-                (decimal) (memoryHardwareSensors
-                    .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data).Value ?? 0), 1,
+                memoryHardwareSensors
+                    .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data)
+                    .Value.GetFloatAsCorrectNumber(),
+                1,
                 MidpointRounding.AwayFromZero);
 
             return memoryInfo;
