@@ -13,7 +13,14 @@ namespace HSMonitor.Utils;
 public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 {
     private T GetInstance<T>() => (T) base.GetInstance(typeof(T));
-
+    
+    protected override void OnStart()
+    {
+        Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
+        Stylet.Logging.LogManager.Enabled = false;
+        base.OnStart();
+    }
+    
     protected override void ConfigureIoC(IStyletIoCBuilder builder)
     {
         base.ConfigureIoC(builder);
@@ -32,22 +39,21 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<SettingsViewModel>().ToSelf().InSingletonScope();
         builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope();
     }
-    
+
+    protected override void Configure()
+    {
+        GetInstance<SettingsService>().Load();
+        base.Configure();
+    }
+
     protected override void Launch()
     {
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
-        GetInstance<SettingsService>().Load();
+        
         base.Launch();
     }
-
-    protected override void OnStart()
-    {
-        Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
-        Stylet.Logging.LogManager.Enabled = false;
-        base.OnStart();
-    }
-
+    
     protected override void OnExit(ExitEventArgs e)
     {
         GetInstance<SerialMonitorService>().Dispose();
