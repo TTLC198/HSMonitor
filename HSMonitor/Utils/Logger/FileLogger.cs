@@ -17,7 +17,8 @@ public class FileLogger<T> : ILogger<T>
         _fullFilePath = Path.Combine(App.LogsDirPath, DateTime.Now.ToString("yyyy-MM-dd") + "_log.txt");
         if (!Directory.Exists(App.LogsDirPath))
             Directory.CreateDirectory(App.LogsDirPath);
-        DeleteOldLogFiles();
+        else 
+            DeleteOldLogFiles();
     }
 
     public void Info(string format, params object[] args)
