@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using HSMonitor.Models.Enums;
 
-namespace HSMonitor.Models;
+namespace HSMonitor.Models.DataObjects;
 
-public class Message
+public class HardwareData : Data
+{
+    public HardwareData(HardwareMessage message) : base(message, InformationType.HardwareInformation)
+    {
+        
+    }
+}
+
+public class HardwareMessage : IMessage
 {
     public CpuInformation? CpuInformation { get; set; }
     public GpuInformation? GpuInformation { get; set; }
     public MemoryInformation? MemoryInformation { get; set; }
-    
-    public DeviceSettings? DeviceSettings { get; set; }
 }
 
 public class CpuInformation
@@ -59,9 +64,4 @@ public class MemoryInformation
     public double Used { get; set; }
 
     public double Total => Math.Round(Available + Used, MidpointRounding.AwayFromZero);
-}
-
-public class DeviceSettings
-{
-    public int DisplayBrightness { get; set; }
 }
