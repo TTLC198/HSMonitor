@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using HSMonitor.Models.DataObjects;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using HSMonitor.Utils.Usb.Serial;
@@ -28,16 +29,21 @@ public class SerialMonitorService : IDisposable
         _serial = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
-        _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
+        _hardwareMonitorService.HardwareInformationUpdated += SendHardwareInformation;
     }
 
     private void UpdateSerialSettings()
     {
         _serial.Dispose();
         _serial = new Serial(_settingsService ?? throw new InvalidOperationException());
+        var settingsData = new SettingsData(new SettingsMessage()
+        {
+            DisplayBrightness = _settingsService.Settings.DeviceDisplayBrightness
+        });
+        SendInformation(settingsData);
     }
 
-    private void SendInformationToMonitor(object? sender, EventArgs args)
+    private void SendHardwareInformation(object? sender, EventArgs args)
     {
         if (sender is not HardwareMonitorService hardwareMonitorService) return;
         var message = hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
@@ -48,8 +54,16 @@ public class SerialMonitorService : IDisposable
             if (message.GpuInformation is {Name.Length: > 23})
                 message.GpuInformation.Name = message.GpuInformation.Name[..23];
         }
+        var data = new HardwareData(message);
+        SendInformation(data);
+    }
+
+    public void SendInformation(Data data)
+    {
+        var temp = JsonSerializer //todo remove after testing
+            .Serialize(data); 
         var jsonData = JsonSerializer
-            .Serialize(message)
+            .Serialize(data)
             .Select(s => (byte) s);
         if (_serial.CheckAccess())
         {

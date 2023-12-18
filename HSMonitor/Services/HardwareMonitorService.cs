@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using HSMonitor.Models;
+using HSMonitor.Models.DataObjects;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
@@ -67,16 +68,16 @@ public class HardwareMonitorService
                 :_settingsService.Settings.SendInterval);
     }
 
-    public Message GetHwInfoMessage()
+    public HardwareMessage GetHwInfoMessage()
         => new()
         {
             CpuInformation = Cpu,
             GpuInformation = Gpu,
             MemoryInformation = Memory,
-            DeviceSettings = new DeviceSettings
+            /*DeviceSettings = new DeviceSettings todo
             {
                 DisplayBrightness = _settingsService.Settings.DeviceDisplayBrightness
-            }
+            }*/
         };
 
     public static IEnumerable<IHardware> GetProcessors() => Computer.Hardware.Where(h =>
