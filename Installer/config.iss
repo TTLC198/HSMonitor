@@ -44,7 +44,7 @@ ru.MinimizeDescription=Запуск приложения свернутым
 ru.StartupGroupDescription=Автозагрузка
 
 [Dirs]
-Name: "{userappdata}\{#AppName}";
+Name: "{userappdata}\{#AppName}\logs";
 
 [Files]
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion

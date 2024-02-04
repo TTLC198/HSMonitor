@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using HSMonitor.Models;
+using HSMonitor.Models.DataObjects;
 using HSMonitor.Services;
 
 namespace HSMonitor.ViewModels;

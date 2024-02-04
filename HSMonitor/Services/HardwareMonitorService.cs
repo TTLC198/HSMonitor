@@ -60,7 +60,8 @@ public class HardwareMonitorService
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
     {
-        if (sender is not SettingsService service) return;
+        if (sender is not SettingsService service)
+            return;
         _settingsService.Settings = service.Settings;
         _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
             _settingsService.Settings.SendInterval == 0 
