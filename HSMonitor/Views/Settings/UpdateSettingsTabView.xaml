@@ -120,5 +120,22 @@
                 </TextBlock>
             </Grid>
         </StackPanel>
+        <Button
+            Grid.Column="0"
+            Padding="2"
+            VerticalAlignment="Center"
+            Style="{DynamicResource MaterialDesignFlatDarkButton}"
+            ToolTip="{x:Static p:Resources.CheckForUpdatesTooltip}"
+            Width="50"
+            Height="50"
+            Margin="0, 0, 6, 0"
+            Command="{s:Action FirmwareUpdateHandlerStart}">
+            <materialDesign:PackIcon
+                Width="48"
+                Height="48"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Kind="{Binding UpdateStatus, Converter={x:Static converters:UpdateStatusToIconConverter.Instance}}"/>
+        </Button>
     </StackPanel>
 </UserControl>

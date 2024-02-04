@@ -15,7 +15,8 @@ namespace HSMonitor.ViewModels.Settings;
 #pragma warning disable CA1416
 public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPropertyChanged
 {
-    private readonly UpdateService _updateService;
+    private readonly ProgramUpdateService _programUpdateService;
+    private readonly FirmwareUpdateService _firmwareUpdateService;
 
     private int _updateDownloadPercent;
     private bool _isProgressBarActive;
@@ -60,7 +61,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             VersionString = 
                 value switch
                 {
-                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().First().Version,
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _programUpdateService.GetVersions().First().Version,
                     _ => App.VersionString
                 };
             OnPropertyChanged();
@@ -93,11 +94,11 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
                 IsProgressBarActive = true;
                 StatusString = Resources.DownloadingText;
-                await _updateService.UpdateAsync();
+                await _programUpdateService.UpdateAsync();
                 break;
             default:
-                await _updateService.CheckForUpdates();
-                UpdateStatus = _updateService.UpdateStatus;
+                await _programUpdateService.CheckForUpdates();
+                UpdateStatus = _programUpdateService.UpdateStatus;
                 StatusString = 
                     UpdateStatus switch
                     {
@@ -108,12 +109,17 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                 break;
         }
     }
+    
+    public async Task FirmwareUpdateHandlerStart()
+    {
+        await _firmwareUpdateService.UpdateAsync();
+    }
 
     public async void OnViewFullyLoaded()
     {
-        await _updateService.CheckForUpdates();
+        await _programUpdateService.CheckForUpdates();
         
-        UpdateStatus = _updateService.UpdateStatus;
+        UpdateStatus = _programUpdateService.UpdateStatus;
         StatusString = 
             UpdateStatus switch
             {
@@ -124,20 +130,21 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         VersionString = 
             UpdateStatus switch
             {
-                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().Count() > 0 
-                    ? $"v{_updateService.GetVersions().First().Version}"
+                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _programUpdateService.GetVersions().Count() > 0 
+                    ? $"v{_programUpdateService.GetVersions().First().Version}"
                     : App.VersionString,
                 _ => App.VersionString
             };
     }
 
-    public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService updateService) 
+    public UpdateSettingsTabViewModel(SettingsService settingsService, ProgramUpdateService programUpdateService, FirmwareUpdateService firmwareUpdateService) 
         : base(settingsService, 4, "Update")
     {
-        _updateService = updateService;
-        _updateService.UpdateDownloadProcessEvent += (_, args) => UpdateDownloadPercent = args.ProgressPercentage;
-        _updateService.UpdateDownloadFinishedEvent += (_, _) => IsProgressBarActive = false;
-        _updateService.CheckForUpdates().GetAwaiter();
+        _programUpdateService = programUpdateService;
+        _firmwareUpdateService = firmwareUpdateService;
+        _programUpdateService.UpdateDownloadProcessEvent += (_, args) => UpdateDownloadPercent = args.ProgressPercentage;
+        _programUpdateService.UpdateDownloadFinishedEvent += (_, _) => IsProgressBarActive = false;
+        _programUpdateService.CheckForUpdates().GetAwaiter();
     }
     
     public new event PropertyChangedEventHandler? PropertyChanged;

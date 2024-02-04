@@ -25,7 +25,7 @@ public class MainWindowViewModel : Screen
     private readonly SettingsService _settingsService;
     private readonly SerialMonitorService _serialMonitorService;
     private readonly HardwareMonitorService _hardwareMonitorService;
-    private readonly UpdateService _updateService;
+    private readonly ProgramUpdateService _programUpdateService;
     private readonly ILogger<MainWindowViewModel> _logger;
     public DashboardViewModel Dashboard { get; }
 
@@ -49,7 +49,7 @@ public class MainWindowViewModel : Screen
         HardwareMonitorService hardwareMonitorService,
         SettingsService settingsService,
         SerialMonitorService serialMonitorService,
-        UpdateService updateService, 
+        ProgramUpdateService programUpdateService, 
         ILogger<MainWindowViewModel> logger)
     {
         _viewModelFactory = viewModelFactory;
@@ -57,7 +57,7 @@ public class MainWindowViewModel : Screen
         _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
         _serialMonitorService = serialMonitorService;
-        _updateService = updateService;
+        _programUpdateService = programUpdateService;
         _logger = logger;
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
@@ -177,7 +177,7 @@ public class MainWindowViewModel : Screen
 
             try
             {
-                var updateInfo = await _updateService.CheckForUpdates();
+                var updateInfo = await _programUpdateService.CheckForUpdates();
                 
                 if (updateInfo.Status is UpdateStatus.UpdateAvailable)
                 {
@@ -186,7 +186,7 @@ public class MainWindowViewModel : Screen
                         var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                         settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
                         
-                        await _updateService.UpdateAsync();
+                        await _programUpdateService.UpdateAsync();
                     }
                     else
                     {

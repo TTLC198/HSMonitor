@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Properties;
+using HSMonitor.Services.Update;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
@@ -15,12 +16,12 @@ using NetSparkleUpdater.SignatureVerifiers;
 
 namespace HSMonitor.Services;
 
-public class UpdateService
+public class ProgramUpdateService : IUpdateService
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SparkleUpdater _updater;
-    private readonly ILogger<UpdateService> _logger;
+    private readonly ILogger<ProgramUpdateService> _logger;
 
     private UpdateInfo? _updateInfo;
     
@@ -28,7 +29,7 @@ public class UpdateService
     public event DownloadDataCompletedEventHandler? UpdateDownloadFinishedEvent;
 
     public UpdateStatus UpdateStatus =>
-        _updateInfo is not null ? _updateInfo.Status : UpdateStatus.CouldNotDetermine;
+        _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
     public async Task UpdateAsync()
     {
@@ -108,7 +109,7 @@ public class UpdateService
         Application.Current.Shutdown();
 
 
-    public UpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<UpdateService> logger)
+    public ProgramUpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<ProgramUpdateService> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;

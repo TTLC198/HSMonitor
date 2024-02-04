@@ -42,6 +42,13 @@ public class SerialMonitorService : IDisposable
         });
         SendInformation(settingsData);
     }
+    
+    public void SendUpdateFirmwarePacket(Data firmwareUpdateData)
+    {
+        _serial.Dispose();
+        _serial = new Serial(_settingsService ?? throw new InvalidOperationException());
+        SendInformation(firmwareUpdateData);
+    }
 
     private void SendHardwareInformation(object? sender, EventArgs args)
     {
@@ -60,8 +67,10 @@ public class SerialMonitorService : IDisposable
 
     public void SendInformation(Data data)
     {
+#if DEBUG
         var temp = JsonSerializer //todo remove after testing
             .Serialize(data); 
+#endif
         var jsonData = JsonSerializer
             .Serialize(data)
             .Select(s => (byte) s);

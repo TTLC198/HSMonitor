@@ -5,4 +5,5 @@ public enum InformationType
     HardwareInformation = 0,
     SaveSettings = 1,
     DeviceSettingsRequest = 2,
+    FirmwareUpdate = 3,
 }
