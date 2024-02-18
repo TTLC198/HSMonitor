@@ -249,4 +249,7 @@
   <data name="UpToDateText" xml:space="preserve">
     <value>Нет обновлений</value>
   </data>
+  <data name="SelectCpuTempSensor" xml:space="preserve">
+    <value>Выбор датчика температуры CPU:</value>
+  </data>
 </root>

@@ -21,6 +21,8 @@ public class ApplicationSettings
     
     public string? CpuId { get; set; }
     
+    public int? CpuTemperatureSensorIndex { get; set; }
+    
     public string? GpuId { get; set; }
     
     public int DefaultCpuFrequency { get; set; }

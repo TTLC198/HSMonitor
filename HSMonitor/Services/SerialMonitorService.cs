@@ -60,8 +60,6 @@ public class SerialMonitorService : IDisposable
 
     public void SendInformation(Data data)
     {
-        var temp = JsonSerializer //todo remove after testing
-            .Serialize(data); 
         var jsonData = JsonSerializer
             .Serialize(data)
             .Select(s => (byte) s);

@@ -13,6 +13,10 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
     public List<IHardware> Processors => HardwareMonitorService.GetProcessors().ToList();
 
     public List<IHardware> GraphicCards => HardwareMonitorService.GetGraphicCards().ToList();
+    
+    public List<ISensor> CpuTempSensors => SelectedCpu.Sensors
+        .Where(s => s.SensorType == SensorType.Temperature)
+        .ToList();
 
     public IHardware SelectedCpu
     {
@@ -28,6 +32,20 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
                          c.Identifier.ToString()!.Contains(value.Identifier.ToString() ?? string.Empty))
                  ?? Processors.First()).Identifier
                 .ToString();
+    }
+    
+    public ISensor SelectedCpuTempSensor
+    {
+        get =>
+            SelectedCpu.Sensors
+                .FirstOrDefault(s => s.Index == _settingsService.Settings.CpuTemperatureSensorIndex && s.SensorType == SensorType.Temperature)
+            ?? SelectedCpu.Sensors.First(s => s.SensorType == SensorType.Temperature);
+        set =>
+            _settingsService.Settings.CpuTemperatureSensorIndex =
+                (SelectedCpu.Sensors
+                      .FirstOrDefault(s =>
+                          s.Index == value.Index)
+                  ?? SelectedCpu.Sensors.First(s => s.SensorType == SensorType.Temperature)).Index;
     }
 
     public IHardware SelectedGpu
@@ -67,6 +85,8 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
                               .FirstOrDefault(c =>
                                   c.Identifier.ToString()!.Contains(_settingsService.Settings.CpuId ?? ""))
                           ?? Processors.First();
+            SelectedCpuTempSensor = SelectedCpu.Sensors
+                .First(s => s.SensorType == SensorType.Temperature);
         }
         if (GraphicCards is {Count: > 0})
         {

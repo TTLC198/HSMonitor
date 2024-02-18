@@ -250,4 +250,7 @@ Please reinstall the program to fix the problem.</value>
   <data name="UpToDateText" xml:space="preserve">
     <value>You're up to date</value>
   </data>
+  <data name="SelectCpuTempSensor" xml:space="preserve">
+    <value>Select CPU temperature sensor:</value>
+  </data>
 </root>

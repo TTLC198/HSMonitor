@@ -522,6 +522,15 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select CPU temperature sensor:.
+        /// </summary>
+        public static string SelectCpuTempSensor {
+            get {
+                return ResourceManager.GetString("SelectCpuTempSensor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select CPU:.
         /// </summary>
         public static string SelectCPUText {
