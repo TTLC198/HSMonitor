@@ -18,8 +18,8 @@
         Margin="0, 8"
         Orientation="Vertical">
         <!-- Check for updates -->
-        <Grid 
-            Margin="12,4" >
+        <Grid
+            Margin="12,4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -40,7 +40,7 @@
                     Height="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Kind="{Binding UpdateStatus, Converter={x:Static converters:UpdateStatusToIconConverter.Instance}}"/>
+                    Kind="{Binding UpdateStatus, Converter={x:Static converters:UpdateStatusToIconConverter.Instance}}" />
             </Button>
             <StackPanel
                 Grid.Column="1"
@@ -50,17 +50,17 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding StatusString}"/>
+                    Text="{Binding StatusString}" />
                 <TextBlock
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="12"
-                    Text="{Binding VersionString}"/>
+                    Text="{Binding VersionString}" />
             </StackPanel>
         </Grid>
         <!-- Update Download Progress -->
-        <Grid 
-            Margin="12,4" 
+        <Grid
+            Margin="12,4"
             ToolTip="{x:Static p:Resources.UpdateDownloadProgressTooltip}"
             Visibility="{Binding IsProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
             <Grid.RowDefinitions>
@@ -78,21 +78,21 @@
                     Text="{Binding UpdateDownloadPercent}" />
                 <Run FontWeight="Light" Text="%" />
             </TextBlock>
-            <ProgressBar 
+            <ProgressBar
                 Grid.Row="1"
-                Orientation="Horizontal" 
+                Orientation="Horizontal"
                 Minimum="0"
                 Maximum="100"
                 Value="{Binding UpdateDownloadPercent}" />
         </Grid>
         <!-- Github URL -->
         <StackPanel
-            Margin="12,4" 
+            Margin="12,4"
             Orientation="Vertical">
             <TextBlock
                 Text="{x:Static p:Resources.ProjectURLText}"
-                VerticalAlignment="Center"/>
-            <Grid 
+                VerticalAlignment="Center" />
+            <Grid
                 ToolTip="Github URL"
                 Background="{DynamicResource PrimaryHueMidBrush}"
                 TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
@@ -107,7 +107,7 @@
                     Margin="2"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Kind="Github"/>
+                    Kind="Github" />
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 using HSMonitor.Models;
 using HSMonitor.Services;
-using HSMonitor.Utils.Serial;
 using HSMonitor.Utils.Usb.Serial;
 
 namespace HSMonitor.ViewModels.Settings;
@@ -11,6 +9,12 @@ namespace HSMonitor.ViewModels.Settings;
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
     private IEnumerable<DeviceInfo> _availablePorts = Serial.GetPorts();
+
+    public ConnectionSettingsTabViewModel(SettingsService settingsService, Serial serial)
+        : base(settingsService, 0, "Connection")
+    {
+    }
+
     public IEnumerable<DeviceInfo> AvailablePorts
     {
         get => _availablePorts;
@@ -21,7 +25,7 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
         }
     }
 
-    public static IEnumerable<int> SupportedBaudRates => new List<int>()
+    public static IEnumerable<int> SupportedBaudRates => new List<int>
     {
         300,
         600,
@@ -42,22 +46,23 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
     {
         get =>
             AvailablePorts.FirstOrDefault(p => p.PortName ==
-                                               (SettingsService.Settings.LastSelectedPort ?? "COM1")) ?? new DeviceInfo();
+                                               (SettingsService.Settings.LastSelectedPort ?? "COM1")) ??
+            new DeviceInfo();
         set => SettingsService.Settings.LastSelectedPort = value.PortName;
     }
-    
+
     public int SelectedBaudRate
     {
         get => SettingsService.Settings.LastSelectedBaudRate;
         set => SettingsService.Settings.LastSelectedBaudRate = value;
     }
-    
+
     public int SendInterval
     {
         get => SettingsService.Settings.SendInterval;
         set => SettingsService.Settings.SendInterval = value;
     }
-    
+
     public int DeviceDisplayBrightness
     {
         get => SettingsService.Settings.DeviceDisplayBrightness;
@@ -68,10 +73,5 @@ public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
     {
         AvailablePorts = new List<DeviceInfo>();
         AvailablePorts = Serial.GetPorts();
-    }
-    
-    public ConnectionSettingsTabViewModel(SettingsService settingsService, Serial serial) 
-        : base(settingsService, 0, "Connection")
-    {
     }
 }

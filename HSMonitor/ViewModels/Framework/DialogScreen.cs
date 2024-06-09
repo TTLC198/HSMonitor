@@ -10,7 +10,7 @@ public abstract class DialogScreen<T> : PropertyChangedBase
     public void Close(T dialogResult)
     {
         DialogResult = dialogResult;
-        DialogHost.CloseDialogCommand.Execute(null,null); //close DialogHost screen
+        DialogHost.CloseDialogCommand.Execute(null, null); //close DialogHost screen
     }
 }
 

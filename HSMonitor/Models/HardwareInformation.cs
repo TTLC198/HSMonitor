@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace HSMonitor.Models;
 
@@ -10,7 +8,7 @@ public class Message
     public CpuInformation? CpuInformation { get; set; }
     public GpuInformation? GpuInformation { get; set; }
     public MemoryInformation? MemoryInformation { get; set; }
-    
+
     public DeviceSettings? DeviceSettings { get; set; }
 }
 
@@ -34,7 +32,7 @@ public class GpuInformation
     public string? Name { get; set; }
     public double Power { get; set; }
     public int CoreClock { get; set; }
-    
+
     public int DefaultCoreClock { get; set; }
     public int CoreTemperature { get; set; }
     public int CoreLoad { get; set; }

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text.Json;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
 using HSMonitor.Utils.Usb.Serial;
 
 namespace HSMonitor.Services;
@@ -10,12 +9,10 @@ namespace HSMonitor.Services;
 public class SerialMonitorService : IDisposable
 {
     private readonly HardwareMonitorService _hardwareMonitorService;
-    private readonly SettingsService _settingsService;
     private readonly ILogger<SerialMonitorService> _logger;
+    private readonly SettingsService _settingsService;
 
     private Serial _serial;
-    public event EventHandler? OpenPortAttemptFailed;
-    public event EventHandler? OpenPortAttemptSuccessful;
 
     public SerialMonitorService(
         SettingsService settingsService,
@@ -30,6 +27,14 @@ public class SerialMonitorService : IDisposable
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
         _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
     }
+
+    public void Dispose()
+    {
+        _serial.Dispose();
+    }
+
+    public event EventHandler? OpenPortAttemptFailed;
+    public event EventHandler? OpenPortAttemptSuccessful;
 
     private void UpdateSerialSettings()
     {
@@ -48,11 +53,11 @@ public class SerialMonitorService : IDisposable
             if (message.GpuInformation is {Name.Length: > 23})
                 message.GpuInformation.Name = message.GpuInformation.Name[..23];
         }
+
         var jsonData = JsonSerializer
             .Serialize(message)
             .Select(s => (byte) s);
         if (_serial.CheckAccess())
-        {
             try
             {
                 _serial.Write(jsonData.ToArray());
@@ -63,12 +68,7 @@ public class SerialMonitorService : IDisposable
                 _logger.Error(exception);
                 OpenPortAttemptFailed?.Invoke(this, EventArgs.Empty);
             }
-        }
         else
-        {
             OpenPortAttemptFailed?.Invoke(this, EventArgs.Empty);
-        }
     }
-
-    public void Dispose() => _serial.Dispose();
 }

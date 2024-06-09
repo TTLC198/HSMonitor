@@ -5,19 +5,21 @@ using Stylet.Logging;
 
 namespace HSMonitor.Utils.Logger;
 
-public interface ILogger<T> : ILogger {}
+public interface ILogger<T> : ILogger
+{
+}
 
 public class FileLogger<T> : ILogger<T>
 {
+    private static readonly object _lock = new();
     private readonly string _fullFilePath;
-    private static object _lock = new object();
 
     public FileLogger()
     {
         _fullFilePath = Path.Combine(App.LogsDirPath, DateTime.Now.ToString("yyyy-MM-dd") + "_log.txt");
         if (!Directory.Exists(App.LogsDirPath))
             Directory.CreateDirectory(App.LogsDirPath);
-        else 
+        else
             DeleteOldLogFiles();
     }
 
@@ -41,7 +43,7 @@ public class FileLogger<T> : ILogger<T>
         lock (_lock)
         {
             var n = Environment.NewLine;
-            if (exception != null) 
+            if (exception != null)
                 message += $"{n} {exception.GetType()} - {exception.Message} - {exception.StackTrace}";
             if (!Directory.Exists(App.LogsDirPath))
                 Directory.CreateDirectory(App.LogsDirPath);

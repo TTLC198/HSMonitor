@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
+using System.Windows;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Utils;
@@ -12,36 +12,24 @@ using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using NetSparkleUpdater.Enums;
-using Application = System.Windows.Application;
-using Screen = Stylet.Screen;
+using Stylet;
 
 namespace HSMonitor.ViewModels;
 
 #pragma warning disable CA1416
 public class MainWindowViewModel : Screen
 {
-    private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
-    private readonly SettingsService _settingsService;
-    private readonly SerialMonitorService _serialMonitorService;
     private readonly HardwareMonitorService _hardwareMonitorService;
-    private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
-    public DashboardViewModel Dashboard { get; }
+    private readonly SerialMonitorService _serialMonitorService;
+    private readonly SettingsService _settingsService;
+    private readonly UpdateService _updateService;
+    private readonly IViewModelFactory _viewModelFactory;
 
     private bool _isConnectionErrorWindowOpened;
-    
-    private bool _isSerialMonitorEnabled = false;
 
-    public bool IsSerialMonitorEnabled
-    {
-        get => _isSerialMonitorEnabled;
-        set
-        {
-            _isSerialMonitorEnabled = value;
-            OnPropertyChanged(nameof(IsSerialMonitorEnabled));
-        }
-    }
+    private bool _isSerialMonitorEnabled;
 
     public MainWindowViewModel(
         IViewModelFactory viewModelFactory,
@@ -49,7 +37,7 @@ public class MainWindowViewModel : Screen
         HardwareMonitorService hardwareMonitorService,
         SettingsService settingsService,
         SerialMonitorService serialMonitorService,
-        UpdateService updateService, 
+        UpdateService updateService,
         ILogger<MainWindowViewModel> logger)
     {
         _viewModelFactory = viewModelFactory;
@@ -62,28 +50,40 @@ public class MainWindowViewModel : Screen
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
-        
-        var culture = new System.Globalization.CultureInfo(_settingsService.Settings.ApplicationCultureInfo ?? "en");
-        
+
+        var culture = new CultureInfo(_settingsService.Settings.ApplicationCultureInfo ?? "en");
+
         LocalizationManager.ChangeCurrentCulture(culture);
     }
-    
+
+    public DashboardViewModel Dashboard { get; }
+
+    public bool IsSerialMonitorEnabled
+    {
+        get => _isSerialMonitorEnabled;
+        set
+        {
+            _isSerialMonitorEnabled = value;
+            OnPropertyChanged(nameof(IsSerialMonitorEnabled));
+        }
+    }
+
     private async void SerialMonitorServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
     {
         IsSerialMonitorEnabled = false;
         _serialMonitorService.OpenPortAttemptFailed -= SerialMonitorServiceOnOpenPortAttemptFailed;
         _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
-        
+
         if (_isConnectionErrorWindowOpened)
             return;
-        
+
         try
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
-                message: Resources.NoConnectionErrorMessageText,
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: Resources.MessageBoxCancelButtonText
+                $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
+                Resources.NoConnectionErrorMessageText,
+                Resources.MessageBoxOkButtonText,
+                Resources.MessageBoxCancelButtonText
             );
 
             _isConnectionErrorWindowOpened = true;
@@ -95,14 +95,15 @@ public class MainWindowViewModel : Screen
 
                 await _dialogManager.ShowDialogAsync(settingsDialog);
             }
+
             _isConnectionErrorWindowOpened = dialogResult is null;
         }
-        catch 
+        catch
         {
             _isConnectionErrorWindowOpened = false;
         }
     }
-    
+
     private void SerialMonitorServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
     {
         if (IsSerialMonitorEnabled)
@@ -115,10 +116,10 @@ public class MainWindowViewModel : Screen
     private async Task ShowAdminPrivilegesRequirement()
     {
         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-            title: Resources.AdminPrivilegesRequirementMessageTitle,
-            message: Resources.AdminPrivilegesRequirementMessageText.Trim(),
-            okButtonText: Resources.MessageBoxOkButtonText,
-            cancelButtonText: Resources.MessageBoxCancelButtonText
+            Resources.AdminPrivilegesRequirementMessageTitle,
+            Resources.AdminPrivilegesRequirementMessageText.Trim(),
+            Resources.MessageBoxOkButtonText,
+            Resources.MessageBoxCancelButtonText
         );
 
         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
@@ -144,14 +145,14 @@ public class MainWindowViewModel : Screen
         catch (Exception exception)
         {
             _logger.Error(exception);
-            
+
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
+                Resources.MessageBoxErrorTitle,
+                $@"
 {Resources.MessageBoxErrorText}
 {exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
+                Resources.MessageBoxOkButtonText,
+                null
             );
             _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
         }
@@ -162,10 +163,10 @@ public class MainWindowViewModel : Screen
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: Resources.ConfigurationFileErrorMessageText.Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
+                Resources.MessageBoxErrorTitle,
+                Resources.ConfigurationFileErrorMessageText.Trim(),
+                Resources.MessageBoxOkButtonText,
+                null
             );
 
             if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
@@ -178,26 +179,26 @@ public class MainWindowViewModel : Screen
             try
             {
                 var updateInfo = await _updateService.CheckForUpdates();
-                
+
                 if (updateInfo.Status is UpdateStatus.UpdateAvailable)
                 {
                     if (_settingsService.Settings.IsAutoUpdateEnabled)
                     {
                         var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                         settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
-                        
+
                         await _updateService.UpdateAsync();
                     }
                     else
                     {
                         var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                            title: Resources.NewUpdateMessageTitle,
-                            message: $@"
+                            Resources.NewUpdateMessageTitle,
+                            $@"
 {Resources.NewUpdateMessageVersionText} {updateInfo.Updates.First().Version}.         
 {Resources.NewUpdateMessageCurrentVersionText} {App.Version.ToString(3).Trim()}.
 {Resources.NewUpdateMessageUpdateText}".Trim(),
-                            okButtonText: Resources.MessageBoxOkButtonText,
-                            cancelButtonText: Resources.MessageBoxCancelButtonText
+                            Resources.MessageBoxOkButtonText,
+                            Resources.MessageBoxCancelButtonText
                         );
                         if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
                         {
@@ -212,14 +213,14 @@ public class MainWindowViewModel : Screen
             catch (Exception exception)
             {
                 _logger.Error(exception);
-                
+
                 var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: Resources.MessageBoxErrorTitle,
-                    message: $@"
+                    Resources.MessageBoxErrorTitle,
+                    $@"
 {Resources.MessageBoxErrorText}
 {exception.Message}".Trim(),
-                    okButtonText: Resources.MessageBoxOkButtonText,
-                    cancelButtonText: null
+                    Resources.MessageBoxOkButtonText,
+                    null
                 );
 
                 await _dialogManager.ShowDialogAsync(errorBoxDialog);
@@ -243,7 +244,13 @@ public class MainWindowViewModel : Screen
         await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
-    public void ShowAbout() => OpenUrl.Open(App.GitHubProjectUrl);
+    public void ShowAbout()
+    {
+        OpenUrl.Open(App.GitHubProjectUrl);
+    }
 
-    private void Exit() => Application.Current.Shutdown();
+    private void Exit()
+    {
+        Application.Current.Shutdown();
+    }
 }

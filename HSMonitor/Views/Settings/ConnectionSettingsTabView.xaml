@@ -20,13 +20,13 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SerialPortText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <ComboBox
                 Grid.Row="1"
                 ItemsSource="{Binding AvailablePorts}"
@@ -37,11 +37,11 @@
                     <DataTemplate>
                         <TextBlock>
                             <Run
-                                Text="{Binding PortName}"/>
+                                Text="{Binding PortName}" />
                             <Run
-                                Text=" - "/>
+                                Text=" - " />
                             <Run
-                                Text="{Binding BusDescription}"/>
+                                Text="{Binding BusDescription}" />
                             <TextBlock.Resources>
                                 <Style
                                     TargetType="{x:Type TextBlock}">
@@ -51,7 +51,7 @@
                                             Value="True">
                                             <Setter
                                                 Property="FontWeight"
-                                                Value="Bold"/>
+                                                Value="Bold" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -88,13 +88,13 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.BaudRateText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <ComboBox
                 Grid.Row="1"
                 ItemsSource="{Binding SupportedBaudRates}"
@@ -102,7 +102,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                            Text="{Binding Path=.}"/>
+                            Text="{Binding Path=.}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -112,24 +112,24 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.TXIntervalText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <TextBox
                 Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="SendInterval"
-                             UpdateSourceTrigger="PropertyChanged" 
+                             UpdateSourceTrigger="PropertyChanged"
                              Mode="TwoWay">
                         <Binding.ValidationRules>
-                            <validationRules:IntValueRule 
+                            <validationRules:IntValueRule
                                 Min="500"
                                 Max="9999"
-                                ValidatesOnTargetUpdated="True"/>
+                                ValidatesOnTargetUpdated="True" />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -140,28 +140,28 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <StackPanel
                 Grid.Row="0"
                 Orientation="Horizontal">
                 <TextBlock
                     Text="{x:Static p:Resources.DisplayBrightnessText}"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center" />
                 <TextBox
                     Margin="2"
                     materialDesign:ValidationAssist.HasError="False">
                     <TextBox.Text>
                         <Binding Path="DeviceDisplayBrightness"
-                                 UpdateSourceTrigger="PropertyChanged" 
+                                 UpdateSourceTrigger="PropertyChanged"
                                  Mode="TwoWay">
                             <Binding.ValidationRules>
-                                <validationRules:IntValueRule 
+                                <validationRules:IntValueRule
                                     Min="10"
                                     Max="100"
-                                    ValidatesOnTargetUpdated="True"/>
+                                    ValidatesOnTargetUpdated="True" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -177,7 +177,7 @@
                 SmallChange="1"
                 TickFrequency="10"
                 Style="{DynamicResource MaterialDesignThinSlider}"
-                Value="{Binding DeviceDisplayBrightness}"/>
+                Value="{Binding DeviceDisplayBrightness}" />
         </Grid>
     </StackPanel>
 </UserControl>

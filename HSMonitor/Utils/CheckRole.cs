@@ -8,8 +8,8 @@ public class CheckRole
     {
         try
         {
-            WindowsIdentity user = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(user);
+            var user = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(user);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
         catch

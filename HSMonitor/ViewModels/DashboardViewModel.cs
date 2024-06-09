@@ -11,23 +11,37 @@ namespace HSMonitor.ViewModels;
 
 public class DashboardViewModel : INotifyPropertyChanged
 {
-    private readonly SettingsService _settingsService;
     private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly SettingsService _settingsService;
 
     private CpuInformation _cpu = null!;
-    private GpuInformation _gpu = null!;
-    private MemoryInformation _memory = null!;
-    
-    private double _displayOpacity = 1;
 
     private ImageSource _cpuImageSource =
-        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", UriKind.Absolute));
+        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png",
+            UriKind.Absolute));
+
+    private double _displayOpacity = 1;
+    private GpuInformation _gpu = null!;
 
     private ImageSource _gpuImageSource =
-        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", UriKind.Absolute));
+        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png",
+            UriKind.Absolute));
+
+    private MemoryInformation _memory = null!;
 
     private ImageSource _memoryImageSource =
-        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", UriKind.Absolute));
+        new BitmapImage(new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png",
+            UriKind.Absolute));
+
+    public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
+    {
+        _hardwareMonitorService = hardwareMonitorService;
+        _settingsService = settingsService;
+        hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
+        settingsService.SettingsSaved += UpdateImageFromSettings;
+
+        HardwareInformationUpdated();
+    }
 
     public ImageSource CpuImageSource
     {
@@ -121,15 +135,7 @@ public class DashboardViewModel : INotifyPropertyChanged
         }
     }
 
-    public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
-    {
-        _hardwareMonitorService = hardwareMonitorService;
-        _settingsService = settingsService;
-        hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
-        settingsService.SettingsSaved += UpdateImageFromSettings;
-        
-        HardwareInformationUpdated();
-    }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void HardwareInformationUpdated()
     {
@@ -143,9 +149,9 @@ public class DashboardViewModel : INotifyPropertyChanged
             Gpu.Name = Gpu.Name[..23];
 
         if (_settingsService is {Settings: null}) return;
-        if (_settingsService.Settings.IsAutoDetectHardwareEnabled) 
+        if (_settingsService.Settings.IsAutoDetectHardwareEnabled)
             UpdateImageFromComputer();
-        else 
+        else
             UpdateImageFromSettings(_settingsService, EventArgs.Empty);
     }
 
@@ -158,11 +164,11 @@ public class DashboardViewModel : INotifyPropertyChanged
         if (_memory is {Type: not null} and not null)
             UpdateRamImage(_memory.Type);
     }
-    
+
     private void UpdateImageFromSettings(object? sender, EventArgs eventArgs)
     {
         if (sender is not SettingsService settingsService) return;
-        DisplayOpacity = (double)settingsService.Settings.DeviceDisplayBrightness / 100;
+        DisplayOpacity = (double) settingsService.Settings.DeviceDisplayBrightness / 100;
         if (settingsService is {Settings.IsAutoDetectHardwareEnabled: true} or null) return;
         if (settingsService.Settings.CpuCustomType is not null)
             UpdateCpuImage(settingsService.Settings.CpuCustomType);
@@ -183,47 +189,45 @@ public class DashboardViewModel : INotifyPropertyChanged
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png",
                     UriKind.Absolute))
         };
     }
-    
+
     private void UpdateGpuImage(string gpuType)
     {
         GpuImageSource = gpuType switch
         {
             _ when gpuType!.Contains("Amd") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png", 
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/RadeonLogo.png",
                     UriKind.Absolute)),
             _ when gpuType!.Contains("Intel") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png", 
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/IntelLogo.png",
                     UriKind.Absolute)),
             _ when gpuType!.Contains("Nvidia") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/NvidiaLogo.png", 
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/NvidiaLogo.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png", 
-                    UriKind.Absolute)),
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/UnknownLogo.png",
+                    UriKind.Absolute))
         };
     }
-    
+
     private void UpdateRamImage(string ramType)
     {
         MemoryImageSource = ramType switch
         {
             _ when ramType!.Contains("Trident") => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/TridentRam.png", 
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/TridentRam.png",
                     UriKind.Absolute)),
             _ when ramType!.Contains("Viper") => new BitmapImage(
                 new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/ViperRam.png",
                     UriKind.Absolute)),
             _ => new BitmapImage(
-                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png", 
-                    UriKind.Absolute)),
+                new Uri(@"pack://application:,,,/HSMonitor;component/Resources/Images/DefaultRam.png",
+                    UriKind.Absolute))
         };
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

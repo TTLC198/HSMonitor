@@ -16,7 +16,6 @@ public static class LocalizationManager
 
         var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
         foreach (var culture in cultures)
-        {
             try
             {
                 if (culture.Equals(CultureInfo.InvariantCulture)) continue; //do not use "==", won't work
@@ -29,7 +28,7 @@ public static class LocalizationManager
             {
                 //NOP
             }
-        }
+
         return result;
     }
 

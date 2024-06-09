@@ -18,12 +18,14 @@ public class HardwareNameLengthRuleValue : DependencyObject
         new PropertyMetadata(default(int))
     );
 
-    public int Min { 
+    public int Min
+    {
         get => (int) GetValue(MinBindingProperty);
-        set => SetValue(MinBindingProperty, value); 
+        set => SetValue(MinBindingProperty, value);
     }
 
-    public int Max {
+    public int Max
+    {
         get => (int) GetValue(MaxBindingProperty);
         set => SetValue(MaxBindingProperty, value);
     }

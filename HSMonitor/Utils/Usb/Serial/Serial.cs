@@ -28,11 +28,17 @@ public class Serial : IDisposable
             _serialPort = new SerialPort();
     }
 
+    public void Dispose()
+    {
+        _serialPort.Close();
+        _serialPort.Dispose();
+    }
+
     public static IEnumerable<DeviceInfo> GetPorts()
     {
         var devices = Win32DeviceMgmt
             .GetAllCOMPorts();
-        
+
         devices
             .Where(d => d.BusDescription?.Contains("HSMonitor") == true)
             .ToList()
@@ -91,11 +97,4 @@ public class Serial : IDisposable
             throw;
         }
     }
-
-    public void Dispose()
-    {
-        _serialPort.Close();
-        _serialPort.Dispose();
-    }
-        
 }

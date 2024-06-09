@@ -14,40 +14,40 @@
             TargetType="{x:Type Border}">
             <Setter
                 Property="CornerRadius"
-                Value="4"/>
+                Value="4" />
             <Setter
                 Property="BorderBrush"
-                Value="Gray"/>
+                Value="Gray" />
             <Setter
                 Property="BorderThickness"
-                Value="1"/>
+                Value="1" />
         </Style>
         <Style
             TargetType="{x:Type Path}">
             <Setter
                 Property="Fill"
-                Value="Gray"/>
+                Value="Gray" />
         </Style>
         <Style
             TargetType="{x:Type Polygon}">
             <Setter
                 Property="Fill"
-                Value="Gray"/>
+                Value="Gray" />
         </Style>
         <Style
             TargetType="{x:Type TextBlock}">
             <Setter
                 Property="FontFamily"
-                Value="{DynamicResource VT323}"/>
+                Value="{DynamicResource VT323}" />
             <Setter
                 Property="VerticalAlignment"
-                Value="Center"/>
+                Value="Center" />
             <Setter
                 Property="FontSize"
-                Value="34"/>
+                Value="34" />
             <Setter
                 Property="Foreground"
-                Value="White"/>
+                Value="White" />
         </Style>
     </UserControl.Resources>
     <Canvas
@@ -57,43 +57,43 @@
             Canvas.Top="0"
             Canvas.Left="0"
             Width="240"
-            Height="120"/>
+            Height="120" />
         <Border
             Canvas.Top="122"
             Canvas.Left="0"
             Width="240"
-            Height="138"/>
+            Height="138" />
         <Border
             Canvas.Top="262"
             Canvas.Left="0"
             Width="240"
-            Height="55"/>
+            Height="55" />
         <Border
             Canvas.Top="22"
             Canvas.Left="13"
             Width="88"
-            Height="89"/>
+            Height="89" />
         <Border
             Canvas.Top="140"
             Canvas.Left="13"
             Width="88"
-            Height="89"/>
+            Height="89" />
         <Border
             Canvas.Top="91"
             Canvas.Left="107"
             Width="90"
-            Height="20"/>
+            Height="20" />
         <Border
             Canvas.Top="234"
             Canvas.Left="14"
             Width="88"
-            Height="24"/>
+            Height="24" />
         <!--CPU Name-->
         <TextBlock
             Canvas.Top="8"
             Canvas.Left="16"
             Text="{Binding Cpu.Name}"
-            FontSize="14"/>
+            FontSize="14" />
         <!-- CPU Logo Image-->
         <Image
             Canvas.Top="26"
@@ -101,55 +101,55 @@
             Width="82"
             Height="82"
             Source="{Binding CpuImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
+            Stretch="Fill" />
         <!--CPU Temperature-->
         <TextBlock
             Canvas.Top="17"
             Canvas.Left="105"
             FontSize="34"
-            Text="{Binding Cpu.Temperature}"/>
+            Text="{Binding Cpu.Temperature}" />
         <!--CPU Temperature Degree-->
         <TextBlock
             Canvas.Top="20"
             Canvas.Left="130"
             FontSize="18"
-            Text="°C"/>
+            Text="°C" />
         <!--CPU Load-->
         <TextBlock
             Canvas.Top="17"
             Canvas.Left="170"
             FontSize="34"
-            Text="{Binding Cpu.Load}"/>
+            Text="{Binding Cpu.Load}" />
         <!--CPU Load Percent-->
         <TextBlock
             Canvas.Top="20"
             Canvas.Left="200"
             FontSize="18"
-            Text="%"/>
+            Text="%" />
         <!--CPU Power-->
         <TextBlock
             Canvas.Top="8"
             Canvas.Left="180"
             Text="{Binding Cpu.Power}"
-            FontSize="12"/>
+            FontSize="12" />
         <!--CPU Power Watt-->
         <TextBlock
             Canvas.Top="8"
             Canvas.Left="200"
             Text="W"
-            FontSize="12"/>
+            FontSize="12" />
         <!--CPU Clock-->
         <TextBlock
             Canvas.Top="40"
             Canvas.Left="105"
             Text="{Binding Cpu.Clock}"
-            FontSize="54"/>
+            FontSize="54" />
         <!--CPU Clock MHz-->
         <TextBlock
             Canvas.Top="47"
             Canvas.Left="200"
             Text="MHz"
-            FontSize="18"/>
+            FontSize="18" />
         <!-- Gpu Logo Image -->
         <Image
             Canvas.Top="144"
@@ -157,111 +157,111 @@
             Width="82"
             Height="82"
             Source="{Binding GpuImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
+            Stretch="Fill" />
         <TextBlock
             Canvas.Top="95"
             Canvas.Left="110"
             Text="OVERCLOCKED"
-            FontSize="12"/>
+            FontSize="12" />
         <TextBlock
             Canvas.Top="240"
             Canvas.Left="24"
             Text="BOOST"
-            FontSize="12"/>
+            FontSize="12" />
         <!--CPU Name-->
         <TextBlock
             Canvas.Top="127"
             Canvas.Left="16"
             Text="{Binding Gpu.Name}"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Temperature-->
         <TextBlock
             Canvas.Top="136"
             Canvas.Left="105"
             Text="{Binding Gpu.CoreTemperature}"
-            FontSize="34"/>
+            FontSize="34" />
         <!--GPU Temperature Degree-->
         <TextBlock
             Canvas.Top="139"
             Canvas.Left="130"
             FontSize="18"
-            Text="°C"/>
+            Text="°C" />
         <!--GPU Load-->
         <TextBlock
             Canvas.Top="136"
             Canvas.Left="170"
             Text="{Binding Gpu.CoreLoad}"
-            FontSize="34"/>
+            FontSize="34" />
         <!--GPU Load Percent-->
         <TextBlock
             Canvas.Top="139"
             Canvas.Left="200"
             FontSize="18"
-            Text="%"/>
+            Text="%" />
         <!--GPU Clock-->
         <TextBlock
             Canvas.Top="165"
             Canvas.Left="105"
             Text="{Binding Gpu.CoreClock}"
-            FontSize="34"/>
+            FontSize="34" />
         <!--GPU Clock MHz-->
         <TextBlock
             Canvas.Top="168"
             Canvas.Left="165"
             Text="MHz"
-            FontSize="18"/>
+            FontSize="18" />
         <!--GPU VRam Clock-->
         <TextBlock
             Canvas.Top="195"
             Canvas.Left="125"
             Text="VRam Clock:"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU VRam Clock-->
         <TextBlock
             Canvas.Top="195"
             Canvas.Left="190"
             Text="{Binding Gpu.VRamClock}"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Power-->
         <TextBlock
             Canvas.Top="210"
             Canvas.Left="125"
             Text="Power     :"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Power-->
         <TextBlock
             Canvas.Top="210"
             Canvas.Left="190"
             Text="{Binding Gpu.Power}"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Fan1 Load-->
         <TextBlock
             x:Name="Fan1TextBlock"
             Canvas.Top="225"
             Canvas.Left="125"
             Text="Fan1 Load :"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Fan1 Load-->
         <TextBlock
             x:Name="Fan1LoadTextBlock"
             Canvas.Top="225"
             Canvas.Left="190"
             Text="{Binding GpuFan1.Load}"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Fan2 Load-->
         <TextBlock
             x:Name="Fan2TextBlock"
             Canvas.Top="240"
             Canvas.Left="125"
             Text="Fan2 Load :"
-            FontSize="14"/>
+            FontSize="14" />
         <!--GPU Fan2 Load-->
         <TextBlock
             x:Name="Fan2LoadTextBlock"
             Canvas.Top="240"
             Canvas.Left="190"
             Text="{Binding GpuFan2.Load}"
-            FontSize="14"/>
+            FontSize="14" />
         <!--RAM Image-->
         <Image
             Canvas.Top="268"
@@ -269,36 +269,36 @@
             Width="90"
             Height="40"
             Source="{Binding MemoryImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
+            Stretch="Fill" />
         <!--Total / RAM Used-->
         <TextBlock
             Canvas.Top="270"
             Canvas.Left="120"
             Text="Total  /  RAM Used"
-            FontSize="14"/>
+            FontSize="14" />
         <!--Total RAM-->
         <TextBlock
             Canvas.Top="285"
             Canvas.Left="120"
             Text="{Binding Memory.Total}"
-            FontSize="20"/>
+            FontSize="20" />
         <!--Total RAM GB-->
         <TextBlock
             Canvas.Top="285"
             Canvas.Left="145"
             Text="GB"
-            FontSize="12"/>
+            FontSize="12" />
         <!--RAM Used-->
         <TextBlock
             Canvas.Top="285"
             Canvas.Left="170"
             Text="{Binding Memory.Used}"
-            FontSize="20"/>
+            FontSize="20" />
         <!--RAM Used GB-->
         <TextBlock
             Canvas.Top="285"
             Canvas.Left="210"
             Text="GB"
-            FontSize="12"/>
+            FontSize="12" />
     </Canvas>
 </UserControl>

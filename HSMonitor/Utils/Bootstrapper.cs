@@ -6,32 +6,36 @@ using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using Stylet;
+using Stylet.Logging;
 using StyletIoC;
 
 namespace HSMonitor.Utils;
 #pragma warning disable CA1416
 public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 {
-    private T GetInstance<T>() => (T) base.GetInstance(typeof(T));
-    
+    private T GetInstance<T>()
+    {
+        return (T) base.GetInstance(typeof(T));
+    }
+
     protected override void OnStart()
     {
-        Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
-        Stylet.Logging.LogManager.Enabled = false;
+        LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
+        LogManager.Enabled = false;
         base.OnStart();
     }
-    
+
     protected override void ConfigureIoC(IStyletIoCBuilder builder)
     {
         base.ConfigureIoC(builder);
 
         builder.Bind(typeof(ILogger<>)).To(typeof(FileLogger<>));
-        
+
         builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<SerialMonitorService>().ToSelf().InSingletonScope();
         builder.Bind<DialogManager>().ToSelf().InSingletonScope();
-        
+
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
 
         builder.Bind<MainWindowViewModel>().ToSelf().InSingletonScope();
@@ -50,10 +54,10 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     {
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
         _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
-        
+
         base.Launch();
     }
-    
+
     protected override void OnExit(ExitEventArgs e)
     {
         GetInstance<SerialMonitorService>().Dispose();

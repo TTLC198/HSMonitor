@@ -19,24 +19,7 @@ namespace HSMonitor.Services;
 
 public class SettingsService
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
-    [UnconditionalSuppressMessage("SingleFile", "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file", Justification = "<Pending>")]
-    private readonly RegistryHandler _autoStartSwitch = new(
-        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
-        $"\"{App.ExecutableFilePath}\"",
-        new [] {App.HiddenOnLaunchArgument}
-    );
-
-    public event EventHandler? SettingsReset;
-    
-    public event EventHandler? SettingsLoaded;
-    
-    public event EventHandler? SettingsSaved;
-    
-    public ApplicationSettings Settings { get; set; } = DefaultSettings;
-
-    private static readonly ApplicationSettings DefaultSettings = new ApplicationSettings()
+    private static readonly ApplicationSettings DefaultSettings = new()
     {
         LastSelectedPort = null,
         LastSelectedBaudRate = 115200,
@@ -55,16 +38,37 @@ public class SettingsService
         ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
     };
 
-    public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
-    private readonly ILogger<SettingsService> _logger;
+    [UnconditionalSuppressMessage("SingleFile",
+        "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file",
+        Justification = "<Pending>")]
+    private readonly RegistryHandler _autoStartSwitch = new(
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+        $"\"{App.ExecutableFilePath}\"",
+        new[] {App.HiddenOnLaunchArgument}
+    );
 
-    public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<SettingsService> logger)
+    private readonly DialogManager _dialogManager;
+    private readonly ILogger<SettingsService> _logger;
+    private readonly IViewModelFactory _viewModelFactory;
+
+    public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
+
+    public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager,
+        ILogger<SettingsService> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _logger = logger;
     }
-    
+
+    public ApplicationSettings Settings { get; set; } = DefaultSettings;
+
+    public event EventHandler? SettingsReset;
+
+    public event EventHandler? SettingsLoaded;
+
+    public event EventHandler? SettingsSaved;
+
     public async Task Reset()
     {
         Settings = DefaultSettings;
@@ -80,7 +84,7 @@ public class SettingsService
                 Directory.CreateDirectory(App.SettingsDirPath);
             if (!File.Exists(ConfigurationPath))
                 Settings.JsonToFile(ConfigurationPath);
-            
+
             var json = File.ReadAllText(ConfigurationPath);
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
@@ -101,7 +105,7 @@ public class SettingsService
                 Directory.CreateDirectory(App.SettingsDirPath);
             if (!File.Exists(ConfigurationPath))
                 Settings.JsonToFile(ConfigurationPath);
-            
+
             var json = await File.ReadAllTextAsync(ConfigurationPath);
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
@@ -111,14 +115,14 @@ public class SettingsService
         catch (Exception exception)
         {
             _logger.Error(exception);
-            
+
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
+                Resources.MessageBoxErrorTitle,
+                $@"
 {Resources.MessageBoxErrorText}
 {exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: "OK",
-                cancelButtonText: null
+                "OK",
+                null
             );
 
             if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
@@ -129,22 +133,22 @@ public class SettingsService
     public async Task Save()
     {
         Settings.JsonToFile(ConfigurationPath);
-        
+
         try
         {
             if (LocalizationManager.GetCurrentCulture().Name != Settings.ApplicationCultureInfo)
             {
                 var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: Resources.RestartRequirementMessageTitle,
-                    message: Resources.RestartRequirementMessageText.Trim(),
-                    okButtonText: Resources.MessageBoxOkButtonText,
-                    cancelButtonText: Resources.MessageBoxCancelButtonText
+                    Resources.RestartRequirementMessageTitle,
+                    Resources.RestartRequirementMessageText.Trim(),
+                    Resources.MessageBoxOkButtonText,
+                    Resources.MessageBoxCancelButtonText
                 );
 
                 if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
                     RestartApplication();
             }
-            
+
             if (Settings.IsAutoStartEnabled)
             {
                 if (Settings.IsHiddenAutoStartEnabled)
@@ -155,30 +159,32 @@ public class SettingsService
                 else
                 {
                     if (_autoStartSwitch.Args.FirstOrDefault(a => a.Contains(App.HiddenOnLaunchArgument)) is not null)
-                        _autoStartSwitch.Args = _autoStartSwitch.Args.Where(a => !a.Contains(App.HiddenOnLaunchArgument))
+                        _autoStartSwitch.Args = _autoStartSwitch.Args
+                            .Where(a => !a.Contains(App.HiddenOnLaunchArgument))
                             .ToArray();
                 }
             }
+
             _autoStartSwitch.IsSet = Settings.IsAutoStartEnabled;
         }
         catch (Exception exception)
         {
             _logger.Error(exception);
-            
+
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
+                Resources.MessageBoxErrorTitle,
+                $@"
 {Resources.MessageBoxErrorText}
 {exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: "OK",
-                cancelButtonText: null
+                "OK",
+                null
             );
             await _dialogManager.ShowDialogAsync(messageBoxDialog);
         }
-        
+
         SettingsSaved?.Invoke(this, EventArgs.Empty);
     }
-    
+
     private async void RestartApplication()
     {
         var startInfo = new ProcessStartInfo
@@ -197,14 +203,14 @@ public class SettingsService
         catch (Exception exception)
         {
             _logger.Error(exception);
-            
+
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
+                Resources.MessageBoxErrorTitle,
+                $@"
 {Resources.MessageBoxErrorText}
 {exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
+                Resources.MessageBoxOkButtonText,
+                null
             );
             await _dialogManager.ShowDialogAsync(messageBoxDialog);
         }

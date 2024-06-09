@@ -2,13 +2,29 @@
 using System.Linq;
 using HSMonitor.Services;
 using LibreHardwareMonitor.Hardware;
-using LibreHardwareMonitor.Hardware.Cpu;
 
 namespace HSMonitor.ViewModels.Settings;
 
 public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
 {
     private readonly SettingsService _settingsService;
+
+    public HardwareSettingsTabViewModel(SettingsService settingsService)
+        : base(settingsService, 1, "Hardware")
+    {
+        _settingsService = settingsService;
+        if (SettingsService is not {Settings: not null}) return;
+        if (Processors is {Count: > 0})
+            SelectedCpu = Processors
+                              .FirstOrDefault(c =>
+                                  c.Identifier.ToString()!.Contains(_settingsService.Settings.CpuId ?? ""))
+                          ?? Processors.First();
+        if (GraphicCards is {Count: > 0})
+            SelectedGpu = GraphicCards
+                              .FirstOrDefault(c =>
+                                  c.Identifier.ToString()!.Contains(_settingsService.Settings.GpuId ?? ""))
+                          ?? GraphicCards.First();
+    }
 
     public List<IHardware> Processors => HardwareMonitorService.GetProcessors().ToList();
 
@@ -54,26 +70,5 @@ public class HardwareSettingsTabViewModel : SettingsTabBaseViewModel
     {
         get => SettingsService.Settings.DefaultGpuFrequency;
         set => SettingsService.Settings.DefaultGpuFrequency = value;
-    }
-
-    public HardwareSettingsTabViewModel(SettingsService settingsService)
-        : base(settingsService, 1, "Hardware")
-    {
-        _settingsService = settingsService;
-        if (SettingsService is not {Settings: not null}) return;
-        if (Processors is {Count: > 0})
-        {
-            SelectedCpu = Processors
-                              .FirstOrDefault(c =>
-                                  c.Identifier.ToString()!.Contains(_settingsService.Settings.CpuId ?? ""))
-                          ?? Processors.First();
-        }
-        if (GraphicCards is {Count: > 0})
-        {
-            SelectedGpu = GraphicCards
-                              .FirstOrDefault(c =>
-                                  c.Identifier.ToString()!.Contains(_settingsService.Settings.GpuId ?? ""))
-                          ?? GraphicCards.First();
-        }
     }
 }

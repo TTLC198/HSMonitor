@@ -9,10 +9,6 @@ public class SettingsViewModel : DialogScreen
 {
     private readonly SettingsService _settingsService;
 
-    public IReadOnlyList<ISettingsTabViewModel> Tabs { get; }
-
-    public ISettingsTabViewModel? ActiveTab { get; private set; }
-
     public SettingsViewModel(SettingsService settingsService, IEnumerable<ISettingsTabViewModel> tabs)
     {
         _settingsService = settingsService;
@@ -24,16 +20,20 @@ public class SettingsViewModel : DialogScreen
             ActivateTab(firstTab);
     }
 
+    public IReadOnlyList<ISettingsTabViewModel> Tabs { get; }
+
+    public ISettingsTabViewModel? ActiveTab { get; private set; }
+
     public void ActivateTab(ISettingsTabViewModel settingsTab)
     {
         // Deactivate previously selected tab
         if (ActiveTab is not null)
             ActiveTab.IsSelected = false;
-        
+
         ActiveTab = settingsTab;
         settingsTab.IsSelected = true;
     }
-    
+
     public void ActivateTabByType<T>() where T : ISettingsTabViewModel
     {
         var tab = Tabs.OfType<T>().FirstOrDefault();
@@ -41,8 +41,10 @@ public class SettingsViewModel : DialogScreen
             ActivateTab(tab);
     }
 
-    public async void Reset() => 
+    public async void Reset()
+    {
         await _settingsService.Reset();
+    }
 
     public async void Save()
     {

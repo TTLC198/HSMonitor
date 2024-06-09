@@ -70,7 +70,7 @@
                 IsCancel="True"
                 FontSize="12"
                 Style="{DynamicResource MaterialDesignOutlinedButton}"
-                Visibility="{Binding IsCancelButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" >
+                Visibility="{Binding IsCancelButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                 <Button.CommandParameter>
                     <sys:Boolean>False</sys:Boolean>
                 </Button.CommandParameter>

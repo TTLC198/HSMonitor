@@ -5,14 +5,6 @@ namespace HSMonitor.ViewModels.Settings;
 #pragma warning disable CA1416
 public abstract class SettingsTabBaseViewModel : PropertyChangedBase, ISettingsTabViewModel
 {
-    public int Order { get; }
-
-    public string Name { get; }
-
-    public bool IsSelected { get; set; }
-
-    protected SettingsService SettingsService { get; }
-
     protected SettingsTabBaseViewModel(SettingsService settingsService, int order, string name)
     {
         SettingsService = settingsService;
@@ -23,4 +15,11 @@ public abstract class SettingsTabBaseViewModel : PropertyChangedBase, ISettingsT
         SettingsService.SettingsSaved += (_, _) => Refresh();
         SettingsService.SettingsLoaded += (_, _) => Refresh();
     }
+
+    protected SettingsService SettingsService { get; }
+    public int Order { get; }
+
+    public string Name { get; }
+
+    public bool IsSelected { get; set; }
 }

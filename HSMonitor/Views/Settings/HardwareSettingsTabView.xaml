@@ -18,13 +18,13 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SelectCPUText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <ComboBox
                 Grid.Row="1"
                 ItemsSource="{Binding Processors}"
@@ -32,7 +32,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                            Text="{Binding Name }"/>
+                            Text="{Binding Name }" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -42,13 +42,13 @@
             Margin="12, 4">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.SelectGPUText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <ComboBox
                 Grid.Row="1"
                 ItemsSource="{Binding GraphicCards}"
@@ -56,7 +56,7 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                            Text="{Binding Name }"/>
+                            Text="{Binding Name }" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -66,24 +66,24 @@
             Margin="12, 8">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.DefaultCPUFreqText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <TextBox
                 Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="DefaultCpuFrequency"
-                             UpdateSourceTrigger="PropertyChanged" 
+                             UpdateSourceTrigger="PropertyChanged"
                              Mode="TwoWay">
                         <Binding.ValidationRules>
-                            <validationRules:IntValueRule 
+                            <validationRules:IntValueRule
                                 Min="0"
                                 Max="9999"
-                                ValidatesOnTargetUpdated="True"/>
+                                ValidatesOnTargetUpdated="True" />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -94,24 +94,24 @@
             Margin="12, 5">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="Auto"/>
+                    Height="Auto" />
                 <RowDefinition
-                    Height="*"/>
+                    Height="*" />
             </Grid.RowDefinitions>
             <TextBlock
                 Text="{x:Static p:Resources.DefaultGPUFreqText}"
-                VerticalAlignment="Center"/>
+                VerticalAlignment="Center" />
             <TextBox
                 Grid.Row="1">
                 <TextBox.Text>
                     <Binding Path="DefaultGpuFrequency"
-                             UpdateSourceTrigger="PropertyChanged" 
+                             UpdateSourceTrigger="PropertyChanged"
                              Mode="TwoWay">
                         <Binding.ValidationRules>
-                            <validationRules:IntValueRule 
+                            <validationRules:IntValueRule
                                 Min="0"
                                 Max="9999"
-                                ValidatesOnTargetUpdated="True"/>
+                                ValidatesOnTargetUpdated="True" />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>

@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace HSMonitor.Utils.ValidationRules;
 
-public class IntValueRule: ValidationRule
+public class IntValueRule : ValidationRule
 {
     public int Min { get; set; }
     public int Max { get; set; }
@@ -13,9 +13,9 @@ public class IntValueRule: ValidationRule
     {
         try
         {
-            if (!int.TryParse((string)value, out var num))
+            if (!int.TryParse((string) value, out var num))
                 return new ValidationResult(false,
-                    $"Please enter a valid number.");
+                    "Please enter a valid number.");
             if (num < Min)
                 return new ValidationResult(false,
                     $"Please enter a value above {Min}.");

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HSMonitor.Properties;
 using HSMonitor.Services;
-using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
-using Stylet;
 
 namespace HSMonitor.ViewModels.Settings;
 
@@ -16,12 +12,21 @@ namespace HSMonitor.ViewModels.Settings;
 public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPropertyChanged
 {
     private readonly UpdateService _updateService;
-
-    private int _updateDownloadPercent;
     private bool _isProgressBarActive;
     private string _statusString = null!;
-    private string _versionString = null!;
+
+    private int _updateDownloadPercent;
     private UpdateStatus _updateStatus = UpdateStatus.CouldNotDetermine;
+    private string _versionString = null!;
+
+    public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService updateService)
+        : base(settingsService, 4, "Update")
+    {
+        _updateService = updateService;
+        _updateService.UpdateDownloadProcessEvent += (_, args) => UpdateDownloadPercent = args.ProgressPercentage;
+        _updateService.UpdateDownloadFinishedEvent += (_, _) => IsProgressBarActive = false;
+        _updateService.CheckForUpdates().GetAwaiter();
+    }
 
     public int UpdateDownloadPercent
     {
@@ -32,8 +37,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             OnPropertyChanged();
         }
     }
-    
-    
+
+
     public bool IsProgressBarActive
     {
         get => _isProgressBarActive;
@@ -50,23 +55,24 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         set
         {
             _updateStatus = value;
-            StatusString = 
+            StatusString =
                 value switch
                 {
                     UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
                     UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                     _ => Resources.NoConnectionText
                 };
-            VersionString = 
+            VersionString =
                 value switch
                 {
-                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().First().Version,
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().First()
+                        .Version,
                     _ => App.VersionString
                 };
             OnPropertyChanged();
         }
     }
-    
+
     public string StatusString
     {
         get => _statusString;
@@ -76,6 +82,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             OnPropertyChanged();
         }
     }
+
     public string VersionString
     {
         get => _versionString;
@@ -85,6 +92,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             OnPropertyChanged();
         }
     }
+
+    public new event PropertyChangedEventHandler? PropertyChanged;
 
     public async Task UpdateHandlerStart()
     {
@@ -98,7 +107,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             default:
                 await _updateService.CheckForUpdates();
                 UpdateStatus = _updateService.UpdateStatus;
-                StatusString = 
+                StatusString =
                     UpdateStatus switch
                     {
                         UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
@@ -112,35 +121,24 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     public async void OnViewFullyLoaded()
     {
         await _updateService.CheckForUpdates();
-        
+
         UpdateStatus = _updateService.UpdateStatus;
-        StatusString = 
+        StatusString =
             UpdateStatus switch
             {
                 UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
                 UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                 _ => Resources.NoConnectionText
             };
-        VersionString = 
+        VersionString =
             UpdateStatus switch
             {
-                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().Count() > 0 
+                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().Count() > 0
                     ? $"v{_updateService.GetVersions().First().Version}"
                     : App.VersionString,
                 _ => App.VersionString
             };
     }
-
-    public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService updateService) 
-        : base(settingsService, 4, "Update")
-    {
-        _updateService = updateService;
-        _updateService.UpdateDownloadProcessEvent += (_, args) => UpdateDownloadPercent = args.ProgressPercentage;
-        _updateService.UpdateDownloadFinishedEvent += (_, _) => IsProgressBarActive = false;
-        _updateService.CheckForUpdates().GetAwaiter();
-    }
-    
-    public new event PropertyChangedEventHandler? PropertyChanged;
 
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
