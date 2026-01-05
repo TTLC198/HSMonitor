@@ -50,7 +50,7 @@ public class SerialMonitorService : IDisposable
         }
         
         var jsonMessage = JsonSerializer.Serialize(message);
-        jsonMessage += "\0";
+        jsonMessage += "\n";
         var jsonData = jsonMessage
             .Select(s => (byte) s);
         
