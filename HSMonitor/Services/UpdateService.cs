@@ -116,7 +116,6 @@ public class UpdateService
         _updater = new SparkleUpdater(App.GitHubAutoUpdateConfigUrl,
             new Ed25519Checker(SecurityMode.Unsafe))
         {
-            SecurityProtocolType = SecurityProtocolType.SystemDefault,
             UserInteractionMode = UserInteractionMode.DownloadNoInstall,
             TmpDownloadFilePath = null,
             RelaunchAfterUpdate = false,
@@ -128,12 +127,10 @@ public class UpdateService
             RestartExecutableName = null,
             RelaunchAfterUpdateCommandPrefix = null,
             UseNotificationToast = false,
-            ShowsUIOnMainThread = false,
             LogWriter = null,
             CheckServerFileName = false,
             UpdateDownloader = null,
             AppCastDataDownloader = null,
-            AppCastHandler = null
         };
     }
 }
