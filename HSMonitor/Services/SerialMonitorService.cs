@@ -48,9 +48,12 @@ public class SerialMonitorService : IDisposable
             if (message.GpuInformation is {Name.Length: > 23})
                 message.GpuInformation.Name = message.GpuInformation.Name[..23];
         }
-        var jsonData = JsonSerializer
-            .Serialize(message)
+        
+        var jsonMessage = JsonSerializer.Serialize(message);
+        jsonMessage += "\0";
+        var jsonData = jsonMessage
             .Select(s => (byte) s);
+        
         if (_serial.CheckAccess())
         {
             try
