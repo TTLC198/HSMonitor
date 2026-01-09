@@ -41,7 +41,7 @@ public class HardwareMonitorService
         _settingsService.SettingsSaved += SettingsServiceOnSettingsSaved;
     }
 
-    public async Task Start()
+    public Task Start()
     {
         _updateHardwareMonitorTimer = new DispatcherTimer(
             priority: DispatcherPriority.Background,
@@ -51,7 +51,7 @@ public class HardwareMonitorService
             callback: HardwareInformationUpdate,
             dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException("Current thread is null")
         );
-        await Task.Run(() =>
+        return Task.Run(() =>
         {
             _updateHardwareMonitorTimer.Start();
         });
