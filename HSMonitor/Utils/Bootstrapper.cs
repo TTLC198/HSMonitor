@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using HSMonitor.Services;
+using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
@@ -29,7 +30,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         
         builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
-        builder.Bind<SerialMonitorService>().ToSelf().InSingletonScope();
+        builder.Bind<SerialDataService>().ToSelf().InSingletonScope();
         builder.Bind<DialogManager>().ToSelf().InSingletonScope();
         
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
@@ -56,7 +57,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     
     protected override void OnExit(ExitEventArgs e)
     {
-        GetInstance<SerialMonitorService>().Dispose();
+        GetInstance<SerialDataService>().Dispose();
         base.OnExit(e);
     }
 }

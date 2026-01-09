@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
 using HSMonitor.Utils.Usb.Serial;
 
-namespace HSMonitor.Services;
+namespace HSMonitor.Services.SerialDataService;
 
-public class SerialMonitorService : IDisposable
+public class SerialDataService : IDisposable
 {
     private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly SettingsService _settingsService;
-    private readonly ILogger<SerialMonitorService> _logger;
+    private readonly ILogger<SerialDataService> _logger;
 
-    private Serial _serial;
+    private Serial _serialData;
     public event EventHandler? OpenPortAttemptFailed;
     public event EventHandler? OpenPortAttemptSuccessful;
 
-    public SerialMonitorService(
+    public SerialDataService(
         SettingsService settingsService,
         HardwareMonitorService hardwareMonitorService,
-        ILogger<SerialMonitorService> logger)
+        ILogger<SerialDataService> logger)
     {
         _settingsService = settingsService;
         _hardwareMonitorService = hardwareMonitorService;
         _logger = logger;
-        _serial = new Serial(settingsService);
+        _serialData = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
         _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
@@ -33,8 +33,8 @@ public class SerialMonitorService : IDisposable
 
     private void UpdateSerialSettings()
     {
-        _serial.Dispose();
-        _serial = new Serial(_settingsService ?? throw new InvalidOperationException());
+        _serialData.Dispose();
+        _serialData = new Serial(_settingsService ?? throw new InvalidOperationException());
     }
 
     private void SendInformationToMonitor(object? sender, EventArgs args)
@@ -54,11 +54,11 @@ public class SerialMonitorService : IDisposable
         var jsonData = jsonMessage
             .Select(s => (byte) s);
         
-        if (_serial.CheckAccess())
+        if (_serialData.CheckAccess())
         {
             try
             {
-                _serial.Write(jsonData.ToArray());
+                _serialData.Write(jsonData.ToArray());
                 OpenPortAttemptSuccessful?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception exception)
@@ -73,5 +73,5 @@ public class SerialMonitorService : IDisposable
         }
     }
 
-    public void Dispose() => _serial.Dispose();
+    public void Dispose() => _serialData.Dispose();
 }

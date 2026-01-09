@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using HSMonitor.Properties;
 using HSMonitor.Services;
+using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
@@ -23,7 +24,7 @@ public class MainWindowViewModel : Screen
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
-    private readonly SerialMonitorService _serialMonitorService;
+    private readonly SerialDataService _serialDataService;
     private readonly HardwareMonitorService _hardwareMonitorService;
     private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -48,7 +49,7 @@ public class MainWindowViewModel : Screen
         DialogManager dialogManager,
         HardwareMonitorService hardwareMonitorService,
         SettingsService settingsService,
-        SerialMonitorService serialMonitorService,
+        SerialDataService serialDataService,
         UpdateService updateService, 
         ILogger<MainWindowViewModel> logger)
     {
@@ -56,7 +57,7 @@ public class MainWindowViewModel : Screen
         _dialogManager = dialogManager;
         _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
-        _serialMonitorService = serialMonitorService;
+        _serialDataService = serialDataService;
         _updateService = updateService;
         _logger = logger;
 
@@ -68,11 +69,11 @@ public class MainWindowViewModel : Screen
         LocalizationManager.ChangeCurrentCulture(culture);
     }
     
-    private async void SerialMonitorServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
+    private async void SerialDataServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
     {
         IsSerialMonitorEnabled = false;
-        _serialMonitorService.OpenPortAttemptFailed -= SerialMonitorServiceOnOpenPortAttemptFailed;
-        _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
+        _serialDataService.OpenPortAttemptFailed -= SerialDataServiceOnOpenPortAttemptFailed;
+        _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
         
         if (_isConnectionErrorWindowOpened)
             return;
@@ -103,13 +104,13 @@ public class MainWindowViewModel : Screen
         }
     }
     
-    private void SerialMonitorServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
+    private void SerialDataServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
     {
         if (IsSerialMonitorEnabled)
             return;
         IsSerialMonitorEnabled = true;
-        _serialMonitorService.OpenPortAttemptFailed += SerialMonitorServiceOnOpenPortAttemptFailed;
-        _serialMonitorService.OpenPortAttemptSuccessful -= SerialMonitorServiceOnOpenPortAttemptSuccessful;
+        _serialDataService.OpenPortAttemptFailed += SerialDataServiceOnOpenPortAttemptFailed;
+        _serialDataService.OpenPortAttemptSuccessful -= SerialDataServiceOnOpenPortAttemptSuccessful;
     }
 
     private async Task ShowAdminPrivilegesRequirement()
@@ -173,7 +174,7 @@ public class MainWindowViewModel : Screen
         }
         else
         {
-            _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
+            _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
 
             try
             {
