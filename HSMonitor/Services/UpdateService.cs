@@ -107,7 +107,6 @@ public class UpdateService
     private void UpdaterOnCloseApplication() =>
         Application.Current.Shutdown();
 
-
     public UpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<UpdateService> logger)
     {
         _viewModelFactory = viewModelFactory;

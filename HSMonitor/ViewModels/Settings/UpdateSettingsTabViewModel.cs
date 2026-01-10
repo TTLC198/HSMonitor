@@ -173,20 +173,20 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         switch (DeviceUpdateStatus)
         {
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
-                IsAppProgressBarActive = true;
-                AppStatusString = Resources.DownloadingText;
-                _deviceUpdateService.SendOtaUpdate();
+                IsDeviceProgressBarActive = true;
+                DeviceStatusString = Resources.DownloadingText;
+                //_deviceUpdateService.SendOtaUpdate();
                 break;
             default:
-                await _appUpdateService.CheckForUpdates(); 
-                AppUpdateStatus = _appUpdateService.UpdateStatus;
-                AppStatusString = 
+                await _deviceUpdateService.CheckForUpdates(); 
+                DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
+                DeviceStatusString = 
                     AppUpdateStatus switch
                     {
                         UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                         _ => Resources.NoConnectionText
                     };
-                AppVersionString = App.VersionString;
+                DeviceVersionString = App.VersionString;
                 break;
         }
     }
@@ -230,6 +230,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             IsDeviceProgressBarActive = false;
         });
+        _deviceUpdateService.CheckForUpdates().GetAwaiter();
     }
     
     public new event PropertyChangedEventHandler? PropertyChanged;

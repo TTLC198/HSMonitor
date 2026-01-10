@@ -33,10 +33,16 @@ public class Serial : IDisposable
         var devices = Win32DeviceMgmt
             .GetAllCOMPorts();
         
+        //todo: пересмотреть
         devices
-            .Where(d => d.BusDescription?.Contains("HSMonitor") == true)
+            .Where(d => d.BusDescription?.Contains("HSMonitor Data") == true)
             .ToList()
-            .ForEach(d => d.IsHsMonitorDevice = true);
+            .ForEach(d => d.IsHsMonitorData = true);
+        
+        devices
+            .Where(d => d.BusDescription?.Contains("HSMonitor OTA") == true)
+            .ToList()
+            .ForEach(d => d.IsHsMonitorOta = true);
 
         return devices;
     }
