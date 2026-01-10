@@ -1,12 +1,22 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using HSMonitor.Properties;
 using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
+using HSMonitor.Utils.Usb.Serial;
+using HSMonitor.ViewModels;
+using HSMonitor.ViewModels.Framework;
 using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
+using NetSparkleUpdater.Events;
 using NetSparkleUpdater.SignatureVerifiers;
 
 namespace HSMonitor.Services.OtaUpdateService;
@@ -16,17 +26,22 @@ public class OtaUpdateService
 {
   private const int Chunk = 1024;
   
+  private readonly IViewModelFactory _viewModelFactory;
+  private readonly DialogManager _dialogManager;
   private readonly SparkleUpdater _updater;
   private readonly ILogger<OtaUpdateService> _logger;
   
   private readonly Subject<DownloadPercentageEvent> _downloadProgressSubject = new();
   private readonly Subject<DownloadFinishedEvent> _downloadFinishedSubject = new();
+  private readonly Subject<UploadFinishedEvent> _uploadFinishedSubject = new();
   
   private UpdateInfo? _updateInfo;
   
-  public OtaUpdateService(ILogger<OtaUpdateService> logger)
+  public OtaUpdateService(ILogger<OtaUpdateService> logger, IViewModelFactory viewModelFactory, DialogManager dialogManager)
   {
     _logger = logger;
+    _viewModelFactory = viewModelFactory;
+    _dialogManager = dialogManager;
     _updater = new SparkleUpdater(App.DeviceAutoUpdateConfigUrl,
       new Ed25519Checker(SecurityMode.Unsafe))
     {
@@ -47,11 +62,118 @@ public class OtaUpdateService
       AppCastDataDownloader = null,
     };
   }
+  
+  public UpdateStatus UpdateStatus =>
+    _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
   public IObservable<DownloadPercentageEvent> DownloadProgress => _downloadProgressSubject;
   public IObservable<DownloadFinishedEvent> DownloadFinished => _downloadFinishedSubject;
+  public IObservable<UploadFinishedEvent> UploadFinished => _uploadFinishedSubject;
+  
+  public IEnumerable<AppCastItem> GetVersions() =>
+    (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
+    .Updates
+    .ToList();
 
-  public void SendOtaUpdate(byte[] data, string portName)
+  public async Task<UpdateInfo> CheckForUpdates() => 
+    _updateInfo = await _updater.CheckForUpdatesQuietly();
+
+  private void UpdaterOnDownloadMadeProgress(ItemDownloadProgressEventArgs args) =>
+    _downloadProgressSubject.OnNext(new DownloadPercentageEvent(args.BytesReceived, args.TotalBytesToReceive));
+
+  public async Task StartDownloadAsync()
+  {
+    try
+    {
+      if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
+      _updater.DownloadMadeProgress += (_, _, args) => UpdaterOnDownloadMadeProgress(args);
+      _updater.DownloadFinished += async (item, path) => await UpdaterOnDownloadFinished(item, path);
+      await _updater.InitAndBeginDownload(_updateInfo.Updates.First());
+    }
+    catch (Exception exception)
+    {
+      _logger.Error(exception);
+            
+      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+        title: Resources.MessageBoxErrorTitle,
+        message: $@"
+{Resources.MessageBoxErrorText}
+{exception.Message}".Trim(),
+        okButtonText: Resources.MessageBoxOkButtonText,
+        cancelButtonText: null
+      );
+
+      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+    }
+  }
+  
+  private async Task UpdaterOnDownloadFinished(AppCastItem item, string path)
+  {
+    try
+    {
+      if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
+      _downloadFinishedSubject.OnNext(new DownloadFinishedEvent());
+      
+      var file = new FileInfo(path);
+
+      if (!file.Exists)
+      {
+        var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+          title: Resources.MessageBoxErrorTitle,
+          message: $@"
+{Resources.MessageBoxErrorText}
+Файл обновления не найден!".Trim(), //todo: localization
+          okButtonText: Resources.MessageBoxOkButtonText,
+          cancelButtonText: null
+        );
+
+        await _dialogManager.ShowDialogAsync(errorBoxDialog);
+        return;
+      }
+
+      await using var fileDataStream = file.OpenRead();
+      var fileDataBuffer = new byte[fileDataStream.Length];
+      
+      await fileDataStream.ReadExactlyAsync(fileDataBuffer, 0, fileDataBuffer.Length);
+      
+      var serialPortName = Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
+      if (serialPortName is null)
+      {
+        _logger.Warn("Устройство для обновления не найдено!");
+        
+        var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+          title: Resources.MessageBoxErrorTitle,
+          message: $@"
+{Resources.MessageBoxErrorText}
+Устройство для обновления не найдено!".Trim(), //todo: localization
+          okButtonText: Resources.MessageBoxOkButtonText,
+          cancelButtonText: null
+        );
+
+        await _dialogManager.ShowDialogAsync(errorBoxDialog);
+        return;
+      }
+      
+      SendOtaUpdate(fileDataBuffer, serialPortName.PortName!);
+    }
+    catch (Exception exception)
+    {
+      _logger.Error(exception);
+            
+      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+        title: Resources.MessageBoxErrorTitle,
+        message: $@"
+{Resources.MessageBoxErrorText}
+{exception.Message}".Trim(),
+        okButtonText: Resources.MessageBoxOkButtonText,
+        cancelButtonText: null
+      );
+
+      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+    }
+  }
+  
+  private void SendOtaUpdate(byte[] data, string portName)
   {
     var crc = Crc32.Compute(data);
     
@@ -93,7 +215,7 @@ public class OtaUpdateService
 
     client.End(seq);
     
-    _downloadFinishedSubject.OnNext(new DownloadFinishedEvent());
+    _uploadFinishedSubject.OnNext(new UploadFinishedEvent());
 
     var elapsed = DateTime.UtcNow - started;
     _logger.Info($"Done. Sent {data.Length} bytes in {elapsed.TotalSeconds:0.0}s");

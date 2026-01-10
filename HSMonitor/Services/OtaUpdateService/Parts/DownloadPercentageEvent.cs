@@ -2,17 +2,17 @@ namespace HSMonitor.Services.OtaUpdateService.Parts;
 
 public record DownloadPercentageEvent
 {
-  public DownloadPercentageEvent(int bytesReceived, int totalBytesToReceive)
+  public DownloadPercentageEvent(long bytesReceived, long totalBytesToReceive)
   {
     BytesReceived = bytesReceived;
     TotalBytesToReceive = totalBytesToReceive;
   }
   
-  public int ProgressPercentage => 100 * (BytesReceived / TotalBytesToReceive);
+  public int ProgressPercentage => (int)(100 * (BytesReceived / TotalBytesToReceive));
   
   /// <summary>The number of bytes received by the downloader</summary>
-  public int BytesReceived { get; private set; }
+  public long BytesReceived { get; private set; }
 
   /// <summary>The total number of bytes that need to be downloaded</summary>
-  public int TotalBytesToReceive { get; private set; }
+  public long TotalBytesToReceive { get; private set; }
 }

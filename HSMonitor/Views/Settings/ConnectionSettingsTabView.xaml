@@ -47,7 +47,7 @@
                                     TargetType="{x:Type TextBlock}">
                                     <Style.Triggers>
                                         <DataTrigger
-                                            Binding="{Binding IsHsMonitorDevice}"
+                                            Binding="{Binding IsHsMonitorData}"
                                             Value="True">
                                             <Setter
                                                 Property="FontWeight"
