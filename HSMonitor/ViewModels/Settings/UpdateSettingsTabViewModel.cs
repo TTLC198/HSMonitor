@@ -1,143 +1,235 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HSMonitor.Properties;
 using HSMonitor.Services;
-using NetSparkleUpdater;
+using HSMonitor.Services.OtaUpdateService;
+using HSMonitor.Services.OtaUpdateService.Parts;
 using NetSparkleUpdater.Enums;
-using Stylet;
 
 namespace HSMonitor.ViewModels.Settings;
 
 #pragma warning disable CA1416
 public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPropertyChanged
 {
-    private readonly UpdateService _updateService;
+    private readonly UpdateService _appUpdateService;
+    private readonly OtaUpdateService _deviceUpdateService;
 
-    private int _updateDownloadPercent;
-    private bool _isProgressBarActive;
-    private string _statusString = null!;
-    private string _versionString = null!;
-    private UpdateStatus _updateStatus = UpdateStatus.CouldNotDetermine;
-
-    public int UpdateDownloadPercent
+    public int UpdateAppDownloadPercent
     {
-        get => _updateDownloadPercent;
+        get;
         set
         {
-            _updateDownloadPercent = value;
+            field = value;
             OnPropertyChanged();
         }
     }
     
-    
-    public bool IsProgressBarActive
+    public int UpdateDeviceDownloadPercent
     {
-        get => _isProgressBarActive;
+        get;
         set
         {
-            _isProgressBarActive = value;
+            field = value;
             OnPropertyChanged();
         }
     }
 
-    public UpdateStatus UpdateStatus
+
+    public bool IsAppProgressBarActive
     {
-        get => _updateStatus;
+        get;
         set
         {
-            _updateStatus = value;
-            StatusString = 
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool IsDeviceProgressBarActive
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public UpdateStatus AppUpdateStatus
+    {
+        get;
+        set
+        {
+            field = value;
+            AppStatusString =
                 value switch
                 {
                     UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
                     UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                     _ => Resources.NoConnectionText
                 };
-            VersionString = 
+            AppVersionString =
                 value switch
                 {
-                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().First().Version,
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().First().Version,
                     _ => App.VersionString
-                };
+                } ?? "";
             OnPropertyChanged();
         }
-    }
+    } = UpdateStatus.CouldNotDetermine;
     
-    public string StatusString
+    public UpdateStatus DeviceUpdateStatus
     {
-        get => _statusString;
+        get;
         set
         {
-            _statusString = value;
+            field = value;
+            DeviceStatusString =
+                value switch
+                {
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
+                    UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                    _ => Resources.NoConnectionText
+                };
+            DeviceVersionString =
+                value switch
+                {
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().First().Version,
+                    _ => App.VersionString
+                } ?? "";
             OnPropertyChanged();
         }
-    }
-    public string VersionString
-    {
-        get => _versionString;
-        set
-        {
-            _versionString = value;
-            OnPropertyChanged();
-        }
-    }
+    } = UpdateStatus.CouldNotDetermine;
 
-    public async Task UpdateHandlerStart()
+    public string AppStatusString
     {
-        switch (UpdateStatus)
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null!;
+    
+    public string DeviceStatusString
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null!;
+
+    public string? AppVersionString
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null!;
+    
+    public string? DeviceVersionString
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null!;
+
+    public async Task AppUpdateHandlerStart()
+    {
+        switch (AppUpdateStatus)
         {
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
-                IsProgressBarActive = true;
-                StatusString = Resources.DownloadingText;
-                await _updateService.UpdateAsync();
+                IsAppProgressBarActive = true;
+                AppStatusString = Resources.DownloadingText;
+                await _appUpdateService.UpdateAsync();
                 break;
             default:
-                await _updateService.CheckForUpdates();
-                UpdateStatus = _updateService.UpdateStatus;
-                StatusString = 
-                    UpdateStatus switch
+                await _appUpdateService.CheckForUpdates(); 
+                AppUpdateStatus = _appUpdateService.UpdateStatus;
+                AppStatusString = 
+                    AppUpdateStatus switch
                     {
                         UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                         _ => Resources.NoConnectionText
                     };
-                VersionString = App.VersionString;
+                AppVersionString = App.VersionString;
+                break;
+        }
+    }
+    
+    public async Task DeviceUpdateHandlerStart()
+    {
+        switch (DeviceUpdateStatus)
+        {
+            case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
+                IsAppProgressBarActive = true;
+                AppStatusString = Resources.DownloadingText;
+                _deviceUpdateService.SendOtaUpdate();
+                break;
+            default:
+                await _appUpdateService.CheckForUpdates(); 
+                AppUpdateStatus = _appUpdateService.UpdateStatus;
+                AppStatusString = 
+                    AppUpdateStatus switch
+                    {
+                        UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                        _ => Resources.NoConnectionText
+                    };
+                AppVersionString = App.VersionString;
                 break;
         }
     }
 
     public async void OnViewFullyLoaded()
     {
-        await _updateService.CheckForUpdates();
+        await _appUpdateService.CheckForUpdates();
         
-        UpdateStatus = _updateService.UpdateStatus;
-        StatusString = 
-            UpdateStatus switch
+        AppUpdateStatus = _appUpdateService.UpdateStatus;
+        AppStatusString = 
+            AppUpdateStatus switch
             {
                 UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
                 UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                 _ => Resources.NoConnectionText
             };
-        VersionString = 
-            UpdateStatus switch
+        AppVersionString = 
+            AppUpdateStatus switch
             {
-                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _updateService.GetVersions().Count() > 0 
-                    ? $"v{_updateService.GetVersions().First().Version}"
+                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().Any() 
+                    ? $"v{_appUpdateService.GetVersions().First().Version}"
                     : App.VersionString,
                 _ => App.VersionString
-            };
+            } ?? "";
     }
 
-    public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService updateService) 
+    public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService) 
         : base(settingsService, 4, "Update")
     {
-        _updateService = updateService;
-        _updateService.UpdateDownloadProcessEvent += (_, args) => UpdateDownloadPercent = args.ProgressPercentage;
-        _updateService.UpdateDownloadFinishedEvent += (_, _) => IsProgressBarActive = false;
-        _updateService.CheckForUpdates().GetAwaiter();
+        _appUpdateService = appUpdateService;
+        _appUpdateService.UpdateDownloadProcessEvent += (_, args) => UpdateAppDownloadPercent = args.ProgressPercentage;
+        _appUpdateService.UpdateDownloadFinishedEvent += (_, _) => IsAppProgressBarActive = false;
+        _appUpdateService.CheckForUpdates().GetAwaiter();
+
+        _deviceUpdateService = otaUpdateService;
+        _deviceUpdateService.DownloadProgress.Subscribe(downloadProgress =>
+        {
+            UpdateDeviceDownloadPercent = downloadProgress.ProgressPercentage;
+        });
+        _deviceUpdateService.DownloadFinished.Subscribe(_ =>
+        {
+            IsDeviceProgressBarActive = false;
+        });
     }
     
     public new event PropertyChangedEventHandler? PropertyChanged;

@@ -28,7 +28,7 @@ public class UpdateService
     public event DownloadDataCompletedEventHandler? UpdateDownloadFinishedEvent;
 
     public UpdateStatus UpdateStatus =>
-        _updateInfo is not null ? _updateInfo.Status : UpdateStatus.CouldNotDetermine;
+        _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
     public async Task UpdateAsync()
     {
@@ -73,7 +73,7 @@ public class UpdateService
 
             if (await _dialogManager.ShowDialogAsync(restartBoxDialog) == true)
             {
-                _updater.InstallUpdate(_updateInfo.Updates.First());
+                await _updater.InstallUpdate(_updateInfo.Updates.First());
             }
         }
         catch (Exception exception)
@@ -113,7 +113,7 @@ public class UpdateService
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _logger = logger;
-        _updater = new SparkleUpdater(App.GitHubAutoUpdateConfigUrl,
+        _updater = new SparkleUpdater(App.AppAutoUpdateConfigUrl,
             new Ed25519Checker(SecurityMode.Unsafe))
         {
             UserInteractionMode = UserInteractionMode.DownloadNoInstall,

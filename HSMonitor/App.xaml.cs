@@ -41,8 +41,11 @@ namespace HSMonitor
         public static string GitHubClientProjectUrl { get; } = 
             "https://github.com/TTLC198/HSMonitorClient";
 
-        public static string GitHubAutoUpdateConfigUrl { get; } =
-            "https://raw.githubusercontent.com/TTLC198/HSMonitor/master/appcast.xml";
+        public static string AppAutoUpdateConfigUrl { get; } =
+            "https://raw.githubusercontent.com/TTLC198/HSMonitor/dev/1.1/appcast.xml";
+        
+        public static string DeviceAutoUpdateConfigUrl { get; } =
+            "https://raw.githubusercontent.com/TTLC198/HSMonitor/dev/1.1/appcast-device.xml";
     }
 
     public partial class App
