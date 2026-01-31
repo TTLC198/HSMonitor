@@ -109,7 +109,6 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
 
     public async void Save()
     {
-        Close(true);
         await _settingsService.Save();
     }
 

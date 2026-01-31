@@ -12,6 +12,7 @@
         <PublishSingleFile>false</PublishSingleFile>
         <SelfContained>false</SelfContained>
         <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
+        <ImplicitUsings>disable</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

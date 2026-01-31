@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -10,11 +11,42 @@ namespace HSMonitor.Views
     /// </summary>
     public partial class MainWindowView : Window
     {
+        private bool _inResize;
+        private double _aspect;
+        
         public MainWindowView()
         {
             InitializeComponent();
             
             RenderOptions.SetBitmapScalingMode(DashboardImage, BitmapScalingMode.LowQuality);
+            
+            Loaded += (_, __) => _aspect = ActualWidth / ActualHeight;
+            SizeChanged += OnSizeChanged;
+        }
+        
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_inResize || _aspect <= 0) return;
+
+            _inResize = true;
+            try
+            {
+                var dw = Math.Abs(e.NewSize.Width - e.PreviousSize.Width);
+                var dh = Math.Abs(e.NewSize.Height - e.PreviousSize.Height);
+
+                if (dw >= dh)
+                {
+                    Height = Width / _aspect;
+                }
+                else
+                {
+                    Width = Height * _aspect;
+                }
+            }
+            finally
+            {
+                _inResize = false;
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
