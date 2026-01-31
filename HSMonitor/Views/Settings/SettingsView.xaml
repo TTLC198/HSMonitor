@@ -11,7 +11,7 @@
     xmlns:p="clr-namespace:HSMonitor.Properties"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
-    Background="{DynamicResource MaterialDesignCardBackground}"
+    Background="{DynamicResource PrimaryHueLightBrush}"
     d:DesignWidth="{Binding Width}"
     d:DesignHeight="{Binding Height}"
     VerticalContentAlignment="Stretch"
@@ -28,57 +28,130 @@
                 Value="0, 4, 4, 4" />
         </Style>
     </UserControl.Resources>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <!--  Settings tab selection  -->
-        <ItemsControl
-            Grid.Column="0"
+        <!-- Header -->
+        <Border
+            x:Name="HeaderBorder"
+            Grid.Row="0"
+            Padding="4,6"
             Background="{DynamicResource PrimaryHueMidBrush}"
-            ItemsSource="{Binding Tabs}"
-            TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="0,0,3,0">
-                        <Border.Style>
-                            <Style TargetType="{x:Type Border}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="BorderBrush"
-                                                Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <Button
-                            Height="Auto"
-                            Margin="4"
-                            Padding="8"
-                            Command="{s:Action ActivateTab}"
-                            Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                            CommandParameter="{Binding}"
-                            ToolTip="{Binding Name}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="{Binding Converter={x:Static converters:SettingsTabsToIconConverter.Instance}}" />
-                        </Button>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="1">
+                <!-- Logo -->
+                <materialDesign:PackIcon
+                    Grid.Column="0"
+                    Width="24"
+                    Height="24"
+                    Kind="Settings"
+                    Margin="4"
+                    VerticalAlignment="Center" />
+
+                <!-- Title -->
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="4,1,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    <Run
+                        FontSize="19"
+                        FontWeight="Medium"
+                        Text="{Binding Title, Mode=OneWay}" />
+                </TextBlock>
+
+                <!-- Header actions: Reset / Cancel / Save -->
+                <StackPanel
+                    Grid.Column="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+
+                    <!-- Reset -->
+                    <Button
+                        Padding="6,2"
+                        VerticalAlignment="Center"
+                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                        Command="{s:Action Reset}"
+                        ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,6,0"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Kind="Restart" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Text="Сброс" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Cancel -->
+                    <Button
+                        Padding="6,2"
+                        VerticalAlignment="Center"
+                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                        Command="{s:Action Cancel}"
+                        ToolTip="{x:Static p:Resources.CancelButtonTooltip}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,6,0"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Kind="Close" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Text="Отмена" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Save -->
+                    <Button
+                        Padding="6,2"
+                        VerticalAlignment="Center"
+                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                        Command="{s:Action Save}"
+                        ToolTip="{x:Static p:Resources.SaveButtonTooltip}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,6,0"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Kind="ContentSave" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                Text="Сохранить" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content + bottom carousel -->
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="1.5*" />
             </Grid.RowDefinitions>
 
-            <!--  Active settings tab  -->
+            <!-- Active settings tab -->
             <materialDesign:Transitioner
                 Grid.Row="0"
                 ItemsSource="{Binding Tabs}"
@@ -87,22 +160,22 @@
                     <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
                         <Setter Property="BackwardWipe">
                             <Setter.Value>
-                                <materialDesign:SlideWipe Direction="Down" Duration="0:0:0.2" />
+                                <materialDesign:SlideWipe Direction="Left" Duration="0:0:0.2" />
                             </Setter.Value>
                         </Setter>
                         <Setter Property="ForwardWipe">
                             <Setter.Value>
-                                <materialDesign:SlideWipe Direction="Up" Duration="0:0:0.2" />
+                                <materialDesign:SlideWipe Direction="Right" Duration="0:0:0.2" />
                             </Setter.Value>
                         </Setter>
                     </Style>
                 </materialDesign:Transitioner.Resources>
+
                 <materialDesign:Transitioner.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer
                             Padding="4"
                             Background="{DynamicResource MaterialDesignCardBackground}"
-
                             HorizontalScrollBarVisibility="Disabled"
                             VerticalScrollBarVisibility="Auto">
                             <ContentControl s:View.Model="{Binding}" />
@@ -111,48 +184,167 @@
                 </materialDesign:Transitioner.ItemTemplate>
             </materialDesign:Transitioner>
 
-            <!--  Separator  -->
-            <Rectangle
+            <!-- Settings tab carousel (bottom) -->
+            <!-- Settings tab carousel (bottom) -->
+            <Border
                 Grid.Row="1"
-                Height="1"
-                HorizontalAlignment="Stretch"
-                Fill="{DynamicResource MaterialDesignDivider}" />
+                Background="{DynamicResource PrimaryHueMidBrush}"
+                Padding="10,10">
 
-            <!--  Buttons  -->
-            <StackPanel
-                Grid.Row="2"
-                HorizontalAlignment="Stretch"
-                Orientation="Horizontal">
-                <!--  Reset  -->
-                <Button
-                    Command="{s:Action Reset}"
-                    ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
-                    <materialDesign:PackIcon
-                        Width="26"
-                        Height="26"
-                        Kind="Restart" />
-                </Button>
+                <ScrollViewer
+                    HorizontalScrollBarVisibility="Hidden"
+                    VerticalScrollBarVisibility="Disabled"
+                    CanContentScroll="True">
 
-                <!--  Cancel  -->
-                <Button
-                    Command="{s:Action Cancel}"
-                    ToolTip="{x:Static p:Resources.CancelButtonTooltip}">
-                    <materialDesign:PackIcon
-                        Width="26"
-                        Height="26"
-                        Kind="Close" />
-                </Button>
+                    <ItemsControl ItemsSource="{Binding Tabs}" HorizontalAlignment="Center">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                <!--  Save  -->
-                <Button
-                    Command="{s:Action Save}"
-                    ToolTip="{x:Static p:Resources.SaveButtonTooltip}">
-                    <materialDesign:PackIcon
-                        Width="26"
-                        Height="26"
-                        Kind="ContentSave" />
-                </Button>
-            </StackPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Кнопка вкладки -->
+                                <Button
+                                    Margin="6,0"
+                                    Width="56"
+                                    Height="56"
+                                    Padding="0"
+                                    Command="{s:Action ActivateTab}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="{Binding Name}"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    RenderTransformOrigin="0.5,0.5">
+
+                                    <!-- Будем масштабировать -->
+                                    <Button.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                                    </Button.RenderTransform>
+
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}"
+                                               BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Setter Property="Foreground"
+                                                    Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                            <Setter Property="BorderBrush"
+                                                    Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+
+                                            <!-- Квадратная + сильно округлая -->
+                                            <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="22" />
+
+                                            <!-- Анимация "press" -->
+                                            <Style.Triggers>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="0.92" Duration="0:0:0.08" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="0.92" Duration="0:0:0.08" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="1" Duration="0:0:0.10" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="1" Duration="0:0:0.10" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+
+                                                <!-- Выбранная вкладка больше + заливка -->
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                    <Setter Property="BorderBrush"
+                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="Width"
+                                                                    To="72" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="Height"
+                                                                    To="72" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="1.03" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="1.03" Duration="0:0:0.16" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="Width"
+                                                                    To="56" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="Height"
+                                                                    To="56" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="1" Duration="0:0:0.16" />
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="1" Duration="0:0:0.16" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+
+                                    <!-- Центр: иконка + маленькая подпись -->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <materialDesign:PackIcon
+                                            Grid.Row="0"
+                                            Width="22"
+                                            Height="22"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="{Binding Converter={x:Static converters:SettingsTabsToIconConverter.Instance}}" />
+
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Margin="0,2,0,0"
+                                            FontSize="10"
+                                            HorizontalAlignment="Center"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextAlignment="Center"
+                                            Text="{Binding Name}" />
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
