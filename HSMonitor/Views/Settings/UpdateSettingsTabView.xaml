@@ -92,7 +92,7 @@
                         <!-- Buttons -->
                         <StackPanel Grid.Column="1"
                                     Orientation="Horizontal"
-                                    HorizontalAlignment="Right"
+                                    HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top">
 
                             <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
@@ -182,7 +182,7 @@
 
                         <StackPanel Grid.Column="1"
                                     Orientation="Horizontal"
-                                    HorizontalAlignment="Right">
+                                    HorizontalAlignment="Stretch">
 
                             <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
                                     Margin="0,0,8,0"
@@ -197,14 +197,6 @@
                                     Command="{s:Action DevicePrimaryAction}"/>
                         </StackPanel>
                     </Grid>
-
-                    <!-- Optional hint / warning -->
-                    <TextBlock Grid.Row="3"
-                               Margin="0,12,0,0"
-                               FontSize="12"
-                               Opacity="0.75"
-                               TextWrapping="Wrap"
-                               Text="Подсказка: для прошивки устройство может потребовать режим загрузчика (bootloader)."/>
                 </Grid>
             </materialDesign:Card>
 
