@@ -204,7 +204,6 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!-- Кнопка вкладки -->
                                 <Button
                                     Margin="6,0"
                                     Width="56"
@@ -212,134 +211,150 @@
                                     Padding="0"
                                     Command="{s:Action ActivateTab}"
                                     CommandParameter="{Binding}"
-                                    ToolTip="{Binding Name}"
+                                    ToolTip="{Binding Converter={x:Static converters:SettingsTabsToLocalizedNameConverter.Instance}}"
                                     HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    RenderTransformOrigin="0.5,0.5">
-
-                                    <!-- Будем масштабировать -->
-                                    <Button.RenderTransform>
-                                        <ScaleTransform ScaleX="1" ScaleY="1" />
-                                    </Button.RenderTransform>
+                                    VerticalContentAlignment="Center">
 
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}"
-                                               BasedOn="{StaticResource MaterialDesignFlatButton}">
-                                            <Setter Property="BorderThickness" Value="1" />
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Background" Value="Transparent" />
                                             <Setter Property="Foreground"
                                                     Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
                                             <Setter Property="BorderBrush"
                                                     Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Setter Property="Cursor" Value="Hand" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
 
-                                            <!-- Квадратная + сильно округлая -->
-                                            <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="22" />
+                                            <!-- Template: все анимации тут, трансформы per-instance -->
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <Border x:Name="Bd"
+                                                                Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="22"
+                                                                SnapsToDevicePixels="True"
+                                                                RenderTransformOrigin="0.5,0.5">
 
-                                            <!-- Анимация "press" -->
-                                            <Style.Triggers>
+                                                            <!-- 2 масштаба: selected + press -->
+                                                            <Border.RenderTransform>
+                                                                <TransformGroup>
+                                                                    <ScaleTransform x:Name="SelectedScale" ScaleX="1"
+                                                                        ScaleY="1" />
+                                                                    <ScaleTransform x:Name="PressScale" ScaleX="1"
+                                                                        ScaleY="1" />
+                                                                </TransformGroup>
+                                                            </Border.RenderTransform>
 
-                                                <!-- Hover для НЕвыбранной вкладки: делаем легкую заливку, но текст оставляем контрастным -->
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                        <Condition Binding="{Binding IsSelected}" Value="False" />
-                                                    </MultiDataTrigger.Conditions>
+                                                            <ContentPresenter
+                                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                Margin="{TemplateBinding Padding}"
+                                                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                                                        </Border>
 
-                                                    <!-- фон лёгкий, текст остаётся контрастным -->
-                                                    <Setter Property="Background" Value="#22000000" />
-                                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                </MultiDataTrigger>
+                                                        <ControlTemplate.Triggers>
 
-                                                <!-- Hover для выбранной -->
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                        <Condition Binding="{Binding IsSelected}" Value="True" />
-                                                    </MultiDataTrigger.Conditions>
+                                                            <!-- Hover для НЕ выбранной (Tag=False): инверсия -->
+                                                            <MultiTrigger>
+                                                                <MultiTrigger.Conditions>
+                                                                    <Condition Property="IsMouseOver" Value="True" />
+                                                                    <Condition Property="Tag" Value="False" />
+                                                                </MultiTrigger.Conditions>
+                                                                <Setter TargetName="Bd" Property="Background"
+                                                                        Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                <Setter Property="Foreground"
+                                                                        Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                                <Setter Property="BorderBrush"
+                                                                        Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                            </MultiTrigger>
 
-                                                    <Setter Property="Background" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                    <Setter Property="BorderThickness" Value="2" />
-                                                </MultiDataTrigger>
+                                                            <!-- Выбранная (Tag=True): инверсия + увеличение -->
+                                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background"
+                                                                        Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                <Setter Property="Foreground"
+                                                                        Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                                <Setter Property="BorderBrush"
+                                                                        Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                <Setter Property="BorderThickness" Value="2" />
 
-                                                <!-- Анимация "press" -->
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Trigger.EnterActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                                    To="0.92" Duration="0:0:0.08" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                                    To="0.92" Duration="0:0:0.08" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </Trigger.EnterActions>
-                                                    <Trigger.ExitActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                                    To="1" Duration="0:0:0.10" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                                    To="1" Duration="0:0:0.10" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </Trigger.ExitActions>
-                                                </Trigger>
+                                                                <DataTrigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
+                                                                                Storyboard.TargetProperty="ScaleX"
+                                                                                To="1.28" Duration="0:0:0.16" />
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
+                                                                                Storyboard.TargetProperty="ScaleY"
+                                                                                To="1.28" Duration="0:0:0.16" />
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </DataTrigger.EnterActions>
 
-                                                <!-- Выбранная вкладка больше + заливка -->
-                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="Background"
-                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                    <Setter Property="Foreground"
-                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
-                                                    <Setter Property="BorderBrush"
-                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                <DataTrigger.ExitActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
+                                                                                Storyboard.TargetProperty="ScaleX"
+                                                                                To="1" Duration="0:0:0.16" />
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
+                                                                                Storyboard.TargetProperty="ScaleY"
+                                                                                To="1" Duration="0:0:0.16" />
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </DataTrigger.ExitActions>
+                                                            </DataTrigger>
 
-                                                    <DataTrigger.EnterActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                                    To="72" Duration="0:0:0.16" />
-                                                                <DoubleAnimation Storyboard.TargetProperty="Height"
-                                                                    To="72" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                                    To="1.03" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                                    To="1.03" Duration="0:0:0.16" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.EnterActions>
+                                                            <!-- Press: всегда, отдельный масштаб, не конфликтует с SelectedScale -->
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Trigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation
+                                                                                Storyboard.TargetName="PressScale"
+                                                                                Storyboard.TargetProperty="ScaleX"
+                                                                                To="0.92" Duration="0:0:0.08" />
+                                                                            <DoubleAnimation
+                                                                                Storyboard.TargetName="PressScale"
+                                                                                Storyboard.TargetProperty="ScaleY"
+                                                                                To="0.92" Duration="0:0:0.08" />
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </Trigger.EnterActions>
 
-                                                    <DataTrigger.ExitActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                                    To="56" Duration="0:0:0.16" />
-                                                                <DoubleAnimation Storyboard.TargetProperty="Height"
-                                                                    To="56" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                                    To="1" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                                    To="1" Duration="0:0:0.16" />
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.ExitActions>
-                                                </DataTrigger>
+                                                                <Trigger.ExitActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation
+                                                                                Storyboard.TargetName="PressScale"
+                                                                                Storyboard.TargetProperty="ScaleX"
+                                                                                To="1" Duration="0:0:0.10" />
+                                                                            <DoubleAnimation
+                                                                                Storyboard.TargetName="PressScale"
+                                                                                Storyboard.TargetProperty="ScaleY"
+                                                                                To="1" Duration="0:0:0.10" />
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </Trigger.ExitActions>
+                                                            </Trigger>
 
-                                            </Style.Triggers>
+                                                            <!-- Disabled -->
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter TargetName="Bd" Property="Opacity" Value="0.45" />
+                                                            </Trigger>
+
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
                                         </Style>
                                     </Button.Style>
 
-                                    <!-- Центр: иконка + маленькая подпись -->
+                                    <!-- Контент: иконка + локализованный текст -->
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
@@ -363,7 +378,7 @@
                                             TextTrimming="CharacterEllipsis"
                                             TextAlignment="Center"
                                             Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                            Text="{Binding Name}" />
+                                            Text="{Binding Converter={x:Static converters:SettingsTabsToLocalizedNameConverter.Instance}}" />
                                     </Grid>
                                 </Button>
                             </DataTemplate>
