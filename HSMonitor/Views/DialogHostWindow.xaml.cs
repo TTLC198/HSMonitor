@@ -1,4 +1,5 @@
 using System.Windows;
+using MaterialDesignThemes.Wpf;
 
 namespace HSMonitor.Views;
 
@@ -8,5 +9,7 @@ public partial class DialogHostWindow : Window
   {
     InitializeComponent();
   }
+  
+  public DialogHost DialogHostControl => RootDialogHost;
 }
 

@@ -10,7 +10,7 @@ using Stylet;
 
 namespace HSMonitor.ViewModels.Framework;
 
-public class DialogManager : IDisposable
+public sealed class DialogManager : IDisposable
 {
     private readonly IViewManager _viewManager;
 
@@ -26,65 +26,82 @@ public class DialogManager : IDisposable
     public UIElement GetViewForDialogScreen<T>(DialogScreen<T> dialogScreen)
     {
         var dialogScreenType = dialogScreen.GetType();
+
         if (_dialogScreenViewCache.TryGetValue(dialogScreenType, out var cachedView))
         {
             _viewManager.BindViewToModel(cachedView, dialogScreen);
             return cachedView;
         }
-        else
-        {
-            var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
-            // This warms up the view and triggers all bindings.
-            // We need to do this, as the view may have nested model-bound ContentControls
-            // which take a very long time to load.
-            // By pre-loading them as early as possible, we avoid doing it when the dialog
-            // actually pops up, which improves user experience.
-            // Ideally, the whole view cache should be populated at application startup.
-            view.Arrange(new Rect(0, 0, 500, 500));
+        var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
 
-            return _dialogScreenViewCache[dialogScreenType] = view;
-        }
+        // Warm-up the view and trigger all bindings (nested ContentControls etc.).
+        view.Arrange(new Rect(0, 0, 500, 500));
+
+        return _dialogScreenViewCache[dialogScreenType] = view;
     }
 
     public async Task<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
     {
         var view = GetViewForDialogScreen(dialogScreen);
 
-        await _dialogLock.WaitAsync();
+        await _dialogLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
+            // Always show dialogs on UI thread
+            if (Application.Current?.Dispatcher is null)
             {
-                var wnd = new DialogHostWindow
-                {
-                    Title = ownWindow.Title,
-                    Width = ownWindow.Width,
-                    MinWidth = ownWindow.MinWidth,
-                };
-
-                if (ownWindow.MinHeight is double mh) wnd.MinHeight = mh;
-                if (ownWindow.Height is double h) wnd.Height = h;
-
-                wnd.Owner = Application.Current?.MainWindow;
-
-                wnd.Show();
-
-                await wnd.RootDialogHost.ShowDialog(view);
-
-                wnd.Close();
+                // Fallback (should not really happen in WPF app)
+                await DialogHost.Show(view).ConfigureAwait(false);
                 return dialogScreen.DialogResult;
             }
 
-            await DialogHost.Show(view);
-            return dialogScreen.DialogResult;
+            return await Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                // Wide / separate-window dialog route
+                if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
+                {
+                    var wnd = new DialogHostWindow
+                    {
+                        Title = string.IsNullOrWhiteSpace(ownWindow.Title) ? "Диалог" : ownWindow.Title,
+                        Width = ownWindow.Width > 0 ? ownWindow.Width : 900,
+                        MinWidth = ownWindow.MinWidth > 0 ? ownWindow.MinWidth : 720,
+                    };
+
+                    // Optional sizes
+                    if (ownWindow.Height is var h and > 0)
+                        wnd.Height = h;
+                    if (ownWindow.MinHeight is var mh and > 0)
+                        wnd.MinHeight = mh;
+
+                    wnd.Owner = Application.Current.MainWindow;
+
+                    // Show window and host the dialog inside its DialogHost
+                    wnd.Show();
+                    try
+                    {
+                        // IMPORTANT: show inside the window's DialogHost, not the global one
+                        await wnd.DialogHostControl.ShowDialog(view);
+                    }
+                    finally
+                    {
+                        wnd.Close();
+                    }
+
+                    return dialogScreen.DialogResult;
+                }
+
+                // Default route: in main window DialogHost
+                await DialogHost.Show(view);
+                return dialogScreen.DialogResult;
+
+            }).Task.Unwrap().ConfigureAwait(false);
         }
         finally
         {
             _dialogLock.Release();
         }
     }
-
 
     public void Dispose() => _dialogLock.Dispose();
 }

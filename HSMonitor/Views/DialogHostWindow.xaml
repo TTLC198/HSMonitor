@@ -4,10 +4,21 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        ResizeMode="CanResize"
-        Width="900"
-        MinWidth="720">
-    <materialDesign:DialogHost x:Name="RootDialogHost">
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="Transparent">
+    <materialDesign:DialogHost 
+        x:Name="RootDialogHost"
+        Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
+        DialogBackground="{DynamicResource PrimaryHueMidBrush}"
+        Background="{DynamicResource PrimaryHueLightBrush}"
+        DialogTheme="Light"
+        ApplyBlurBackground="True"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        VerticalContentAlignment="Stretch"
+        DialogMargin="0">
         <Grid/>
     </materialDesign:DialogHost>
 </Window>

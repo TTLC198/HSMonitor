@@ -57,8 +57,8 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
         Close(false);
     }
     public string Title => "Настройки";
-    public double Width => 900;
-    public double MinWidth => 720;
-    public double Height => 800;
-    public double MinHeight => 600;
+    public double Width => 500;
+    public double MinWidth => 360;
+    public double Height => 400;
+    public double MinHeight => 350;
 }
