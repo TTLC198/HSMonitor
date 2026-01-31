@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.ViewModels.Framework.Dialog;
 using HSMonitor.Views;
+using HSMonitor.Views.Settings;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 
@@ -48,39 +49,71 @@ public sealed class DialogManager : IDisposable
         await _dialogLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            // Always show dialogs on UI thread
             if (Application.Current?.Dispatcher is null)
             {
-                // Fallback (should not really happen in WPF app)
                 await DialogHost.Show(view).ConfigureAwait(false);
                 return dialogScreen.DialogResult;
             }
 
             return await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
-                // Wide / separate-window dialog route
-                if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
+                var owner = Application.Current.MainWindow;
+
+                // ✅ ТОЛЬКО ДЛЯ НАСТРОЕК: отдельное окно справа
+                var isSettings =
+                    dialogScreen.GetType().Name == "SettingsViewModel" ||
+                    (dialogScreen.GetType().FullName?.EndsWith(".SettingsViewModel", StringComparison.Ordinal) ?? false);
+
+                if (isSettings && owner is not null)
+                {
+                    // Можно взять ширину из IOpenInOwnWindowDialog (если SettingsViewModel реализует),
+                    // иначе дефолт
+                    double width = 460;
+                    double minWidth = 360;
+
+                    if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
+                    {
+                        if (ownWindow.Width > 0) width = ownWindow.Width;
+                        if (ownWindow.MinWidth > 0) minWidth = ownWindow.MinWidth;
+                    }
+
+                    var wnd = new SettingsSideHostWindow(owner, gap: 10)
+                    {
+                        Width = width,
+                        MinWidth = minWidth,
+                    };
+
+                    wnd.Show();
+
+                    try
+                    {
+                        await wnd.DialogHostControl.ShowDialog(view);
+                    }
+                    finally
+                    {
+                        wnd.Close();
+                    }
+
+                    return dialogScreen.DialogResult;
+                }
+
+                // Wide / separate-window dialog route (как было)
+                if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
                 {
                     var wnd = new DialogHostWindow
                     {
-                        Title = string.IsNullOrWhiteSpace(ownWindow.Title) ? "Диалог" : ownWindow.Title,
-                        Width = ownWindow.Width > 0 ? ownWindow.Width : 900,
-                        MinWidth = ownWindow.MinWidth > 0 ? ownWindow.MinWidth : 720,
+                        Title = string.IsNullOrWhiteSpace(ownWindowDialog.Title) ? "Диалог" : ownWindowDialog.Title,
+                        Width = ownWindowDialog.Width > 0 ? ownWindowDialog.Width : 900,
+                        MinWidth = ownWindowDialog.MinWidth > 0 ? ownWindowDialog.MinWidth : 720,
                     };
 
-                    // Optional sizes
-                    if (ownWindow.Height is var h and > 0)
-                        wnd.Height = h;
-                    if (ownWindow.MinHeight is var mh and > 0)
-                        wnd.MinHeight = mh;
+                    if (ownWindowDialog.Height is var h and > 0) wnd.Height = h;
+                    if (ownWindowDialog.MinHeight is var mh and > 0) wnd.MinHeight = mh;
 
-                    wnd.Owner = Application.Current.MainWindow;
-
-                    // Show window and host the dialog inside its DialogHost
+                    wnd.Owner = owner;
                     wnd.Show();
                     try
                     {
-                        // IMPORTANT: show inside the window's DialogHost, not the global one
                         await wnd.DialogHostControl.ShowDialog(view);
                     }
                     finally
