@@ -98,6 +98,24 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string Advanced {
+            get {
+                return ResourceManager.GetString("Advanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Appearance.
+        /// </summary>
+        public static string Appearance {
+            get {
+                return ResourceManager.GetString("Appearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodetect Hardware:.
         /// </summary>
         public static string AutoDetectHardwareSwitchText {
@@ -225,6 +243,15 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection.
+        /// </summary>
+        public static string Connection {
+            get {
+                return ResourceManager.GetString("Connection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CPU icon:.
         /// </summary>
         public static string CustomCPUIconText {
@@ -302,6 +329,15 @@ namespace HSMonitor.Properties {
         public static string DownloadingText {
             get {
                 return ResourceManager.GetString("DownloadingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware.
+        /// </summary>
+        public static string Hardware {
+            get {
+                return ResourceManager.GetString("Hardware", resourceCulture);
             }
         }
         
@@ -581,6 +617,15 @@ namespace HSMonitor.Properties {
         public static string TXIntervalText {
             get {
                 return ResourceManager.GetString("TXIntervalText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
             }
         }
         

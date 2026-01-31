@@ -206,8 +206,8 @@
                             <DataTemplate>
                                 <Button
                                     Margin="6,0"
-                                    Width="56"
-                                    Height="56"
+                                    Width="72"
+                                    Height="72"
                                     Padding="0"
                                     Command="{s:Action ActivateTab}"
                                     CommandParameter="{Binding}"

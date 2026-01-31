@@ -309,4 +309,19 @@ Please reinstall the program to fix the problem.</value>
   <data name="UpToDateText" xml:space="preserve">
     <value>You're up to date</value>
   </data>
+  <data name="Connection" xml:space="preserve">
+    <value>Connection</value>
+  </data>
+  <data name="Hardware" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
 </root>

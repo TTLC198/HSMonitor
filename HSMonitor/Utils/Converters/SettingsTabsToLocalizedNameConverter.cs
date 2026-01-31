@@ -27,13 +27,13 @@ public sealed class SettingsTabsToLocalizedNameConverter : IValueConverter
 
         // 1) Явный ключ из VM (если есть)
         var explicitKey =
-            GetStringProperty(value, "LocalizationKey") ??
+            GetStringProperty(value, "Name") ??
             GetStringProperty(value, "ResourceKey") ??
             GetStringProperty(value, "TitleKey");
 
         if (!string.IsNullOrWhiteSpace(explicitKey))
         {
-            var str = Resources.ResourceManager.GetString(explicitKey, culture);
+            var str = Resources.ResourceManager.GetString(explicitKey, CultureInfo.CurrentUICulture);
             if (!string.IsNullOrWhiteSpace(str))
                 return str!;
         }
