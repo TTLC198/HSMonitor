@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
@@ -25,6 +26,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(AppPrimaryActionText));
+            OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
         }
     }
     
@@ -35,6 +38,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(DevicePrimaryActionText));
+            OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
         }
     }
 
@@ -46,6 +51,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(AppPrimaryActionText));
+            OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
+            OnPropertyChanged(nameof(AppProgressStageText));
         }
     }
     
@@ -56,8 +64,38 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(DevicePrimaryActionText));
+            OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+            OnPropertyChanged(nameof(DeviceProgressStageText));
         }
     }
+    
+    public string AppPrimaryActionText =>
+        AppUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped
+            ? "Обновить"
+            : "Проверить";
+
+    public bool IsAppPrimaryActionEnabled =>
+        !IsAppProgressBarActive && (AppUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
+
+    public string AppProgressStageText =>
+        IsAppProgressBarActive ? Resources.DownloadingText : string.Empty;
+
+    public string DevicePrimaryActionText =>
+        DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped
+            ? "Обновить прошивку"
+            : "Проверить";
+
+    public bool IsDevicePrimaryActionEnabled =>
+        !IsDeviceProgressBarActive && (DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
+
+    public string DeviceProgressStageText =>
+        IsDeviceProgressBarActive ? Resources.DownloadingText : string.Empty;
+
+    public string DevicePrimaryActionTooltip =>
+        DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped
+            ? "Скачать и установить новую прошивку"
+            : "Сначала нажмите «Проверить», чтобы найти обновления";
 
     public UpdateStatus AppUpdateStatus
     {
@@ -79,6 +117,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                     _ => App.VersionString
                 } ?? "";
             OnPropertyChanged();
+            OnPropertyChanged(nameof(AppPrimaryActionText));
+            OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
         }
     } = UpdateStatus.CouldNotDetermine;
     
@@ -102,6 +142,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                     _ => App.VersionString
                 } ?? "";
             OnPropertyChanged();
+            OnPropertyChanged(nameof(DevicePrimaryActionText));
+            OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+            OnPropertyChanged(nameof(DevicePrimaryActionTooltip));
         }
     } = UpdateStatus.CouldNotDetermine;
 
@@ -145,6 +188,71 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         }
     } = null!;
 
+    public async Task CheckAppUpdates()
+    {
+        await _appUpdateService.CheckForUpdates();
+        AppUpdateStatus = _appUpdateService.UpdateStatus;
+
+        // Force status text when nothing is available
+        if (AppUpdateStatus is UpdateStatus.UpdateNotAvailable)
+            AppStatusString = Resources.UpToDateText;
+        else if (AppUpdateStatus is UpdateStatus.CouldNotDetermine)
+            AppStatusString = Resources.NoConnectionText;
+
+        AppVersionString = App.VersionString;
+    }
+
+    public async Task AppPrimaryAction()
+    {
+        if (!IsAppPrimaryActionEnabled)
+            return;
+
+        IsAppProgressBarActive = true;
+        AppStatusString = Resources.DownloadingText;
+        await _appUpdateService.UpdateAsync();
+    }
+
+    public async Task CheckDeviceUpdates()
+    {
+        await _deviceUpdateService.CheckForUpdates();
+        DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
+
+        if (DeviceUpdateStatus is UpdateStatus.UpdateNotAvailable)
+            DeviceStatusString = Resources.UpToDateText;
+        else if (DeviceUpdateStatus is UpdateStatus.CouldNotDetermine)
+            DeviceStatusString = Resources.NoConnectionText;
+    }
+
+    public async Task DevicePrimaryAction()
+    {
+        if (!IsDevicePrimaryActionEnabled)
+            return;
+
+        // Здесь будет запуск OTA/прошивки. Пока включаем индикатор и статус.
+        IsDeviceProgressBarActive = true;
+        DeviceStatusString = Resources.DownloadingText;
+
+        // TODO: подключи реальный запуск прошивки, когда API будет готов.
+        // _deviceUpdateService.SendOtaUpdate();
+        await Task.CompletedTask;
+    }
+
+    public void GithubLinkPageOpen()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = App.GitHubProjectUrl,
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            // ignore
+        }
+    }
+    
     public async Task AppUpdateHandlerStart()
     {
         switch (AppUpdateStatus)
@@ -181,7 +289,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                 await _deviceUpdateService.CheckForUpdates(); 
                 DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
                 DeviceStatusString = 
-                    AppUpdateStatus switch
+                    DeviceUpdateStatus switch
                     {
                         UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                         _ => Resources.NoConnectionText
@@ -211,6 +319,16 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                     : App.VersionString,
                 _ => App.VersionString
             } ?? "";
+        
+        await _deviceUpdateService.CheckForUpdates();
+        DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
+        DeviceStatusString =
+            DeviceUpdateStatus switch
+            {
+                UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
+                UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+                _ => Resources.NoConnectionText
+            };
     }
 
     public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService) 

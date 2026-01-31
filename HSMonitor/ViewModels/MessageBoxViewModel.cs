@@ -1,10 +1,15 @@
 ﻿using HSMonitor.ViewModels.Framework;
+using HSMonitor.ViewModels.Framework.Dialog;
 
 namespace HSMonitor.ViewModels;
 
-public class MessageBoxViewModel : DialogScreen
+public class MessageBoxViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
 {
     public string? Title { get; set; }
+    public double Width => 400;
+    public double MinWidth => 260;
+    public double Height => 320;
+    public double MinHeight => 200;
 
     public string? Message { get; set; }
 

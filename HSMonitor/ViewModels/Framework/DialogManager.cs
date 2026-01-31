@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using HSMonitor.ViewModels.Framework.Dialog;
+using HSMonitor.Views;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 
@@ -52,6 +54,28 @@ public class DialogManager : IDisposable
         await _dialogLock.WaitAsync();
         try
         {
+            if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
+            {
+                var wnd = new DialogHostWindow
+                {
+                    Title = ownWindow.Title,
+                    Width = ownWindow.Width,
+                    MinWidth = ownWindow.MinWidth,
+                };
+
+                if (ownWindow.MinHeight is double mh) wnd.MinHeight = mh;
+                if (ownWindow.Height is double h) wnd.Height = h;
+
+                wnd.Owner = Application.Current?.MainWindow;
+
+                wnd.Show();
+
+                await wnd.RootDialogHost.ShowDialog(view);
+
+                wnd.Close();
+                return dialogScreen.DialogResult;
+            }
+
             await DialogHost.Show(view);
             return dialogScreen.DialogResult;
         }
@@ -60,6 +84,7 @@ public class DialogManager : IDisposable
             _dialogLock.Release();
         }
     }
+
 
     public void Dispose() => _dialogLock.Dispose();
 }
