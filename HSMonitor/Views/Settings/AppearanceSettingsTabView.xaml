@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HSMonitor.Views.Settings.AppearanceSettingsTabView"
+<UserControl x:Class="HSMonitor.Views.Settings.AppearanceSettingsTabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,175 +7,227 @@
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              xmlns:p="clr-namespace:HSMonitor.Properties"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:utils="clr-namespace:HSMonitor.Utils"
              d:DataContext="{d:DesignInstance Type=settings:AppearanceSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
     <UserControl.Resources>
-        <utils:BindingProxy x:Key="MaxProxy" Data="{Binding CustomNameMaxLength, Mode=OneWay}"/>
+        <utils:BindingProxy x:Key="MaxProxy" Data="{Binding CustomNameMaxLength, Mode=OneWay}" />
         <Style
             TargetType="{x:Type Grid}">
             <Setter
                 Property="IsEnabled"
-                Value="{Binding IsAutoDetectHardwareEnabled, Converter={x:Static converters:InverseBoolConverter.Instance}}"/>
+                Value="{Binding IsAutoDetectHardwareEnabled, Converter={x:Static converters:InverseBoolConverter.Instance}}" />
         </Style>
     </UserControl.Resources>
-    <StackPanel
-        Margin="0, 8"
-        Orientation="Vertical">
-        <!--On/Off autodetect hardware-->
-        <Grid 
-            Margin="12,4" 
-            ToolTip="{x:Static p:Resources.AutoDetectHardwareTooltip}"
-            IsEnabled="True">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
 
-            <TextBlock
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                Text="{x:Static p:Resources.AutoDetectHardwareSwitchText}" />
-            <ToggleButton
-                Grid.Column="1"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                IsChecked="{Binding IsAutoDetectHardwareEnabled}" />
-        </Grid>
-        <!--Set custom CPU name-->
-        <Grid
-            Margin="12, 5">
-            <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="Auto"/>
-                <RowDefinition
-                    Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock
-                Text="{x:Static p:Resources.CustomCPUNameText}"
-                VerticalAlignment="Center"/>
-            <TextBox
-                Grid.Row="1">
-                <TextBox.Text>
-                    <Binding Path="CpuCustomName"
-                             UpdateSourceTrigger="PropertyChanged" 
-                             Mode="TwoWay">
-                        <Binding.ValidationRules>
-                            <validationRules:HardwareNameLengthRule
-                                ValidatesOnTargetUpdated="True">
-                                <validationRules:HardwareNameLengthRuleValue
-                                    Min="5"
-                                    Max="{Binding Data, Source={StaticResource MaxProxy}}"/>
-                            </validationRules:HardwareNameLengthRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-        </Grid>
-        <!--Set custom GPU name-->
-        <Grid
-            Margin="12, 5">
-            <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="Auto"/>
-                <RowDefinition
-                    Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock
-                Text="{x:Static p:Resources.CustomGPUNameText}"
-                VerticalAlignment="Center"/>
-            <TextBox
-                x:Name="GpuNameTextBox"
-                Grid.Row="1">
-                <TextBox.Text>
-                    <Binding Path="GpuCustomName"
-                             UpdateSourceTrigger="PropertyChanged" 
-                             Mode="TwoWay">
-                        <Binding.ValidationRules>
-                            <validationRules:HardwareNameLengthRule
-                                ValidatesOnTargetUpdated="True">
-                                <validationRules:HardwareNameLengthRuleValue
-                                    Min="5"
-                                    Max="{Binding Data, Source={StaticResource MaxProxy}}"/>
-                            </validationRules:HardwareNameLengthRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-        </Grid>
-        <!-- Select custom CPU Type -->
-        <Grid
-            Margin="12, 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Text="{x:Static p:Resources.CustomCPUIconText}"
-                VerticalAlignment="Center"/>
-            <ComboBox
-                Grid.Column="1"
-                ItemsSource="{Binding CpuCustomTypes}"
-                SelectedValue="{Binding CpuCustomType, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock
-                            Text="{Binding }"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </Grid>
-        <!-- Select custom GPU Type -->
-        <Grid
-            Margin="12, 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Text="{x:Static p:Resources.CustomGPUIconText}"
-                VerticalAlignment="Center"/>
-            <ComboBox
-                Grid.Column="1"
-                ItemsSource="{Binding GpuCustomTypes}"
-                SelectedValue="{Binding GpuCustomType, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock
-                            Text="{Binding }"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </Grid>
-        <!-- Select custom Memory Type -->
-        <Grid
-            Margin="12, 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto"/>
-                <ColumnDefinition
-                    Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Text="{x:Static p:Resources.CustomRAMIconText}"
-                VerticalAlignment="Center"/>
-            <ComboBox
-                Grid.Column="1"
-                ItemsSource="{Binding MemoryCustomTypes}"
-                SelectedValue="{Binding MemoryCustomType, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock
-                            Text="{Binding }"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </Grid>
-    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,8"
+                    Orientation="Vertical">
+
+            <materialDesign:Card Margin="12,6" Padding="12">
+                <StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <materialDesign:PackIcon Kind="Magnify"
+                                                 Width="22" Height="22"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,8,0"
+                                                 Opacity="0.9" />
+                        <TextBlock FontSize="16"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Text="Автоопределение оборудования" />
+                    </DockPanel>
+
+                    <StackPanel Margin="0,10,0,0">
+                        <Grid Margin="0,6"
+                              ToolTip="{x:Static p:Resources.AutoDetectHardwareTooltip}"
+                              IsEnabled="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{x:Static p:Resources.AutoDetectHardwareSwitchText}" />
+                            <ToggleButton
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding IsAutoDetectHardwareEnabled}" />
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="12,6" Padding="12">
+                <StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <materialDesign:PackIcon Kind="RenameBox"
+                                                 Width="22" Height="22"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,8,0"
+                                                 Opacity="0.9" />
+                        <TextBlock FontSize="16"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Text="Пользовательские названия" />
+                    </DockPanel>
+
+                    <StackPanel Margin="0,10,0,0">
+                        <Grid Margin="0,6">
+                            <Grid.RowDefinitions>
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Text="{x:Static p:Resources.CustomCPUNameText}"
+                                VerticalAlignment="Center" />
+                            <TextBox
+                                Grid.Row="1">
+                                <TextBox.Text>
+                                    <Binding Path="CpuCustomName"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             Mode="TwoWay">
+                                        <Binding.ValidationRules>
+                                            <validationRules:HardwareNameLengthRule
+                                                ValidatesOnTargetUpdated="True">
+                                                <validationRules:HardwareNameLengthRuleValue
+                                                    Min="5"
+                                                    Max="{Binding Data, Source={StaticResource MaxProxy}}" />
+                                            </validationRules:HardwareNameLengthRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+
+                        <Grid Margin="0,6">
+                            <Grid.RowDefinitions>
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Text="{x:Static p:Resources.CustomGPUNameText}"
+                                VerticalAlignment="Center" />
+                            <TextBox
+                                x:Name="GpuNameTextBox"
+                                Grid.Row="1">
+                                <TextBox.Text>
+                                    <Binding Path="GpuCustomName"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             Mode="TwoWay">
+                                        <Binding.ValidationRules>
+                                            <validationRules:HardwareNameLengthRule
+                                                ValidatesOnTargetUpdated="True">
+                                                <validationRules:HardwareNameLengthRuleValue
+                                                    Min="5"
+                                                    Max="{Binding Data, Source={StaticResource MaxProxy}}" />
+                                            </validationRules:HardwareNameLengthRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="12,6" Padding="12">
+                <StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <materialDesign:PackIcon Kind="Chip"
+                                                 Width="22" Height="22"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,8,0"
+                                                 Opacity="0.9" />
+                        <TextBlock FontSize="16"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Text="Иконки и типы компонентов" />
+                    </DockPanel>
+
+                    <StackPanel Margin="0,10,0,0">
+                        <Grid Margin="0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition
+                                    Width="Auto" />
+                                <ColumnDefinition
+                                    Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Text="{x:Static p:Resources.CustomCPUIconText}"
+                                VerticalAlignment="Center" />
+                            <ComboBox
+                                Grid.Column="1"
+                                ItemsSource="{Binding CpuCustomTypes}"
+                                SelectedValue="{Binding CpuCustomType, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Text="{Binding }" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid Margin="0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition
+                                    Width="Auto" />
+                                <ColumnDefinition
+                                    Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Text="{x:Static p:Resources.CustomGPUIconText}"
+                                VerticalAlignment="Center" />
+                            <ComboBox
+                                Grid.Column="1"
+                                ItemsSource="{Binding GpuCustomTypes}"
+                                SelectedValue="{Binding GpuCustomType, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Text="{Binding }" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid Margin="0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition
+                                    Width="Auto" />
+                                <ColumnDefinition
+                                    Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Text="{x:Static p:Resources.CustomRAMIconText}"
+                                VerticalAlignment="Center" />
+                            <ComboBox
+                                Grid.Column="1"
+                                ItemsSource="{Binding MemoryCustomTypes}"
+                                SelectedValue="{Binding MemoryCustomType, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Text="{Binding }" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+
+        </StackPanel>
+    </ScrollViewer>
+
 </UserControl>
