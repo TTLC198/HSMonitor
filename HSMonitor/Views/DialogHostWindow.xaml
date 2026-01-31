@@ -4,14 +4,16 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        ResizeMode="NoResize"
         WindowStyle="None"
-        Background="Transparent">
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        SnapsToDevicePixels="True">
     <materialDesign:DialogHost 
         x:Name="RootDialogHost"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
-        DialogBackground="{DynamicResource PrimaryHueMidBrush}"
-        Background="{DynamicResource PrimaryHueLightBrush}"
+        DialogBackground="Transparent"
+        Background="Transparent"
         DialogTheme="Light"
         ApplyBlurBackground="True"
         HorizontalAlignment="Stretch"

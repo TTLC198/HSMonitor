@@ -11,7 +11,6 @@
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
     xmlns:p="clr-namespace:HSMonitor.Properties"
-    Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Style="{DynamicResource MaterialDesignRoot}"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
@@ -20,22 +19,19 @@
     ResizeMode="NoResize"
     WindowStyle="None"
     WindowStartupLocation="CenterScreen"
+    AllowsTransparency="True"
+    Background="Transparent"
     Title="{x:Static hsMonitor:App.Name}"
     Icon="/Resources/Images/favicon.ico"
     Loaded="MainWindow_OnLoaded"
     mc:Ignorable="d">
-    <materialDesign:DialogHost
-        x:Name="DialogHost"
-        CloseOnClickAway="False"
-        Loaded="{s:Action OnViewFullyLoaded}"
-        Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
-        DialogBackground="{DynamicResource PrimaryHueMidBrush}"
+    <Border
+        CornerRadius="5"
+        Padding="0"
         Background="{DynamicResource PrimaryHueLightBrush}"
-        DialogTheme="Light"
-        DialogMargin="10">
+        SnapsToDevicePixels="True">
         <Grid
-            IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}"
-            Background="{DynamicResource PrimaryHueLightBrush}">
+            IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}">
             <Grid.RowDefinitions>
                 <RowDefinition
                     Height="Auto" />
@@ -345,5 +341,5 @@
                 </Button>
             </StackPanel>
         </Grid>
-    </materialDesign:DialogHost>
+    </Border>
 </Window>
