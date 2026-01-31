@@ -185,7 +185,6 @@
             </materialDesign:Transitioner>
 
             <!-- Settings tab carousel (bottom) -->
-            <!-- Settings tab carousel (bottom) -->
             <Border
                 Grid.Row="1"
                 Background="{DynamicResource PrimaryHueMidBrush}"
@@ -225,7 +224,7 @@
 
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}"
-                                               BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                                               BasedOn="{StaticResource MaterialDesignFlatButton}">
                                             <Setter Property="BorderThickness" Value="1" />
                                             <Setter Property="Foreground"
                                                     Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
@@ -237,6 +236,34 @@
 
                                             <!-- Анимация "press" -->
                                             <Style.Triggers>
+
+                                                <!-- Hover для НЕвыбранной вкладки: делаем легкую заливку, но текст оставляем контрастным -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsSelected}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+
+                                                    <!-- фон лёгкий, текст остаётся контрастным -->
+                                                    <Setter Property="Background" Value="#22000000" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                </MultiDataTrigger>
+
+                                                <!-- Hover для выбранной -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsSelected}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+
+                                                    <Setter Property="Background" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </MultiDataTrigger>
+
+                                                <!-- Анимация "press" -->
                                                 <Trigger Property="IsPressed" Value="True">
                                                     <Trigger.EnterActions>
                                                         <BeginStoryboard>
@@ -276,11 +303,9 @@
                                                     <DataTrigger.EnterActions>
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="Width"
+                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
                                                                     To="72" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="Height"
+                                                                <DoubleAnimation Storyboard.TargetProperty="Height"
                                                                     To="72" Duration="0:0:0.16" />
                                                                 <DoubleAnimation
                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
@@ -295,11 +320,9 @@
                                                     <DataTrigger.ExitActions>
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="Width"
+                                                                <DoubleAnimation Storyboard.TargetProperty="Width"
                                                                     To="56" Duration="0:0:0.16" />
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="Height"
+                                                                <DoubleAnimation Storyboard.TargetProperty="Height"
                                                                     To="56" Duration="0:0:0.16" />
                                                                 <DoubleAnimation
                                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
@@ -311,6 +334,7 @@
                                                         </BeginStoryboard>
                                                     </DataTrigger.ExitActions>
                                                 </DataTrigger>
+
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
@@ -328,6 +352,7 @@
                                             Height="22"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
+                                            Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                             Kind="{Binding Converter={x:Static converters:SettingsTabsToIconConverter.Instance}}" />
 
                                         <TextBlock
@@ -337,6 +362,7 @@
                                             HorizontalAlignment="Center"
                                             TextTrimming="CharacterEllipsis"
                                             TextAlignment="Center"
+                                            Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                             Text="{Binding Name}" />
                                     </Grid>
                                 </Button>

@@ -122,6 +122,6 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
     public string Title => "Настройки";
     public double Width => 500;
     public double MinWidth => 360;
-    public double Height => 400;
+    public double Height => 500;
     public double MinHeight => 350;
 }
