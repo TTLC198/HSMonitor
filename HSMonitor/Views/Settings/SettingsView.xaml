@@ -10,9 +10,14 @@
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
     xmlns:p="clr-namespace:HSMonitor.Properties"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
-    Height="260"
     Style="{DynamicResource MaterialDesignRoot}"
     Background="{DynamicResource MaterialDesignCardBackground}"
+    d:DesignWidth="{Binding Width}"
+    d:DesignHeight="{Binding Height}"
+    VerticalContentAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
     mc:Ignorable="d">
     <UserControl.Resources>
         <Style
@@ -25,8 +30,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="55" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
         <!--  Settings tab selection  -->
