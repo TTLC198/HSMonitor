@@ -152,47 +152,42 @@
             </Grid.RowDefinitions>
 
             <!-- Active settings tab -->
-            <materialDesign:Card Margin="12" Padding="0">
+            <materialDesign:Transitioner
+                Grid.Row="0"
+                ItemsSource="{Binding Tabs}"
+                SelectedItem="{Binding ActiveTab, Mode=OneWay}">
+                <materialDesign:Transitioner.Resources>
+                    <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
+                        <Setter Property="BackwardWipe">
+                            <Setter.Value>
+                                <materialDesign:SlideWipe Direction="Left" Duration="0:0:0.2" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="ForwardWipe">
+                            <Setter.Value>
+                                <materialDesign:SlideWipe Direction="Right" Duration="0:0:0.2" />
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </materialDesign:Transitioner.Resources>
 
-                <materialDesign:Transitioner
-                    Grid.Row="0"
-                    ItemsSource="{Binding Tabs}"
-                    SelectedItem="{Binding ActiveTab, Mode=OneWay}">
-                    <materialDesign:Transitioner.Resources>
-                        <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
-                            <Setter Property="BackwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideWipe Direction="Left" Duration="0:0:0.2" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ForwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideWipe Direction="Right" Duration="0:0:0.2" />
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </materialDesign:Transitioner.Resources>
-
-                    <materialDesign:Transitioner.ItemTemplate>
-                        <DataTemplate>
-                            <ScrollViewer
-                                Padding="4"
-                                Background="{DynamicResource PrimaryHueLightBrush}"
-                                HorizontalScrollBarVisibility="Disabled"
-                                VerticalScrollBarVisibility="Auto">
-                                <ContentControl s:View.Model="{Binding}" />
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </materialDesign:Transitioner.ItemTemplate>
-                </materialDesign:Transitioner>
-            </materialDesign:Card>
+                <materialDesign:Transitioner.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer
+                            Padding="4"
+                            Background="{DynamicResource PrimaryHueLightBrush}"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto">
+                            <ContentControl s:View.Model="{Binding}" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </materialDesign:Transitioner.ItemTemplate>
+            </materialDesign:Transitioner>
 
             <!-- Settings tab carousel (bottom) -->
-            <materialDesign:Card
+            <Border
                 Grid.Row="1"
-                Margin="12,0,12,12"
-                Padding="10"
-                Background="{DynamicResource PrimaryHueMidBrush}">
+                Padding="10,10">
 
                 <ScrollViewer
                     HorizontalScrollBarVisibility="Hidden"
@@ -289,12 +284,10 @@
                                                                 <DataTrigger.EnterActions>
                                                                     <BeginStoryboard>
                                                                         <Storyboard>
-                                                                            <DoubleAnimation
-                                                                                Storyboard.TargetName="SelectedScale"
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
                                                                                 Storyboard.TargetProperty="ScaleX"
                                                                                 To="1.28" Duration="0:0:0.16" />
-                                                                            <DoubleAnimation
-                                                                                Storyboard.TargetName="SelectedScale"
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
                                                                                 Storyboard.TargetProperty="ScaleY"
                                                                                 To="1.28" Duration="0:0:0.16" />
                                                                         </Storyboard>
@@ -304,12 +297,10 @@
                                                                 <DataTrigger.ExitActions>
                                                                     <BeginStoryboard>
                                                                         <Storyboard>
-                                                                            <DoubleAnimation
-                                                                                Storyboard.TargetName="SelectedScale"
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
                                                                                 Storyboard.TargetProperty="ScaleX"
                                                                                 To="1" Duration="0:0:0.16" />
-                                                                            <DoubleAnimation
-                                                                                Storyboard.TargetName="SelectedScale"
+                                                                            <DoubleAnimation Storyboard.TargetName="SelectedScale"
                                                                                 Storyboard.TargetProperty="ScaleY"
                                                                                 To="1" Duration="0:0:0.16" />
                                                                         </Storyboard>
@@ -393,7 +384,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-            </materialDesign:Card>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
