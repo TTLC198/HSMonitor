@@ -2,10 +2,11 @@
 using System.Linq;
 using HSMonitor.Services;
 using HSMonitor.ViewModels.Framework;
+using HSMonitor.ViewModels.Framework.Dialog;
 
 namespace HSMonitor.ViewModels.Settings;
 
-public class SettingsViewModel : DialogScreen
+public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
 {
     private readonly SettingsService _settingsService;
 
@@ -55,4 +56,9 @@ public class SettingsViewModel : DialogScreen
         await _settingsService.LoadAsync();
         Close(false);
     }
+    public string Title => "Настройки";
+    public double Width => 900;
+    public double MinWidth => 720;
+    public double Height => 800;
+    public double MinHeight => 600;
 }

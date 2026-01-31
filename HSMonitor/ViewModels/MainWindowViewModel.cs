@@ -89,14 +89,14 @@ public class MainWindowViewModel : Screen
 
             _isConnectionErrorWindowOpened = true;
             var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
-            if (dialogResult == true)
+            if (dialogResult)
             {
                 var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                 settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
 
                 await _dialogManager.ShowDialogAsync(settingsDialog);
             }
-            _isConnectionErrorWindowOpened = dialogResult is null;
+            _isConnectionErrorWindowOpened = dialogResult;
         }
         catch 
         {
