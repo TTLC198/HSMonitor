@@ -239,6 +239,17 @@
                     StretchDirection="Both"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
+                    
+                    <Viewbox.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform
+                                ScaleX="1.1"
+                                ScaleY="1.1"/>
+                            <TranslateTransform
+                                X="-10"
+                                Y="-30"/>
+                        </TransformGroup>
+                    </Viewbox.RenderTransform>
 
                     <!-- Внутренний “референсный” размер макета -->
                     <Grid Width="280" Height="320">
