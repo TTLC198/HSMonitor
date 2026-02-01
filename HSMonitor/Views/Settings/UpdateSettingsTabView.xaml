@@ -27,10 +27,15 @@
             <materialDesign:Card Margin="12,6" Padding="12">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
                     <!-- Header -->
                     <DockPanel Grid.Row="0" LastChildFill="True">
@@ -38,74 +43,91 @@
                                                  Width="22" Height="22"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,8,0"
-                                                 Opacity="0.9"/>
+                                                 Opacity="0.9" />
                         <TextBlock FontSize="16"
                                    FontWeight="SemiBold"
                                    VerticalAlignment="Center"
-                                   Text="Обновление приложения"/>
+                                   Text="Обновление приложения" />
                     </DockPanel>
 
                     <!-- Status -->
                     <StackPanel Grid.Row="1" Margin="0,10,0,0">
                         <TextBlock FontSize="14"
-                                   Text="{Binding AppStatusString}"/>
+                                   Text="{Binding AppStatusString}" />
                         <TextBlock FontSize="12"
                                    Opacity="0.75"
-                                   Text="{Binding AppVersionString}"/>
+                                   Text="{Binding AppVersionString}" />
                     </StackPanel>
 
                     <!-- Actions + Progress -->
-                    <Grid Grid.Row="2" Margin="0,12,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
+                    <Grid
+                        Grid.Column="0"
+                        Grid.Row="2" Margin="0,12,0,0">
                         <!-- Progress block -->
-                        <StackPanel Visibility="{Binding IsAppProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
+                        <StackPanel
+                            Visibility="{Binding IsAppProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
                             <TextBlock FontSize="12"
                                        Opacity="0.75"
-                                       Text="{Binding AppProgressStageText}"/>
+                                       Text="{Binding AppProgressStageText}" />
                             <Grid Margin="0,6,0,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
                                 <ProgressBar Grid.Column="0"
                                              Height="6"
                                              Minimum="0"
                                              Maximum="100"
-                                             Value="{Binding UpdateAppDownloadPercent}"/>
+                                             Value="{Binding UpdateAppDownloadPercent}" />
 
                                 <TextBlock Grid.Column="1"
                                            Margin="10,0,0,0"
                                            VerticalAlignment="Center"
                                            FontSize="12"
                                            Opacity="0.75">
-                                    <Run Text="{Binding UpdateAppDownloadPercent}"/>
-                                    <Run Text="%"/>
+                                    <Run Text="{Binding UpdateAppDownloadPercent}" />
+                                    <Run Text="%" />
                                 </TextBlock>
                             </Grid>
                         </StackPanel>
+                    </Grid>
+                    
+                    <!-- Buttons -->
+                    <Grid
+                        Grid.RowSpan="3"
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <!-- Buttons -->
-                        <StackPanel Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top">
+                        <Button 
+                            Grid.Row="0"
+                            Style="{DynamicResource MaterialDesignOutlinedButton}"
+                            ToolTip="{x:Static p:Resources.CheckForUpdatesTooltip}"
+                            Command="{s:Action CheckAppUpdates}">
+                            <materialDesign:PackIcon 
+                                Kind="Refresh"
+                                Width="22" 
+                                Height="22"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Button>
 
-                            <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
-                                    Margin="0,0,8,0"
-                                    Content="Проверить"
-                                    ToolTip="{x:Static p:Resources.CheckForUpdatesTooltip}"
-                                    Command="{s:Action CheckAppUpdates}"/>
-
-                            <Button Style="{DynamicResource MaterialDesignRaisedButton}"
-                                    Content="{Binding AppPrimaryActionText}"
-                                    IsEnabled="{Binding IsAppPrimaryActionEnabled}"
-                                    Command="{s:Action AppPrimaryAction}"/>
-                        </StackPanel>
+                        <Button 
+                            Grid.Row="1"
+                            Style="{DynamicResource MaterialDesignRaisedButton}"
+                            IsEnabled="{Binding IsAppPrimaryActionEnabled}"
+                            Command="{s:Action AppPrimaryAction}">
+                            <materialDesign:PackIcon 
+                                Kind="Download"
+                                Width="22" Height="22"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Button>
                     </Grid>
                 </Grid>
             </materialDesign:Card>
@@ -117,11 +139,16 @@
             <materialDesign:Card Margin="12,6" Padding="12">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
                     <!-- Header -->
                     <DockPanel Grid.Row="0" LastChildFill="True">
@@ -129,73 +156,96 @@
                                                  Width="22" Height="22"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,8,0"
-                                                 Opacity="0.9"/>
+                                                 Opacity="0.9" />
                         <TextBlock FontSize="16"
                                    FontWeight="SemiBold"
                                    VerticalAlignment="Center"
-                                   Text="Прошивка устройства"/>
+                                   Text="Прошивка устройства" />
                     </DockPanel>
 
                     <!-- Status -->
                     <StackPanel Grid.Row="1" Margin="0,10,0,0">
                         <TextBlock FontSize="14"
-                                   Text="{Binding DeviceStatusString}"/>
+                                   Text="{Binding DeviceStatusString}" />
                         <TextBlock FontSize="12"
                                    Opacity="0.75"
-                                   Text="{Binding DeviceVersionString}"/>
+                                   Text="{Binding DeviceVersionString}" />
                     </StackPanel>
 
                     <!-- Actions + Progress -->
                     <Grid Grid.Row="2" Margin="0,12,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <!-- Firmware progress -->
-                        <StackPanel Visibility="{Binding IsDeviceProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
+                        <StackPanel
+                            Visibility="{Binding IsDeviceProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
                             <TextBlock FontSize="12"
                                        Opacity="0.75"
-                                       Text="{Binding DeviceProgressStageText}"/>
+                                       Text="{Binding DeviceProgressStageText}" />
                             <Grid Margin="0,6,0,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
                                 <ProgressBar Grid.Column="0"
                                              Height="6"
                                              Minimum="0"
                                              Maximum="100"
-                                             Value="{Binding UpdateDeviceDownloadPercent}"/>
+                                             Value="{Binding UpdateDeviceDownloadPercent}" />
 
                                 <TextBlock Grid.Column="1"
                                            Margin="10,0,0,0"
                                            VerticalAlignment="Center"
                                            FontSize="12"
                                            Opacity="0.75">
-                                    <Run Text="{Binding UpdateDeviceDownloadPercent}"/>
-                                    <Run Text="%"/>
+                                    <Run Text="{Binding UpdateDeviceDownloadPercent}" />
+                                    <Run Text="%" />
                                 </TextBlock>
                             </Grid>
                         </StackPanel>
+                    </Grid>
+                    
+                    <Grid
+                        Grid.RowSpan="4"
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Stretch">
+                        <Button 
+                            Grid.Row="0"
+                            Style="{DynamicResource MaterialDesignOutlinedButton}"
+                            ToolTip="Проверить обновление прошивки"
+                            Command="{s:Action CheckDeviceUpdates}" >
+                            <materialDesign:PackIcon 
+                                Kind="Refresh"
+                                Width="22" 
+                                Height="22"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                        </Button>
 
-                            <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
-                                    Margin="0,0,8,0"
-                                    Content="Проверить"
-                                    ToolTip="Проверить обновление прошивки"
-                                    Command="{s:Action CheckDeviceUpdates}"/>
-
-                            <Button Style="{DynamicResource MaterialDesignRaisedButton}"
-                                    Content="{Binding DevicePrimaryActionText}"
-                                    ToolTip="{Binding DevicePrimaryActionTooltip}"
-                                    IsEnabled="{Binding IsDevicePrimaryActionEnabled}"
-                                    Command="{s:Action DevicePrimaryAction}"/>
-                        </StackPanel>
+                        <Button 
+                            Grid.Row="1"
+                            Style="{DynamicResource MaterialDesignRaisedButton}"
+                            ToolTip="{Binding DevicePrimaryActionTooltip}"
+                            IsEnabled="{Binding IsDevicePrimaryActionEnabled}"
+                            Command="{s:Action DevicePrimaryAction}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon 
+                                Kind="Download"
+                                Width="22" Height="22"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                        </Button>
                     </Grid>
                 </Grid>
             </materialDesign:Card>
@@ -209,10 +259,10 @@
                     <materialDesign:PackIcon Kind="Github"
                                              Width="22" Height="22"
                                              VerticalAlignment="Center"
-                                             Margin="0,0,8,0"/>
+                                             Margin="0,0,8,0" />
 
                     <StackPanel>
-                        <TextBlock Text="{x:Static p:Resources.ProjectURLText}"/>
+                        <TextBlock Text="{x:Static p:Resources.ProjectURLText}" />
 
                         <Button Style="{DynamicResource MaterialDesignFlatButton}"
                                 HorizontalAlignment="Left"
@@ -220,8 +270,8 @@
                                 ToolTip="Github URL"
                                 Command="{s:Action GithubLinkPageOpen}">
                             <TextBlock FontSize="12" FontWeight="SemiBold">
-                                <Run Text="{x:Static hsMonitor:App.GitHubProjectUrl}"/>
-                                <Run Text="  ↗"/>
+                                <Run Text="{x:Static hsMonitor:App.GitHubProjectUrl}" />
+                                <Run Text="  ↗" />
                             </TextBlock>
                         </Button>
                     </StackPanel>
