@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.ViewModels.Framework.Dialog;
 using HSMonitor.Views;
-using HSMonitor.Views.Settings;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 
@@ -59,15 +58,12 @@ public sealed class DialogManager : IDisposable
             {
                 var owner = Application.Current.MainWindow;
 
-                // ✅ ТОЛЬКО ДЛЯ НАСТРОЕК: отдельное окно справа
                 var isSettings =
                     dialogScreen.GetType().Name == "SettingsViewModel" ||
                     (dialogScreen.GetType().FullName?.EndsWith(".SettingsViewModel", StringComparison.Ordinal) ?? false);
 
                 if (isSettings && owner is not null)
                 {
-                    // Можно взять ширину из IOpenInOwnWindowDialog (если SettingsViewModel реализует),
-                    // иначе дефолт
                     double width = 460;
                     double minWidth = 360;
 
@@ -97,7 +93,6 @@ public sealed class DialogManager : IDisposable
                     return dialogScreen.DialogResult;
                 }
 
-                // Wide / separate-window dialog route (как было)
                 if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
                 {
                     var wnd = new DialogHostWindow
@@ -124,7 +119,6 @@ public sealed class DialogManager : IDisposable
                     return dialogScreen.DialogResult;
                 }
 
-                // Default route: in main window DialogHost
                 await DialogHost.Show(view);
                 return dialogScreen.DialogResult;
 
