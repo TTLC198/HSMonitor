@@ -34,7 +34,8 @@
         CornerRadius="5"
         Padding="0"
         Background="{DynamicResource PrimaryHueLightBrush}"
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True"
+        Loaded="{s:Action OnViewFullyLoaded}">
 
         <Grid IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}">
             <Grid.RowDefinitions>

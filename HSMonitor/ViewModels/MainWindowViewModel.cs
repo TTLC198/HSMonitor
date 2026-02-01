@@ -234,7 +234,7 @@ public class MainWindowViewModel : Screen
                     await ShowAdminPrivilegesRequirement();
             }
 
-            await _hardwareMonitorService.Start();
+            _hardwareMonitorService.Start();
         }
     }
 
