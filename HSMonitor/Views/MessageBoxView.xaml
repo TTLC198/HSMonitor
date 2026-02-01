@@ -7,6 +7,7 @@
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     d:DesignWidth="280"
     d:DataContext="{d:DesignInstance Type=viewModels:MessageBoxViewModel}"
     Style="{DynamicResource MaterialDesignRoot}"
@@ -18,16 +19,40 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <!--  Title  -->
-        <TextBlock
+        
+        <Border
+            x:Name="HeaderBorder"
             Grid.Row="0"
-            Margin="16"
-            FontSize="19"
-            FontWeight="Light"
-            Text="{Binding Title}"
-            TextTrimming="CharacterEllipsis"
-            ToolTip="{Binding Title}" />
+            Padding="4,6"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo -->
+                <materialDesign:PackIcon
+                    Grid.Column="0"
+                    Width="24"
+                    Height="24"
+                    Kind="MessageAlert"
+                    Margin="4"
+                    VerticalAlignment="Center" />
+
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="16"
+                    FontSize="19"
+                    FontWeight="Light"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis"
+                    ToolTip="{Binding Title}" />
+            </Grid>
+        </Border>
 
         <!--  Message  -->
         <Border

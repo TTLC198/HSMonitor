@@ -18,6 +18,13 @@ public sealed class DialogManager : IDisposable
     private readonly Dictionary<Type, UIElement> _dialogScreenViewCache = new();
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
 
+    // MaterialDesignThemes 5.3.0 uses DialogSession (not DialogHostSession).
+    // We store the currently opened session so we can reliably close the dialog programmatically.
+    private DialogSession? _currentSession;
+
+    // Fallback closer for dialogs shown in their own Window (close the window itself).
+    private Action? _closeWindowFallback;
+
     public DialogManager(IViewManager viewManager)
     {
         _viewManager = viewManager;
@@ -45,9 +52,16 @@ public sealed class DialogManager : IDisposable
     {
         var view = GetViewForDialogScreen(dialogScreen);
 
-        await _dialogLock.WaitAsync().ConfigureAwait(false);
+        // Toggle: if another dialog is currently open, the repeated call closes that dialog and returns.
+        if (!await _dialogLock.WaitAsync(0).ConfigureAwait(false))
+        {
+            await CloseCurrentDialogAsync().ConfigureAwait(false);
+            return default;
+        }
+
         try
         {
+            // Headless / no dispatcher (tests).
             if (Application.Current?.Dispatcher is null)
             {
                 await DialogHost.Show(view).ConfigureAwait(false);
@@ -62,6 +76,7 @@ public sealed class DialogManager : IDisposable
                     dialogScreen.GetType().Name == "SettingsViewModel" ||
                     (dialogScreen.GetType().FullName?.EndsWith(".SettingsViewModel", StringComparison.Ordinal) ?? false);
 
+                // ===== Settings window shown "beside" / over the main window =====
                 if (isSettings && owner is not null)
                 {
                     double width = 460;
@@ -79,20 +94,39 @@ public sealed class DialogManager : IDisposable
                         MinWidth = minWidth,
                     };
 
+                    // If user closes the window (X), ensure the dialog session is closed so ShowDialog completes.
+                    wnd.Closing += (_, __) =>
+                    {
+                        try { _currentSession?.Close(); } catch { /* ignore */ }
+                    };
+
+                    _closeWindowFallback = () =>
+                    {
+                        try { wnd.Close(); } catch { /* ignore */ }
+                    };
+
                     wnd.Show();
 
                     try
                     {
-                        await wnd.DialogHostControl.ShowDialog(view);
+                        await wnd.DialogHostControl.ShowDialog(
+                            view,
+                            openedEventHandler: (_, args) =>
+                            {
+                                _currentSession = args.Session;
+                            }).ConfigureAwait(true);
+
+                        return dialogScreen.DialogResult;
                     }
                     finally
                     {
-                        wnd.Close();
+                        _currentSession = null;
+                        _closeWindowFallback = null;
+                        try { wnd.Close(); } catch { /* ignore */ }
                     }
-
-                    return dialogScreen.DialogResult;
                 }
 
+                // ===== Dialog in its own window =====
                 if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
                 {
                     var wnd = new DialogHostWindow
@@ -100,27 +134,59 @@ public sealed class DialogManager : IDisposable
                         Title = string.IsNullOrWhiteSpace(ownWindowDialog.Title) ? "Диалог" : ownWindowDialog.Title,
                         Width = ownWindowDialog.Width > 0 ? ownWindowDialog.Width : 900,
                         MinWidth = ownWindowDialog.MinWidth > 0 ? ownWindowDialog.MinWidth : 720,
+                        Owner = owner,
                     };
 
                     if (ownWindowDialog.Height is var h and > 0) wnd.Height = h;
                     if (ownWindowDialog.MinHeight is var mh and > 0) wnd.MinHeight = mh;
 
-                    wnd.Owner = owner;
+                    wnd.Closing += (_, __) =>
+                    {
+                        try { _currentSession?.Close(); } catch { /* ignore */ }
+                    };
+
+                    _closeWindowFallback = () =>
+                    {
+                        try { wnd.Close(); } catch { /* ignore */ }
+                    };
+
                     wnd.Show();
+
                     try
                     {
-                        await wnd.DialogHostControl.ShowDialog(view);
+                        await wnd.DialogHostControl.ShowDialog(
+                            view,
+                            openedEventHandler: (_, args) =>
+                            {
+                                _currentSession = args.Session;
+                            }).ConfigureAwait(true);
+
+                        return dialogScreen.DialogResult;
                     }
                     finally
                     {
-                        wnd.Close();
+                        _currentSession = null;
+                        _closeWindowFallback = null;
+                        try { wnd.Close(); } catch { /* ignore */ }
                     }
+                }
+
+                // ===== DialogHost overlay in main window =====
+                try
+                {
+                    await DialogHost.Show(
+                        view,
+                        openedEventHandler: (_, args) =>
+                        {
+                            _currentSession = args.Session;
+                        }).ConfigureAwait(true);
 
                     return dialogScreen.DialogResult;
                 }
-
-                await DialogHost.Show(view);
-                return dialogScreen.DialogResult;
+                finally
+                {
+                    _currentSession = null;
+                }
 
             }).Task.Unwrap().ConfigureAwait(false);
         }
@@ -130,5 +196,27 @@ public sealed class DialogManager : IDisposable
         }
     }
 
-    public void Dispose() => _dialogLock.Dispose();
+    private Task CloseCurrentDialogAsync()
+    {
+        var session = _currentSession;
+        var closeWindow = _closeWindowFallback;
+
+        if (Application.Current?.Dispatcher is null)
+        {
+            try { session?.Close(); } catch { /* ignore */ }
+            try { closeWindow?.Invoke(); } catch { /* ignore */ }
+            return Task.CompletedTask;
+        }
+
+        return Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            try { session?.Close(); } catch { /* ignore */ }
+            try { closeWindow?.Invoke(); } catch { /* ignore */ }
+        }).Task;
+    }
+
+    public void Dispose()
+    {
+        _dialogLock.Dispose();
+    }
 }
