@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 
 namespace HSMonitor.Views;
