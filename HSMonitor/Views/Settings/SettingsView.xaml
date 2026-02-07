@@ -193,18 +193,18 @@
                     <RowDefinition Height="4*" />
                     <RowDefinition Height="1.5*" />
                 </Grid.RowDefinitions>
-                <Border
-                    Grid.Row="1"
-                    Background="Transparent"
-                    SnapsToDevicePixels="True">
-
-                    <Grid 
-                        RenderOptions.BitmapScalingMode="LowQuality"
-                        RenderOptions.EdgeMode="Aliased"
+                <Grid 
+                        Grid.Row="1"
+                        RenderOptions.BitmapScalingMode="HighQuality"
                         ClipToBounds="True">
-
-                        <!-- Ваш контент поверх -->
-                        <ScrollViewer
+                    <Border
+                        Height="70px"
+                        Background="{DynamicResource PrimaryHueMidBrush}"
+                        VerticalAlignment="Bottom">
+                        
+                    </Border>
+                    <ScrollViewer
+                        Panel.ZIndex="999"
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Disabled"
                             CanContentScroll="True">
@@ -232,11 +232,11 @@
                                             <Button.Style>
                                                 <Style TargetType="{x:Type Button}">
                                                     <Setter Property="Background"
-                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
+                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
                                                     <Setter Property="Foreground"
-                                                            Value="{DynamicResource PrimaryHueDarkBrush}" />
+                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
                                                     <Setter Property="BorderBrush"
-                                                            Value="{DynamicResource PrimaryHueDarkBrush}" />
+                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
                                                     <Setter Property="BorderThickness" Value="1" />
                                                     <Setter Property="Cursor" Value="Hand" />
                                                     <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -410,7 +410,6 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </Grid>
-                </Border>
             </Grid>
         </Grid>
     </Grid>
