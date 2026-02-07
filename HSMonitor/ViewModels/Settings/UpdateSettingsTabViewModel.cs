@@ -2,13 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Services.OtaUpdateService;
-using HSMonitor.Services.OtaUpdateService.Parts;
+using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
 
 namespace HSMonitor.ViewModels.Settings;
@@ -330,6 +329,20 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                 _ => Resources.NoConnectionText
             };
     }
+    
+    private void AppUpdateServiceOnDownloadErrorEvent(AppCastItem item, string? path, Exception exception)
+    {
+        IsAppProgressBarActive = false;
+        AppUpdateStatus = UpdateStatus.CouldNotDetermine;
+        AppStatusString = $"{exception.Message}"; //todo: локализация
+    }
+    
+    private void AppUpdateServiceOnDownloadCancelledEvent(AppCastItem item, string path)
+    {
+        IsAppProgressBarActive = false;
+        AppUpdateStatus = UpdateStatus.UserSkipped;
+        AppStatusString = $"Скачивание отменено."; //todo: локализация
+    }
 
     public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService) 
         : base(settingsService, 4, "Update")
@@ -337,6 +350,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         _appUpdateService = appUpdateService;
         _appUpdateService.UpdateDownloadProcessEvent += (_, args) => UpdateAppDownloadPercent = args.ProgressPercentage;
         _appUpdateService.UpdateDownloadFinishedEvent += (_, _) => IsAppProgressBarActive = false;
+        _appUpdateService.DownloadCancelledEvent += AppUpdateServiceOnDownloadCancelledEvent;
+        _appUpdateService.DownloadErrorEvent += AppUpdateServiceOnDownloadErrorEvent;
         _appUpdateService.CheckForUpdates().GetAwaiter();
 
         _deviceUpdateService = otaUpdateService;
@@ -350,7 +365,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         });
         _deviceUpdateService.CheckForUpdates().GetAwaiter();
     }
-    
+
     public new event PropertyChangedEventHandler? PropertyChanged;
 
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)

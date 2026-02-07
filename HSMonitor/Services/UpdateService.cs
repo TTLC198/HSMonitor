@@ -25,6 +25,8 @@ public class UpdateService
     private UpdateInfo? _updateInfo;
     
     public event DownloadProgressEvent? UpdateDownloadProcessEvent;
+    public event DownloadEvent? DownloadCancelledEvent;
+    public event DownloadErrorEvent? DownloadErrorEvent;
     public event DownloadDataCompletedEventHandler? UpdateDownloadFinishedEvent;
 
     public UpdateStatus UpdateStatus =>
@@ -37,6 +39,8 @@ public class UpdateService
             if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
             _updater.DownloadMadeProgress += UpdaterOnDownloadMadeProgress;
             _updater.DownloadFinished += async (item, path) => await UpdaterOnDownloadFinished(item, path);
+            _updater.DownloadCanceled += UpdaterOnDownloadCanceled;
+            _updater.DownloadHadError += UpdaterOnDownloadHadError;
             await _updater.InitAndBeginDownload(_updateInfo.Updates.First());
         }
         catch (Exception exception)
@@ -103,6 +107,12 @@ public class UpdateService
 
     private void UpdaterOnDownloadMadeProgress(object sender, AppCastItem item, ItemDownloadProgressEventArgs args) =>
         UpdateDownloadProcessEvent?.Invoke(this, args);
+
+    private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
+        DownloadErrorEvent?.Invoke(item, path, exception);
+    
+    private void UpdaterOnDownloadCanceled(AppCastItem item, string path) =>
+        DownloadCancelledEvent?.Invoke(item, path);
 
     private void UpdaterOnCloseApplication() =>
         Application.Current.Shutdown();
