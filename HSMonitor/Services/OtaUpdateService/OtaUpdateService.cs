@@ -31,9 +31,10 @@ public class OtaUpdateService
   private readonly SparkleUpdater _updater;
   private readonly ILogger<OtaUpdateService> _logger;
   
-  private readonly Subject<DownloadPercentageEvent> _downloadProgressSubject = new();
-  private readonly Subject<DownloadFinishedEvent> _downloadFinishedSubject = new();
-  private readonly Subject<UploadFinishedEvent> _uploadFinishedSubject = new();
+  private readonly Subject<DownloadPercentageEvent> _downloadProgressFlowSubject = new();
+  private readonly Subject<DownloadFinishedEvent> _downloadFinishedFlowSubject = new();
+  private readonly Subject<DownloadHadErrorEvent> _downloadHadErrorFlowSubject = new();
+  private readonly Subject<UploadFinishedEvent> _uploadFinishedFlowSubject = new();
   
   private UpdateInfo? _updateInfo;
   
@@ -66,9 +67,10 @@ public class OtaUpdateService
   public UpdateStatus UpdateStatus =>
     _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
-  public IObservable<DownloadPercentageEvent> DownloadProgress => _downloadProgressSubject;
-  public IObservable<DownloadFinishedEvent> DownloadFinished => _downloadFinishedSubject;
-  public IObservable<UploadFinishedEvent> UploadFinished => _uploadFinishedSubject;
+  public IObservable<DownloadPercentageEvent> DownloadProgressFlow => _downloadProgressFlowSubject;
+  public IObservable<DownloadFinishedEvent> DownloadFinishedFlow => _downloadFinishedFlowSubject;
+  public IObservable<DownloadHadErrorEvent> DownloadHadErrorFlow => _downloadHadErrorFlowSubject;
+  public IObservable<UploadFinishedEvent> UploadFinishedFlow => _uploadFinishedFlowSubject;
   
   public IEnumerable<AppCastItem> GetVersions() =>
     (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
@@ -79,7 +81,10 @@ public class OtaUpdateService
     _updateInfo = await _updater.CheckForUpdatesQuietly();
 
   private void UpdaterOnDownloadMadeProgress(ItemDownloadProgressEventArgs args) =>
-    _downloadProgressSubject.OnNext(new DownloadPercentageEvent(args.BytesReceived, args.TotalBytesToReceive));
+    _downloadProgressFlowSubject.OnNext(new DownloadPercentageEvent(args.BytesReceived, args.TotalBytesToReceive));
+  
+  private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
+    _downloadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, path, exception));
 
   public async Task StartDownloadAsync()
   {
@@ -88,6 +93,7 @@ public class OtaUpdateService
       if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
       _updater.DownloadMadeProgress += (_, _, args) => UpdaterOnDownloadMadeProgress(args);
       _updater.DownloadFinished += async (item, path) => await UpdaterOnDownloadFinished(item, path);
+      _updater.DownloadHadError += UpdaterOnDownloadHadError;
       await _updater.InitAndBeginDownload(_updateInfo.Updates.First());
     }
     catch (Exception exception)
@@ -112,7 +118,7 @@ public class OtaUpdateService
     try
     {
       if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
-      _downloadFinishedSubject.OnNext(new DownloadFinishedEvent());
+      _downloadFinishedFlowSubject.OnNext(new DownloadFinishedEvent());
       
       var file = new FileInfo(path);
 
@@ -209,13 +215,13 @@ public class OtaUpdateService
       {
         var progressRecord = new DownloadPercentageEvent(offset, data.Length);
         _logger.Info($"{progressRecord.ProgressPercentage}% ({offset}/{data.Length})");
-        _downloadProgressSubject.OnNext(progressRecord);
+        _downloadProgressFlowSubject.OnNext(progressRecord);
       }
     }
 
     client.End(seq);
     
-    _uploadFinishedSubject.OnNext(new UploadFinishedEvent());
+    _uploadFinishedFlowSubject.OnNext(new UploadFinishedEvent());
 
     var elapsed = DateTime.UtcNow - started;
     _logger.Info($"Done. Sent {data.Length} bytes in {elapsed.TotalSeconds:0.0}s");

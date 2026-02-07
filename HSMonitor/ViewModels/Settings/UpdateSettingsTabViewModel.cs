@@ -222,18 +222,15 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             DeviceStatusString = Resources.NoConnectionText;
     }
 
-    public async Task DevicePrimaryAction()
+    public Task DevicePrimaryAction()
     {
         if (!IsDevicePrimaryActionEnabled)
-            return;
+            return Task.CompletedTask;
 
-        // Здесь будет запуск OTA/прошивки. Пока включаем индикатор и статус.
         IsDeviceProgressBarActive = true;
         DeviceStatusString = Resources.DownloadingText;
 
-        // TODO: подключи реальный запуск прошивки, когда API будет готов.
-        // _deviceUpdateService.SendOtaUpdate();
-        await Task.CompletedTask;
+        return _deviceUpdateService.StartDownloadAsync();
     }
 
     public void GithubLinkPageOpen()
@@ -355,11 +352,11 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         _appUpdateService.CheckForUpdates().GetAwaiter();
 
         _deviceUpdateService = otaUpdateService;
-        _deviceUpdateService.DownloadProgress.Subscribe(downloadProgress =>
+        _deviceUpdateService.DownloadProgressFlow.Subscribe(downloadProgress =>
         {
             UpdateDeviceDownloadPercent = downloadProgress.ProgressPercentage;
         });
-        _deviceUpdateService.DownloadFinished.Subscribe(_ =>
+        _deviceUpdateService.DownloadFinishedFlow.Subscribe(_ =>
         {
             IsDeviceProgressBarActive = false;
         });
