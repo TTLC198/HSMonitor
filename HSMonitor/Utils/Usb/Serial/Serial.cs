@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
+﻿using System.IO.Ports;
 using HSMonitor.Models;
 using HSMonitor.Services;
 

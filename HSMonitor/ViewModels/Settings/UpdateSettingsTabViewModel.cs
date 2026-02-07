@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Services.OtaUpdateService;
@@ -213,6 +210,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
     public async Task CheckDeviceUpdates()
     {
+        var versions = _deviceUpdateService.GetVersions();
         await _deviceUpdateService.CheckForUpdates();
         DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
 
@@ -279,7 +277,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
                 IsDeviceProgressBarActive = true;
                 DeviceStatusString = Resources.DownloadingText;
-                //_deviceUpdateService.SendOtaUpdate();
+                await _deviceUpdateService.StartDownloadAsync();
                 break;
             default:
                 await _deviceUpdateService.CheckForUpdates(); 
@@ -290,7 +288,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
                         UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
                         _ => Resources.NoConnectionText
                     };
-                DeviceVersionString = App.VersionString;
+                DeviceVersionString = "0.2.0"; //todo: get version from device
                 break;
         }
     }
@@ -312,8 +310,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             {
                 UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().Any() 
                     ? $"v{_appUpdateService.GetVersions().First().Version}"
-                    : App.VersionString,
-                _ => App.VersionString
+                    : "v...",
+                _ => "v..."
             } ?? "";
         
         await _deviceUpdateService.CheckForUpdates();

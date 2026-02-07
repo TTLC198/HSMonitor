@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Linq;
 using Stylet.Logging;
 
 namespace HSMonitor.Utils.Logger;

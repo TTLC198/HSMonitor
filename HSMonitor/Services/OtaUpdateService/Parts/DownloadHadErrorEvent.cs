@@ -1,4 +1,3 @@
-using System;
 using NetSparkleUpdater;
 
 namespace HSMonitor.Services.OtaUpdateService.Parts;

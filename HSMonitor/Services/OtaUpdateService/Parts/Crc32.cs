@@ -1,5 +1,3 @@
-using System;
-
 namespace HSMonitor.Services.OtaUpdateService.Parts;
 
 static class Crc32

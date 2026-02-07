@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using static System.Text.RegularExpressions.Regex;
+﻿using static System.Text.RegularExpressions.Regex;
 
 namespace HSMonitor.Utils;
 
