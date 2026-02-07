@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
 using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Usb.Serial;

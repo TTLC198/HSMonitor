@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Ports;
-using System.Linq;
 using System.Reactive.Subjects;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using HSMonitor.Properties;
 using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
@@ -25,19 +19,19 @@ namespace HSMonitor.Services.OtaUpdateService;
 public class OtaUpdateService
 {
   private const int Chunk = 1024;
-  
+
   private readonly IViewModelFactory _viewModelFactory;
   private readonly DialogManager _dialogManager;
   private readonly SparkleUpdater _updater;
   private readonly ILogger<OtaUpdateService> _logger;
-  
+
   private readonly Subject<DownloadPercentageEvent> _downloadProgressFlowSubject = new();
   private readonly Subject<DownloadFinishedEvent> _downloadFinishedFlowSubject = new();
   private readonly Subject<DownloadHadErrorEvent> _downloadHadErrorFlowSubject = new();
   private readonly Subject<UploadFinishedEvent> _uploadFinishedFlowSubject = new();
-  
+
   private UpdateInfo? _updateInfo;
-  
+
   public OtaUpdateService(ILogger<OtaUpdateService> logger, IViewModelFactory viewModelFactory, DialogManager dialogManager)
   {
     _logger = logger;
@@ -63,7 +57,7 @@ public class OtaUpdateService
       AppCastDataDownloader = null,
     };
   }
-  
+
   public UpdateStatus UpdateStatus =>
     _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
@@ -71,18 +65,18 @@ public class OtaUpdateService
   public IObservable<DownloadFinishedEvent> DownloadFinishedFlow => _downloadFinishedFlowSubject;
   public IObservable<DownloadHadErrorEvent> DownloadHadErrorFlow => _downloadHadErrorFlowSubject;
   public IObservable<UploadFinishedEvent> UploadFinishedFlow => _uploadFinishedFlowSubject;
-  
+
   public IEnumerable<AppCastItem> GetVersions() =>
     (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
     .Updates
     .ToList();
 
-  public async Task<UpdateInfo> CheckForUpdates() => 
+  public async Task<UpdateInfo> CheckForUpdates() =>
     _updateInfo = await _updater.CheckForUpdatesQuietly();
 
   private void UpdaterOnDownloadMadeProgress(ItemDownloadProgressEventArgs args) =>
     _downloadProgressFlowSubject.OnNext(new DownloadPercentageEvent(args.BytesReceived, args.TotalBytesToReceive));
-  
+
   private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
     _downloadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, path, exception));
 
@@ -99,7 +93,7 @@ public class OtaUpdateService
     catch (Exception exception)
     {
       _logger.Error(exception);
-            
+
       var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
         title: Resources.MessageBoxErrorTitle,
         message: $@"
@@ -112,14 +106,14 @@ public class OtaUpdateService
       await _dialogManager.ShowDialogAsync(errorBoxDialog);
     }
   }
-  
+
   private async Task UpdaterOnDownloadFinished(AppCastItem item, string path)
   {
     try
     {
       if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
       _downloadFinishedFlowSubject.OnNext(new DownloadFinishedEvent());
-      
+
       var file = new FileInfo(path);
 
       if (!file.Exists)
@@ -139,14 +133,14 @@ public class OtaUpdateService
 
       await using var fileDataStream = file.OpenRead();
       var fileDataBuffer = new byte[fileDataStream.Length];
-      
+
       await fileDataStream.ReadExactlyAsync(fileDataBuffer, 0, fileDataBuffer.Length);
-      
+
       var serialPortName = Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
       if (serialPortName is null)
       {
         _logger.Warn("Устройство для обновления не найдено!");
-        
+
         var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
           title: Resources.MessageBoxErrorTitle,
           message: $@"
@@ -159,13 +153,13 @@ public class OtaUpdateService
         await _dialogManager.ShowDialogAsync(errorBoxDialog);
         return;
       }
-      
+
       SendOtaUpdate(fileDataBuffer, serialPortName.PortName!);
     }
     catch (Exception exception)
     {
       _logger.Error(exception);
-            
+
       var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
         title: Resources.MessageBoxErrorTitle,
         message: $@"
@@ -178,11 +172,11 @@ public class OtaUpdateService
       await _dialogManager.ShowDialogAsync(errorBoxDialog);
     }
   }
-  
+
   private void SendOtaUpdate(byte[] data, string portName)
   {
     var crc = Crc32.Compute(data);
-    
+
     using var sp = new SerialPort(portName, 921600, Parity.None, 8, StopBits.One);
     sp.ReadTimeout = 10000;
     sp.WriteTimeout = 10000;
@@ -190,7 +184,7 @@ public class OtaUpdateService
     sp.RtsEnable = true;
 
     sp.Open();
-        
+
     sp.DiscardInBuffer();
     sp.DiscardOutBuffer();
     Thread.Sleep(200);
@@ -199,7 +193,7 @@ public class OtaUpdateService
 
     client.Hello();
 
-    client.Begin((uint)data.Length, crc);
+    client.Begin((uint) data.Length, crc);
 
     int offset = 0;
     uint seq = 10;
@@ -208,7 +202,7 @@ public class OtaUpdateService
     while (offset < data.Length)
     {
       var n = Math.Min(Chunk, data.Length - offset);
-      client.Data(seq++, (uint)offset, data.AsSpan(offset, n));
+      client.Data(seq++, (uint) offset, data.AsSpan(offset, n));
       offset += n;
 
       if (seq % 50 == 0)
@@ -220,7 +214,7 @@ public class OtaUpdateService
     }
 
     client.End(seq);
-    
+
     _uploadFinishedFlowSubject.OnNext(new UploadFinishedEvent());
 
     var elapsed = DateTime.UtcNow - started;

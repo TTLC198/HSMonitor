@@ -1,4 +1,3 @@
-using System;
 using System.IO.Ports;
 using HSMonitor.Services.OtaUpdateService.Parts;
 

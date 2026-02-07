@@ -1,12 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Models;
 using HSMonitor.Properties;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 using HSMonitor.ViewModels.Settings;
 using MaterialDesignThemes.Wpf;
