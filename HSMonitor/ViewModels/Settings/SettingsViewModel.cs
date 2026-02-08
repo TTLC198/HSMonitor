@@ -25,7 +25,6 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
 
     public void ActivateTab(ISettingsTabViewModel settingsTab)
     {
-        // Deactivate previously selected tab
         if (ActiveTab is not null)
             ActiveTab.IsSelected = false;
 

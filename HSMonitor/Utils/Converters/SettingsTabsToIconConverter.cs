@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
+using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Settings;
 using MaterialDesignThemes.Wpf;
 
