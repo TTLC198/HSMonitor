@@ -8,7 +8,7 @@ public record DownloadPercentageEvent
     TotalBytesToReceive = totalBytesToReceive;
   }
   
-  public int ProgressPercentage => (int)(100 * (BytesReceived / TotalBytesToReceive));
+  public int ProgressPercentage => (int)(100 * ((double)BytesReceived / (double)TotalBytesToReceive));
   
   /// <summary>The number of bytes received by the downloader</summary>
   public long BytesReceived { get; private set; }

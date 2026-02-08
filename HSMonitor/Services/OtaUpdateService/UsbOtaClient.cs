@@ -165,9 +165,15 @@ sealed class UsbOtaClient
 
         while (off < len)
         {
-            int n = _sp.Read(buf, off, len - off);
-            if (n <= 0) throw new TimeoutException("Timeout reading from device.");
-            off += n;
+            try
+            {
+                int n = _sp.Read(buf, off, len - off);
+                if (n > 0) off += n;
+            }
+            catch (TimeoutException)
+            {
+                throw; // реальный таймаут SerialPort
+            }
         }
         return buf;
     }

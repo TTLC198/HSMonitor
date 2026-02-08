@@ -119,8 +119,11 @@ public class OtaUpdateService
       if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
       _downloadFinishedFlowSubject.OnNext(new DownloadFinishedEvent());
 
-      var file = new FileInfo(path);
-      await StartUploadAsync(item, file);
+      await Task.Run(async () =>
+      {
+        var file = new FileInfo(path);
+        await StartUploadAsync(item, file);
+      });
     }
     catch (Exception exception)
     {
@@ -179,17 +182,6 @@ public class OtaUpdateService
             item, 
             file.ToString(), 
             new InvalidOperationException("Устройство для обновления не найдено!")));
-
-        var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-          title: Resources.MessageBoxErrorTitle,
-          message: $@"
-{Resources.MessageBoxErrorText}
-Устройство для обновления не найдено!".Trim(), //todo: localization
-          okButtonText: Resources.MessageBoxOkButtonText,
-          cancelButtonText: null
-        );
-
-        await _dialogManager.ShowDialogAsync(errorBoxDialog);
         return;
       }
 
@@ -207,8 +199,8 @@ public class OtaUpdateService
     var crc = Crc32.Compute(data);
 
     using var sp = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);
-    sp.ReadTimeout = 10000;
-    sp.WriteTimeout = 10000;
+    sp.ReadTimeout = 5000;
+    sp.WriteTimeout = 5000;
     sp.DtrEnable = true;
     sp.RtsEnable = true;
 
@@ -221,6 +213,15 @@ public class OtaUpdateService
     var client = new UsbOtaClient(sp);
 
     client.Hello();
+    
+    /*try
+    {
+      client.Abort(); // сбрасываем зависшую OTA-сессию
+    }
+    catch
+    {
+      // игнорируем: если сессии не было, устройство может ответить ошибкой/таймаутом
+    }*/
 
     client.Begin((uint) data.Length, crc);
 
@@ -238,7 +239,7 @@ public class OtaUpdateService
       {
         var progressRecord = new DownloadPercentageEvent(offset, data.Length);
         _logger.Info($"{progressRecord.ProgressPercentage}% ({offset}/{data.Length})");
-        _downloadProgressFlowSubject.OnNext(progressRecord);
+        _uploadProgressFlowSubject.OnNext(progressRecord);
       }
     }
 
