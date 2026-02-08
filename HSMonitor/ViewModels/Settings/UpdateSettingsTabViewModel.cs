@@ -39,7 +39,18 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
         }
     }
-
+    
+    public int UpdateDeviceUploadPercent
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DevicePrimaryActionText));
+            OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+        }
+    }
 
     public bool IsAppProgressBarActive
     {
@@ -54,7 +65,20 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         }
     }
     
-    public bool IsDeviceProgressBarActive
+    public bool IsDeviceDownloadProgressBarActive
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DevicePrimaryActionText));
+            OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+            OnPropertyChanged(nameof(DeviceProgressStageText));
+        }
+    }
+    
+    public bool IsDeviceUploadProgressBarActive
     {
         get;
         set
@@ -84,10 +108,10 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             : "Проверить";
 
     public bool IsDevicePrimaryActionEnabled =>
-        !IsDeviceProgressBarActive && (DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
+        !IsDeviceDownloadProgressBarActive && (DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
 
     public string DeviceProgressStageText =>
-        IsDeviceProgressBarActive ? Resources.DownloadingText : string.Empty;
+        IsDeviceDownloadProgressBarActive ? Resources.DownloadingText : string.Empty;
 
     public string DevicePrimaryActionTooltip =>
         DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped
@@ -225,7 +249,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         if (!IsDevicePrimaryActionEnabled)
             return Task.CompletedTask;
 
-        IsDeviceProgressBarActive = true;
+        IsDeviceDownloadProgressBarActive = true;
         DeviceStatusString = Resources.DownloadingText;
 
         return _deviceUpdateService.StartDownloadAsync();
@@ -275,7 +299,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         switch (DeviceUpdateStatus)
         {
             case UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped:
-                IsDeviceProgressBarActive = true;
+                IsDeviceDownloadProgressBarActive = true;
                 DeviceStatusString = Resources.DownloadingText;
                 await _deviceUpdateService.StartDownloadAsync();
                 break;
@@ -354,23 +378,23 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         _appUpdateService.UpdateDownloadFinishedEvent += (_, _) => IsAppProgressBarActive = false;
         _appUpdateService.DownloadCancelledEvent += AppUpdateServiceOnDownloadCancelledEvent;
         _appUpdateService.DownloadErrorEvent += AppUpdateServiceOnDownloadErrorEvent;
-        _appUpdateService.CheckForUpdates().GetAwaiter();
 
         _deviceUpdateService = otaUpdateService;
         _deviceUpdateService.DownloadProgressFlow.Subscribe(downloadProgress =>
         {
             UpdateDeviceDownloadPercent = downloadProgress.ProgressPercentage;
         });
+        _deviceUpdateService.UploadProgressFlow.Subscribe(downloadProgress =>
+        {
+            UpdateDeviceUploadPercent = downloadProgress.ProgressPercentage;
+        });
         _deviceUpdateService.DownloadFinishedFlow.Subscribe(_ =>
         {
-            DeviceStatusString = "Установка";
-        });
-        _deviceUpdateService.UploadFinishedFlow.Subscribe(_ =>
-        {
-            IsDeviceProgressBarActive = false;
+            IsDeviceUploadProgressBarActive = true;
+            IsDeviceDownloadProgressBarActive = false;
+            DeviceStatusString = "Прошивка..."; //todo: локализация
         });
         _deviceUpdateService.DownloadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);
-        _deviceUpdateService.CheckForUpdates().GetAwaiter();
     }
 
     public new event PropertyChangedEventHandler? PropertyChanged;
