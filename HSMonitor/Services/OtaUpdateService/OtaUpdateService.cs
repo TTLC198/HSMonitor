@@ -26,8 +26,10 @@ public class OtaUpdateService
   private readonly ILogger<OtaUpdateService> _logger;
 
   private readonly Subject<DownloadPercentageEvent> _downloadProgressFlowSubject = new();
+  private readonly Subject<DownloadPercentageEvent> _uploadProgressFlowSubject = new();
   private readonly Subject<DownloadFinishedEvent> _downloadFinishedFlowSubject = new();
   private readonly Subject<DownloadHadErrorEvent> _downloadHadErrorFlowSubject = new();
+  private readonly Subject<DownloadHadErrorEvent> _uploadHadErrorFlowSubject = new();
   private readonly Subject<UploadFinishedEvent> _uploadFinishedFlowSubject = new();
 
   private UpdateInfo? _updateInfo;
@@ -62,8 +64,10 @@ public class OtaUpdateService
     _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
   public IObservable<DownloadPercentageEvent> DownloadProgressFlow => _downloadProgressFlowSubject;
+  public IObservable<DownloadPercentageEvent> UploadProgressFlow => _uploadProgressFlowSubject;
   public IObservable<DownloadFinishedEvent> DownloadFinishedFlow => _downloadFinishedFlowSubject;
   public IObservable<DownloadHadErrorEvent> DownloadHadErrorFlow => _downloadHadErrorFlowSubject;
+  public IObservable<DownloadHadErrorEvent> UploadHadErrorFlow => _uploadHadErrorFlowSubject;
   public IObservable<UploadFinishedEvent> UploadFinishedFlow => _uploadFinishedFlowSubject;
 
   public IEnumerable<AppCastItem> GetVersions() =>
@@ -115,19 +119,38 @@ public class OtaUpdateService
       _downloadFinishedFlowSubject.OnNext(new DownloadFinishedEvent());
 
       var file = new FileInfo(path);
+      await StartUploadAsync(item, file);
+    }
+    catch (Exception exception)
+    {
+      _logger.Error(exception);
 
+      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+        title: Resources.MessageBoxErrorTitle,
+        message: $@"
+{Resources.MessageBoxErrorText}
+{exception.Message}".Trim(),
+        okButtonText: Resources.MessageBoxOkButtonText,
+        cancelButtonText: null
+      );
+
+      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+    }
+  }
+
+  private async Task StartUploadAsync(AppCastItem item, FileInfo file)
+  {
+    try
+    {
       if (!file.Exists)
       {
-        var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-          title: Resources.MessageBoxErrorTitle,
-          message: $@"
-{Resources.MessageBoxErrorText}
-Файл обновления не найден!".Trim(), //todo: localization
-          okButtonText: Resources.MessageBoxOkButtonText,
-          cancelButtonText: null
-        );
-
-        await _dialogManager.ShowDialogAsync(errorBoxDialog);
+        _logger.Warn("Файл обновления не найден!");
+        
+        _uploadHadErrorFlowSubject.OnNext(
+          new DownloadHadErrorEvent(
+            item, 
+            file.ToString(), 
+            new InvalidOperationException("Файл обновления не найден!")));
         return;
       }
 
@@ -136,10 +159,25 @@ public class OtaUpdateService
 
       await fileDataStream.ReadExactlyAsync(fileDataBuffer, 0, fileDataBuffer.Length);
 
+      if (fileDataBuffer.Length != fileDataStream.Length || fileDataBuffer.Length == 0)
+      {
+        _logger.Warn("Поток данных пустой.");
+        _uploadHadErrorFlowSubject.OnNext(
+          new DownloadHadErrorEvent(
+            item, 
+            file.ToString(), 
+            new InvalidOperationException("Поток данных пустой.")));
+      }
+
       var serialPortName = Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
       if (serialPortName is null)
       {
         _logger.Warn("Устройство для обновления не найдено!");
+        _uploadHadErrorFlowSubject.OnNext(
+          new DownloadHadErrorEvent(
+            item, 
+            file.ToString(), 
+            new InvalidOperationException("Устройство для обновления не найдено!")));
 
         var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
           title: Resources.MessageBoxErrorTitle,
@@ -159,17 +197,7 @@ public class OtaUpdateService
     catch (Exception exception)
     {
       _logger.Error(exception);
-
-      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-        title: Resources.MessageBoxErrorTitle,
-        message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message}".Trim(),
-        okButtonText: Resources.MessageBoxOkButtonText,
-        cancelButtonText: null
-      );
-
-      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+      _uploadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, file.ToString(), exception));
     }
   }
 
