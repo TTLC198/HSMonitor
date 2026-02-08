@@ -177,34 +177,67 @@
                     </StackPanel>
 
                     <!-- Firmware progress -->
-                    <StackPanel Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,12,0,0"
-                                Visibility="{Binding IsDeviceDownloadProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
-                        <TextBlock FontSize="12"
-                                   Opacity="0.75"
-                                   Text="{Binding DeviceProgressStageText}" />
-                        <Grid Margin="0,6,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Orientation="Vertical">
+                        <StackPanel 
+                            Margin="0,12,0,0"
+                            Visibility="{Binding IsDeviceDownloadProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
+                            <TextBlock FontSize="12"
+                                       Opacity="0.75"
+                                       Text="{Binding DeviceDownloadProgressStageText}" />
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <ProgressBar Grid.Column="0"
-                                         Height="6"
-                                         Minimum="0"
-                                         Maximum="100"
-                                         Value="{Binding UpdateDeviceDownloadPercent}" />
+                                <ProgressBar Grid.Column="0"
+                                             Height="6"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             Value="{Binding UpdateDeviceDownloadPercent}" />
 
-                            <TextBlock Grid.Column="1"
-                                       Margin="10,0,0,0"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Opacity="0.75">
-                                <Run Text="{Binding UpdateDeviceDownloadPercent}" />
-                                <Run Text="%" />
-                            </TextBlock>
-                        </Grid>
+                                <TextBlock Grid.Column="1"
+                                           Margin="10,0,0,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           Opacity="0.75">
+                                    <Run Text="{Binding UpdateDeviceDownloadPercent}" />
+                                    <Run Text="%" />
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel
+                            Margin="0,12,0,0"
+                            Visibility="{Binding IsDeviceUploadProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
+                            <TextBlock FontSize="12"
+                                       Opacity="0.75"
+                                       Text="{Binding DeviceUploadProgressStageText}" />
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ProgressBar Grid.Column="0"
+                                             Height="6"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             Value="{Binding UpdateDeviceUploadPercent}" />
+
+                                <TextBlock Grid.Column="1"
+                                           Margin="10,0,0,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           Opacity="0.75">
+                                    <Run Text="{Binding UpdateDeviceUploadPercent}" />
+                                    <Run Text="%" />
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
 
                     <!-- Buttons -->

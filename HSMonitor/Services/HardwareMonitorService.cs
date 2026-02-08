@@ -4,7 +4,6 @@ using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
-using MaterialDesignThemes.Wpf;
 
 namespace HSMonitor.Services;
 
@@ -47,6 +46,12 @@ public class HardwareMonitorService
             dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException("Current thread is null")
         );
         _updateHardwareMonitorTimer.Start();
+    }
+
+    public void Stop()
+    {
+        _updateHardwareMonitorTimer.Stop();
+        _updateHardwareMonitorTimer = null;
     }
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
