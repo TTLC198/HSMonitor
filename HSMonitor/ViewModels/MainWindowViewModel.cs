@@ -156,6 +156,8 @@ public class MainWindowViewModel : Screen
 
     public async void OnViewFullyLoaded()
     {
+        _dialogManager.GetViewForDialogScreen(_viewModelFactory.CreateSettingsViewModel()); //preload
+        
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(

@@ -57,7 +57,6 @@ public sealed class DialogManager : IDisposable
 
         try
         {
-            // Headless / no dispatcher (tests).
             if (Application.Current?.Dispatcher is null)
             {
                 await DialogHost.Show(view).ConfigureAwait(false);
@@ -72,7 +71,6 @@ public sealed class DialogManager : IDisposable
                     dialogScreen.GetType().Name == "SettingsViewModel" ||
                     (dialogScreen.GetType().FullName?.EndsWith(".SettingsViewModel", StringComparison.Ordinal) ?? false);
 
-                // ===== Settings window shown "beside" / over the main window =====
                 if (isSettings && owner is not null)
                 {
                     double width = 460;
@@ -90,7 +88,6 @@ public sealed class DialogManager : IDisposable
                         MinWidth = minWidth,
                     };
 
-                    // If user closes the window (X), ensure the dialog session is closed so ShowDialog completes.
                     wnd.Closing += (_, __) =>
                     {
                         try { _currentSession?.Close(); } catch { /* ignore */ }
@@ -122,7 +119,6 @@ public sealed class DialogManager : IDisposable
                     }
                 }
 
-                // ===== Dialog in its own window =====
                 if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
                 {
                     var wnd = new DialogHostWindow

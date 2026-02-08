@@ -13,18 +13,20 @@
             Background="{DynamicResource PrimaryHueLightBrush}"
             SnapsToDevicePixels="True">
 
-        <materialDesign:DialogHost x:Name="RootDialogHost"
-                                   Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
-                                   DialogBackground="Transparent"
-                                   Background="Transparent"
-                                   DialogTheme="Light"
-                                   ApplyBlurBackground="True"
-                                   HorizontalAlignment="Stretch"
-                                   HorizontalContentAlignment="Stretch"
-                                   VerticalAlignment="Stretch"
-                                   VerticalContentAlignment="Stretch"
-                                   DialogMargin="0">
-            <Grid/>
+        <materialDesign:DialogHost
+            x:Name="RootDialogHost"
+            materialDesign:TransitionAssist.DisableTransitions="True"
+            Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
+            DialogBackground="Transparent"
+            Background="Transparent"
+            DialogTheme="Light"
+            ApplyBlurBackground="True"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            DialogMargin="0">
+            <Grid />
         </materialDesign:DialogHost>
     </Border>
 </Window>

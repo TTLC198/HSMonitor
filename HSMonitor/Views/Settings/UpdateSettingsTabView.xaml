@@ -180,7 +180,7 @@
                     <StackPanel Grid.Row="2"
                                 Grid.Column="0"
                                 Margin="0,12,0,0"
-                                Visibility="{Binding IsDeviceProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
+                                Visibility="{Binding IsDeviceDownloadProgressBarActive, Converter={x:Static converters:VisibilityBoolConverter.Instance}}">
                         <TextBlock FontSize="12"
                                    Opacity="0.75"
                                    Text="{Binding DeviceProgressStageText}" />
