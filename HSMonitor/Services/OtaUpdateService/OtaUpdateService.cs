@@ -9,6 +9,7 @@ using HSMonitor.Utils.Usb.Serial;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
 using NetSparkleUpdater;
+using NetSparkleUpdater.Configurations;
 using NetSparkleUpdater.Enums;
 using NetSparkleUpdater.Events;
 using NetSparkleUpdater.SignatureVerifiers;
@@ -46,7 +47,7 @@ public class OtaUpdateService
       CustomInstallerArguments = null,
       ClearOldInstallers = null,
       UIFactory = null,
-      Configuration = null,
+      Configuration = new JSONConfiguration(new ManualAssemblyAccessor("0.1.9")), //todo: переделать
       RestartExecutablePath = null,
       RestartExecutableName = null,
       RelaunchAfterUpdateCommandPrefix = null,
@@ -177,7 +178,7 @@ public class OtaUpdateService
   {
     var crc = Crc32.Compute(data);
 
-    using var sp = new SerialPort(portName, 921600, Parity.None, 8, StopBits.One);
+    using var sp = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);
     sp.ReadTimeout = 10000;
     sp.WriteTimeout = 10000;
     sp.DtrEnable = true;

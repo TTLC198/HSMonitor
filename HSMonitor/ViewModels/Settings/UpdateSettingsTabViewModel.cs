@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Services.OtaUpdateService;
+using HSMonitor.Services.OtaUpdateService.Parts;
 using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
 
@@ -134,7 +135,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
             DeviceVersionString =
                 value switch
                 {
-                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().First().Version,
+                    UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().FirstOrDefault()?.Version,
                     _ => App.VersionString
                 } ?? "";
             OnPropertyChanged();
@@ -210,8 +211,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
     public async Task CheckDeviceUpdates()
     {
-        var versions = _deviceUpdateService.GetVersions();
-        await _deviceUpdateService.CheckForUpdates();
+        var t = await _deviceUpdateService.CheckForUpdates();
         DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
 
         if (DeviceUpdateStatus is UpdateStatus.UpdateNotAvailable)
@@ -338,6 +338,13 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         AppUpdateStatus = UpdateStatus.UserSkipped;
         AppStatusString = $"Скачивание отменено."; //todo: локализация
     }
+    
+    private void DeviceUpdateServiceOnDownloadErrorEvent(DownloadHadErrorEvent errorEvent)
+    {
+        IsDeviceProgressBarActive = false;
+        DeviceUpdateStatus = UpdateStatus.CouldNotDetermine;
+        DeviceStatusString = $"{errorEvent.Exception.Message}"; //todo: локализация
+    }
 
     public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService) 
         : base(settingsService, 4, "Update")
@@ -356,8 +363,13 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         });
         _deviceUpdateService.DownloadFinishedFlow.Subscribe(_ =>
         {
+            DeviceStatusString = "Установка";
+        });
+        _deviceUpdateService.UploadFinishedFlow.Subscribe(_ =>
+        {
             IsDeviceProgressBarActive = false;
         });
+        _deviceUpdateService.DownloadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);
         _deviceUpdateService.CheckForUpdates().GetAwaiter();
     }
 
