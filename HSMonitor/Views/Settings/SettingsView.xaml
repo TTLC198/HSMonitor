@@ -155,12 +155,14 @@
                     <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
                         <Setter Property="BackwardWipe">
                             <Setter.Value>
-                                <materialDesign:SlideWipe Direction="Left" Duration="0:0:0.2" />
+                                <materialDesign:SlideOutWipe></materialDesign:SlideOutWipe>
+                                <!--<materialDesign:SlideWipe Direction="Left" Duration="0:0:0.2" />-->
                             </Setter.Value>
                         </Setter>
                         <Setter Property="ForwardWipe">
                             <Setter.Value>
-                                <materialDesign:SlideWipe Direction="Right" Duration="0:0:0.2" />
+                                <materialDesign:SlideOutWipe></materialDesign:SlideOutWipe>
+                                <!--<materialDesign:SlideWipe Direction="Right" Duration="0:0:0.2" />-->
                             </Setter.Value>
                         </Setter>
                     </Style>
