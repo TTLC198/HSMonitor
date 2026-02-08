@@ -100,7 +100,7 @@ public class HardwareMonitorService
             Gpu = GpuInformationUpdate(gpuHardware);
             Memory = MemoryInformationUpdate(Computer.Hardware
                 .FirstOrDefault(h =>
-                    h.HardwareType == HardwareType.Memory)!);
+                    h.HardwareType == HardwareType.Memory && h.Identifier.ToString() == "/ram")!);
 
             Cpu.DefaultClock = _settingsService.Settings.DefaultCpuFrequency;
             Gpu.DefaultCoreClock = _settingsService.Settings.DefaultGpuFrequency;
