@@ -105,7 +105,7 @@
                         VerticalAlignment="Center"
                         Style="{DynamicResource MaterialDesignFlatDarkButton}"
                         Command="{s:Action Cancel}"
-                        ToolTip="{x:Static p:Resources.CancelButtonTooltip}">
+                        ToolTip="{x:Static p:Resources.CloseAppFromTrayButtonText}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon
                                 Width="18"
@@ -116,7 +116,7 @@
                             <TextBlock
                                 VerticalAlignment="Center"
                                 Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                                Text="Отмена" />
+                                Text="{x:Static p:Resources.CloseAppFromTrayButtonText}" />
                         </StackPanel>
                     </Button>
 
