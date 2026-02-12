@@ -19,6 +19,7 @@ sealed class UsbOtaClient
         End   = 4,
         Abort = 5,
         Status = 6,
+        Version = 7
     }
 
     private enum StatusCode : byte
@@ -50,6 +51,39 @@ sealed class UsbOtaClient
         SendFrame(Cmd.Begin, seq: 2, payload);
         var st = ReadStatus();
         EnsureOk(st);
+    }
+    
+    /// <summary>
+    /// Запросить у устройства текущую версию проекта (ESP-IDF app version).
+    /// </summary>
+    public string GetProjectVersion(uint seq = 10)
+    {
+        SendFrame(Cmd.Version, seq, ReadOnlySpan<byte>.Empty);
+
+        var fr = ReadFrame();
+
+        // Старые прошивки вернут Status(ERR_NOT_SUPPORTED) как неизвестную команду.
+        if (fr.Cmd == Cmd.Status)
+        {
+            var st = ParseStatusPayload(fr.Payload);
+            EnsureOk(st);
+            throw new InvalidOperationException("Device did not return version payload. Firmware is likely too old.");
+        }
+
+        if (fr.Cmd != Cmd.Version)
+            throw new InvalidOperationException($"Unexpected response: cmd={fr.Cmd} payloadLen={fr.Payload.Length}");
+
+        // payload = StatusPayload(12) + version[32]
+        if (fr.Payload.Length < 12)
+            throw new InvalidOperationException($"Bad Version payload length: {fr.Payload.Length}");
+
+        var st2 = ParseStatusPayload(fr.Payload.AsSpan(0, 12));
+        EnsureOk(st2);
+
+        var verSpan = fr.Payload.AsSpan(12);
+        int z = verSpan.IndexOf((byte)0);
+        if (z >= 0) verSpan = verSpan.Slice(0, z);
+        return System.Text.Encoding.UTF8.GetString(verSpan);
     }
 
     public void Data(uint seq, uint offset, ReadOnlySpan<byte> chunk)
@@ -130,6 +164,14 @@ sealed class UsbOtaClient
         byte[] buf = payload.ToArray();
         _sp.Write(buf, 0, buf.Length);
     }
+    
+    private Status ParseStatusPayload(ReadOnlySpan<byte> payload)
+    {
+        var st = (StatusCode)payload[0];
+        var received = ReadU32(payload, 4);
+        var espErr = unchecked((int)ReadU32(payload, 8));
+        return new Status(st, received, espErr);
+    }
 
     private Status ReadStatus()
     {
@@ -160,22 +202,39 @@ sealed class UsbOtaClient
 
     private byte[] ReadExact(int len)
     {
-        byte[] buf = new byte[len];
+        var buf = new byte[len];
         int off = 0;
 
         while (off < len)
         {
-            try
-            {
-                int n = _sp.Read(buf, off, len - off);
-                if (n > 0) off += n;
-            }
-            catch (TimeoutException)
-            {
-                throw; // реальный таймаут SerialPort
-            }
+            int n = _sp.Read(buf, off, len - off);
+            if (n > 0) off += n;
         }
         return buf;
+    }
+    
+    private Frame ReadFrame()
+    {
+        var hdr = ReadExact(HdrSize);
+        var magic = ReadU32(hdr, 0);
+        if (magic != Magic) throw new InvalidOperationException("Bad magic from device.");
+
+        var cmd = (Cmd)hdr[4];
+        var hdrSize = ReadU16(hdr, 6);
+        var payloadLen = ReadU32(hdr, 8);
+        var seq = ReadU32(hdr, 12);
+        var crc = ReadU32(hdr, 16);
+
+        if (hdrSize != HdrSize)
+            throw new InvalidOperationException($"Unexpected header size: {hdrSize}");
+        if (payloadLen > 256 * 1024)
+            throw new InvalidOperationException($"Payload too large: {payloadLen}");
+
+        var payload = payloadLen == 0 ? [] : ReadExact((int)payloadLen);
+        var calc = Crc32.Compute(payload);
+        if (calc != crc) throw new InvalidOperationException("Bad CRC from device.");
+
+        return new Frame(cmd, seq, payload);
     }
 
     // ----- little-endian helpers -----
@@ -198,4 +257,18 @@ sealed class UsbOtaClient
 
     private static uint ReadU32(ReadOnlySpan<byte> b, int o)
         => (uint)(b[o + 0] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24));
+    
+    private readonly struct Frame
+    {
+        public readonly Cmd Cmd;
+        public readonly uint Seq;
+        public readonly byte[] Payload;
+
+        public Frame(Cmd cmd, uint seq, byte[] payload)
+        {
+            Cmd = cmd;
+            Seq = seq;
+            Payload = payload;
+        }
+    }
 }

@@ -163,11 +163,16 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
           _ => Resources.NoConnectionText
         };
+
+      var deviceVersion = _deviceUpdateService.GetProjectVersion();
+      var versionString = string.IsNullOrWhiteSpace(deviceVersion) 
+        ? "Не удалось получить версию"
+        : $"v{deviceVersion}";
       DeviceVersionString =
         value switch
         {
           UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().FirstOrDefault()?.Version,
-          _ => App.VersionString
+          _ => versionString
         } ?? "";
       OnPropertyChanged();
       OnPropertyChanged(nameof (DevicePrimaryActionText));
@@ -334,7 +339,6 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
   private void AppUpdateServiceOnDownloadCancelledEvent(AppCastItem item, string path)
   {
-    
     IsAppProgressBarActive = false;
     AppUpdateStatus = UpdateStatus.UserSkipped;
     AppStatusString = $"Скачивание отменено."; //todo: локализация

@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Ports;
 using System.Reactive.Subjects;
+using HSMonitor.Models;
 using HSMonitor.Properties;
 using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
@@ -49,7 +50,7 @@ public class OtaUpdateService
       CustomInstallerArguments = null,
       ClearOldInstallers = null,
       UIFactory = null,
-      Configuration = new JSONConfiguration(new ManualAssemblyAccessor("0.1.9")), //todo: переделать
+      Configuration = new JSONConfiguration(new ManualAssemblyAccessor(GetProjectVersion)), //todo: переделать
       RestartExecutablePath = null,
       RestartExecutableName = null,
       RelaunchAfterUpdateCommandPrefix = null,
@@ -84,6 +85,38 @@ public class OtaUpdateService
 
   private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
     _downloadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, path, exception));
+
+  //todo: добавить lock
+  public string GetProjectVersion()
+  {
+    var serialPortName = GetDeviceInfo();
+    
+    if (serialPortName?.PortName is null)
+    {
+      _logger.Warn("Устройство для обновления не найдено!");
+      return string.Empty;
+    }
+    
+    using var sp = OpenPort(serialPortName.PortName);
+
+    sp.Open();
+
+    sp.DiscardInBuffer();
+    sp.DiscardOutBuffer();
+    Thread.Sleep(200);
+
+    var client = new UsbOtaClient(sp);
+
+    var version = client.GetProjectVersion();
+    
+    if (string.IsNullOrEmpty(version))
+    {
+      _logger.Warn($"Не удалось определить версию устройства! Полученная версия: [{version}]");
+      return string.Empty;
+    }
+
+    return version;
+  }
 
   public async Task StartDownloadAsync()
   {
@@ -172,8 +205,8 @@ public class OtaUpdateService
             file.ToString(), 
             new InvalidOperationException("Поток данных пустой.")));
       }
-
-      var serialPortName = Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
+      
+      var serialPortName = GetDeviceInfo();
       if (serialPortName is null)
       {
         _logger.Warn("Устройство для обновления не найдено!");
@@ -194,15 +227,25 @@ public class OtaUpdateService
     }
   }
 
-  private void SendOtaUpdate(byte[] data, string portName)
-  {
-    var crc = Crc32.Compute(data);
+  private DeviceInfo? GetDeviceInfo() => 
+    Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
 
-    using var sp = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);
+  private SerialPort OpenPort(string portName)
+  {
+    var sp = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);
     sp.ReadTimeout = 5000;
     sp.WriteTimeout = 5000;
     sp.DtrEnable = true;
     sp.RtsEnable = true;
+    
+    return sp;
+  }
+
+  private void SendOtaUpdate(byte[] data, string portName)
+  {
+    var crc = Crc32.Compute(data);
+
+    using var sp = OpenPort(portName);
 
     sp.Open();
 
@@ -213,19 +256,10 @@ public class OtaUpdateService
     var client = new UsbOtaClient(sp);
 
     client.Hello();
-    
-    /*try
-    {
-      client.Abort(); // сбрасываем зависшую OTA-сессию
-    }
-    catch
-    {
-      // игнорируем: если сессии не было, устройство может ответить ошибкой/таймаутом
-    }*/
 
     client.Begin((uint) data.Length, crc);
 
-    int offset = 0;
+    var offset = 0;
     uint seq = 10;
     var started = DateTime.UtcNow;
 
