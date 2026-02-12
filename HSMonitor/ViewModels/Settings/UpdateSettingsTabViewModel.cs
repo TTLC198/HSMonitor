@@ -290,6 +290,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   {
     try
     {
+      await _appUpdateService.CheckForUpdates();
+      await _deviceUpdateService.CheckForUpdates();
+      
       AppUpdateStatus = _appUpdateService.UpdateStatus;
       AppStatusString =
         AppUpdateStatus switch
@@ -303,8 +306,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         {
           UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().Any()
             ? $"v{_appUpdateService.GetVersions().First().Version}"
-            : "v...",
-          _ => "v..."
+            : App.VersionString,
+          _ => App.VersionString
         } ?? "";
 
       DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
@@ -315,9 +318,6 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
           _ => Resources.NoConnectionText
         };
-
-      await _appUpdateService.CheckForUpdates();
-      await _deviceUpdateService.CheckForUpdates();
     }
     catch (Exception exception)
     {

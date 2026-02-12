@@ -22,9 +22,6 @@
                     Orientation="Vertical"
                     Grid.IsSharedSizeScope="True">
 
-            <!-- ========================= -->
-            <!-- CARD: APP UPDATE -->
-            <!-- ========================= -->
             <materialDesign:Card Margin="12,6" Padding="12">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -131,11 +128,7 @@
                     </StackPanel>
                 </Grid>
             </materialDesign:Card>
-
-
-            <!-- ========================= -->
-            <!-- CARD: DEVICE FIRMWARE -->
-            <!-- ========================= -->
+            
             <materialDesign:Card Margin="12,6" Padding="12">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -277,10 +270,6 @@
                 </Grid>
             </materialDesign:Card>
 
-
-            <!-- ========================= -->
-            <!-- LINK: GITHUB -->
-            <!-- ========================= -->
             <materialDesign:Card Margin="12,6" Padding="12">
                 <DockPanel>
                     <materialDesign:PackIcon Kind="Github"
