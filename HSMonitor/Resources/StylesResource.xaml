@@ -476,10 +476,10 @@
     <!--  Fonts  -->
     <FontFamily
         x:Key="VT323">
-        pack://application:,,,/HSMonitor;component/Resources/Fonts/#VT323
+        pack://application:,,,/Resources/Fonts/#VT323
     </FontFamily>
     <FontFamily
         x:Key="org_01">
-        pack://application:,,,/HSMonitor;component/Resources/Fonts/#Org_v01
+        pack://application:,,,/Resources/Fonts/#org_01
     </FontFamily>
 </ResourceDictionary>
