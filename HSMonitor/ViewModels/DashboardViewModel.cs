@@ -20,8 +20,8 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     private double _displayOpacity = 1;
 
-    private string _cpuOcMarqueeText = "+0MHz";
-    private string _gpuOcMarqueeText = "+0MHz";
+    private string _cpuOcMarqueeText = "";
+    private string _gpuOcMarqueeText = "";
 
     private bool _isCpuBoostActive;
     private bool _isGpuBoostActive;
@@ -190,9 +190,9 @@ public class DashboardViewModel : INotifyPropertyChanged
         // "+0MHz" placeholders are always present.
         // To enable BOOST mode: set IsCpuBoostActive/IsGpuBoostActive and *BoostDeltaMHz.
         if (string.IsNullOrWhiteSpace(CpuOcMarqueeText)) 
-            CpuOcMarqueeText = "+0MHz";
+            CpuOcMarqueeText = "+0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz";
         if (string.IsNullOrWhiteSpace(GpuOcMarqueeText)) 
-            GpuOcMarqueeText = "+0MHz";
+            GpuOcMarqueeText = "+0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz";
 
         CpuBoostDeltaMHz = Cpu.Clock - _settingsService.Settings.DefaultCpuFrequency;
         GpuBoostDeltaMHz = Gpu.CoreClock - _settingsService.Settings.DefaultGpuFrequency;
