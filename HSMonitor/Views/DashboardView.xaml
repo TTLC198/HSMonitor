@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Window
     x:Class="HSMonitor.Views.DashboardView"
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
     xmlns:local="clr-namespace:HSMonitor.Views"
@@ -9,8 +9,9 @@
     d:DesignHeight="320"
     d:DesignWidth="240"
     d:DataContext="{d:DesignInstance Type=viewModels:DashboardViewModel}"
-    mc:Ignorable="d">
-    <UserControl.Resources>
+    mc:Ignorable="d"
+    SnapsToDevicePixels="False">
+    <Window.Resources>
         <local:BooleanToVisibilityConverterEx x:Key="BoolToVis"/>
 
         <Style TargetType="{x:Type Border}">
@@ -68,7 +69,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </UserControl.Resources>
+    </Window.Resources>
 
     <Canvas Opacity="{Binding DisplayOpacity}" Background="Black">
 
@@ -80,7 +81,8 @@
         <Border Canvas.Top="140" Canvas.Left="13" Width="88" Height="89"/>
 
         <!--CPU Name-->
-        <TextBlock Canvas.Top="8" Canvas.Left="16" Text="{Binding Cpu.Name}" FontSize="14"/>
+        <!--{Binding Cpu.Name}-->
+        <TextBlock Canvas.Top="2" Canvas.Left="16" Text="Test test test" FontSize="14"/>
 
         <!-- CPU Logo Image-->
         <Image Canvas.Top="26" Canvas.Left="16" Width="82" Height="82"
@@ -188,7 +190,7 @@
                Source="{Binding MemoryImageSource, Mode=OneWay}" Stretch="Fill"/>
 
         <!--Total / RAM Used-->
-        <TextBlock Canvas.Top="270" Canvas.Left="120" Text="Total  /  RAM Used" FontSize="14"/>
+        <TextBlock Canvas.Top="270" Canvas.Left="120" Text="Total / Used" FontSize="14"/>
 
         <TextBlock Canvas.Top="285" Canvas.Left="120" Text="{Binding Memory.Total}" FontSize="20"/>
         <TextBlock Canvas.Top="285" Canvas.Left="145" Text="GB" FontSize="12"/>
@@ -196,4 +198,4 @@
         <TextBlock Canvas.Top="285" Canvas.Left="170" Text="{Binding Memory.Used}" FontSize="20"/>
         <TextBlock Canvas.Top="285" Canvas.Left="210" Text="GB" FontSize="12"/>
     </Canvas>
-</UserControl>
+</Window>
