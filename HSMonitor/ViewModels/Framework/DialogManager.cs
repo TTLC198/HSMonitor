@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using HSMonitor.ViewModels.Framework.Dialog;
 using HSMonitor.Views;
+using HSMonitor.Views.Settings;
 using MaterialDesignThemes.Wpf;
 using Stylet;
 
@@ -82,7 +83,7 @@ public sealed class DialogManager : IDisposable
                         if (ownWindow.MinWidth > 0) minWidth = ownWindow.MinWidth;
                     }
 
-                    var wnd = new SettingsSideHostWindow(owner, gap: 10)
+                    var wnd = new SettingsView(owner, gap: 10)
                     {
                         Width = width,
                         MinWidth = minWidth,
@@ -99,24 +100,6 @@ public sealed class DialogManager : IDisposable
                     };
 
                     wnd.Show();
-
-                    try
-                    {
-                        await wnd.DialogHostControl.ShowDialog(
-                            view,
-                            openedEventHandler: (_, args) =>
-                            {
-                                _currentSession = args.Session;
-                            }).ConfigureAwait(true);
-
-                        return dialogScreen.DialogResult;
-                    }
-                    finally
-                    {
-                        _currentSession = null;
-                        _closeWindowFallback = null;
-                        try { wnd.Close(); } catch { /* ignore */ }
-                    }
                 }
 
                 if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)

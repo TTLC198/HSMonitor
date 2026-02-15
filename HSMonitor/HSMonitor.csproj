@@ -58,11 +58,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Views\Settings\SettingsView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
       <Page Update="Views\Settings\AppearanceSettingsTabView.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>

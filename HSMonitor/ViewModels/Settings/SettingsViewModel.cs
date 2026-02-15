@@ -1,10 +1,12 @@
-﻿using HSMonitor.Services;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using HSMonitor.Services;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Framework.Dialog;
 
 namespace HSMonitor.ViewModels.Settings;
 
-public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
+public class SettingsViewModel : INotifyPropertyChanged
 {
     private readonly SettingsService _settingsService;
 
@@ -112,7 +114,7 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
     public async void Cancel()
     {
         await _settingsService.LoadAsync();
-        Close(false);
+        //Close(false); todo:
     }
 
     public string Title => "Настройки";
@@ -120,4 +122,17 @@ public class SettingsViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
     public double MinWidth => 360;
     public double Height => 500;
     public double MinHeight => 350;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 }
