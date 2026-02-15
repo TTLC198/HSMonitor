@@ -165,6 +165,11 @@ public class DashboardViewModel : INotifyPropertyChanged
         private set { _gpuLoadGraphPoints = value; OnPropertyChanged(); }
     }
 
+    public DashboardViewModel()
+    {
+        
+    }
+    
     public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
     {
         _hardwareMonitorService = hardwareMonitorService;
@@ -189,8 +194,10 @@ public class DashboardViewModel : INotifyPropertyChanged
 
         // "+0MHz" placeholders are always present.
         // To enable BOOST mode: set IsCpuBoostActive/IsGpuBoostActive and *BoostDeltaMHz.
-        if (string.IsNullOrWhiteSpace(CpuOcMarqueeText)) CpuOcMarqueeText = "+0MHz";
-        if (string.IsNullOrWhiteSpace(GpuOcMarqueeText)) GpuOcMarqueeText = "+0MHz";
+        if (string.IsNullOrWhiteSpace(CpuOcMarqueeText)) 
+            CpuOcMarqueeText = "+0MHz";
+        if (string.IsNullOrWhiteSpace(GpuOcMarqueeText)) 
+            GpuOcMarqueeText = "+0MHz";
 
         UpdateGpuGraphs();
 

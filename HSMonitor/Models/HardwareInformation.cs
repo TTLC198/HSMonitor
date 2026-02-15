@@ -54,7 +54,7 @@ public class MemoryInformation
     public string? Type { get; set; }
     public int Load { get; set; }
     public double Available { get; set; }
-    public double Used { get; set; }
+    public int Used { get; set; }
 
     public double Total => Math.Round(Available + Used, MidpointRounding.AwayFromZero);
 }

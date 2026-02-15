@@ -352,7 +352,7 @@ public class HardwareMonitorService
                     .Value.GetFloatAsCorrectNumber(),
                 1,
                 MidpointRounding.AwayFromZero);
-            memoryInfo.Used = (double) Math.Round(
+            memoryInfo.Used = (int) Math.Round(
                 memoryHardwareSensors
                     .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data)
                     .Value.GetFloatAsCorrectNumber(),
