@@ -165,11 +165,6 @@ public class DashboardViewModel : INotifyPropertyChanged
         private set { _gpuLoadGraphPoints = value; OnPropertyChanged(); }
     }
 
-    public DashboardViewModel()
-    {
-        
-    }
-    
     public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
     {
         _hardwareMonitorService = hardwareMonitorService;
@@ -198,6 +193,12 @@ public class DashboardViewModel : INotifyPropertyChanged
             CpuOcMarqueeText = "+0MHz";
         if (string.IsNullOrWhiteSpace(GpuOcMarqueeText)) 
             GpuOcMarqueeText = "+0MHz";
+
+        CpuBoostDeltaMHz = Cpu.Clock - _settingsService.Settings.DefaultCpuFrequency;
+        GpuBoostDeltaMHz = Gpu.CoreClock - _settingsService.Settings.DefaultGpuFrequency;
+
+        IsCpuBoostActive = CpuBoostDeltaMHz > 0;
+        IsGpuBoostActive = GpuBoostDeltaMHz > 0;
 
         UpdateGpuGraphs();
 
