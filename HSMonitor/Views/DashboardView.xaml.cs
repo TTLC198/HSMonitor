@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace HSMonitor.Views;
 
@@ -26,17 +26,24 @@ public sealed class MarqueeText : Control
     private TextBlock? _text1;
     private TextBlock? _text2;
     private TranslateTransform? _translate;
-    private Storyboard? _storyboard;
+
+    private double _distance;
+    private double _offset;
+    private bool _running;
+    private TimeSpan _lastRender;
 
     static MarqueeText()
     {
-        DefaultStyleKeyProperty.OverrideMetadata(typeof(MarqueeText), new FrameworkPropertyMetadata(typeof(MarqueeText)));
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(MarqueeText),
+            new FrameworkPropertyMetadata(typeof(MarqueeText)));
     }
 
     public MarqueeText()
     {
-        Loaded += (_, _) => Restart();
+        Loaded += (_, _) => UpdateLayoutMetrics();
         Unloaded += (_, _) => Stop();
+        SizeChanged += (_, _) => UpdateLayoutMetrics();
     }
 
     public override void OnApplyTemplate()
@@ -47,20 +54,23 @@ public sealed class MarqueeText : Control
         _text1 = GetTemplateChild(PartText1) as TextBlock;
         _text2 = GetTemplateChild(PartText2) as TextBlock;
 
-        if (_canvas is not null)
+        if (_canvas != null)
         {
             _translate = new TranslateTransform();
             _canvas.RenderTransform = _translate;
         }
 
-        Restart();
+        UpdateLayoutMetrics();
     }
 
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-        nameof(Text),
-        typeof(string),
-        typeof(MarqueeText),
-        new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.AffectsRender));
+    #region DP
+
+    public static readonly DependencyProperty TextProperty =
+        DependencyProperty.Register(
+            nameof(Text),
+            typeof(string),
+            typeof(MarqueeText),
+            new PropertyMetadata(string.Empty, OnChanged));
 
     public string Text
     {
@@ -68,12 +78,12 @@ public sealed class MarqueeText : Control
         set => SetValue(TextProperty, value);
     }
 
-    /// <summary>Pixels per second.</summary>
-    public static readonly DependencyProperty SpeedProperty = DependencyProperty.Register(
-        nameof(Speed),
-        typeof(double),
-        typeof(MarqueeText),
-        new FrameworkPropertyMetadata(55d));
+    public static readonly DependencyProperty SpeedProperty =
+        DependencyProperty.Register(
+            nameof(Speed),
+            typeof(double),
+            typeof(MarqueeText),
+            new PropertyMetadata(55d));
 
     public double Speed
     {
@@ -81,12 +91,12 @@ public sealed class MarqueeText : Control
         set => SetValue(SpeedProperty, value);
     }
 
-    /// <summary>Gap between the two copies of the text.</summary>
-    public static readonly DependencyProperty GapProperty = DependencyProperty.Register(
-        nameof(Gap),
-        typeof(double),
-        typeof(MarqueeText),
-        new FrameworkPropertyMetadata(18d));
+    public static readonly DependencyProperty GapProperty =
+        DependencyProperty.Register(
+            nameof(Gap),
+            typeof(double),
+            typeof(MarqueeText),
+            new PropertyMetadata(20d, OnChanged));
 
     public double Gap
     {
@@ -94,89 +104,83 @@ public sealed class MarqueeText : Control
         set => SetValue(GapProperty, value);
     }
 
-    protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+    private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == TextProperty || e.Property == SpeedProperty || e.Property == GapProperty)
-            Restart();
+        ((MarqueeText)d).UpdateLayoutMetrics();
+    }
+
+    #endregion
+
+    private void UpdateLayoutMetrics()
+    {
+        if (!IsLoaded || _text1 == null || _text2 == null || _translate == null)
+            return;
+
+        _text1.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        double width = _text1.DesiredSize.Width;
+
+        if (width <= 0 || ActualWidth <= 0)
+            return;
+
+        if (width <= ActualWidth)
+        {
+            Stop();
+            Canvas.SetLeft(_text1, 0);
+            Canvas.SetLeft(_text2, 0);
+            _translate.X = 0;
+            return;
+        }
+
+        _distance = width + Gap;
+
+        Canvas.SetLeft(_text1, 0);
+        Canvas.SetLeft(_text2, _distance);
+
+        Start();
+    }
+
+    private void Start()
+    {
+        if (_running)
+            return;
+
+        _offset = 0;
+        _lastRender = TimeSpan.Zero;
+
+        CompositionTarget.Rendering += OnRendering;
+        _running = true;
     }
 
     private void Stop()
     {
-        _storyboard?.Stop(this);
-        _storyboard = null;
-        if (_translate is not null) _translate.X = 0;
+        if (!_running)
+            return;
+
+        CompositionTarget.Rendering -= OnRendering;
+        _running = false;
     }
 
-    private void Restart()
+    private void OnRendering(object? sender, EventArgs e)
     {
-        if (!IsLoaded)
+        if (_translate == null)
             return;
 
-        if (_canvas is null || _text1 is null || _text2 is null || _translate is null)
-            return;
+        var args = (RenderingEventArgs)e;
 
-        Stop();
-
-        _text1.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        var w = Math.Max(1, _text1.DesiredSize.Width);
-
-        Canvas.SetLeft(_text1, 0);
-        Canvas.SetTop(_text1, 0);
-        Canvas.SetLeft(_text2, w + Gap);
-        Canvas.SetTop(_text2, 0);
-
-        // If text fits inside viewport - no animation.
-        var viewport = ActualWidth;
-        if (double.IsNaN(viewport) || viewport <= 0)
-            viewport = Width;
-
-        if (viewport > 0 && w + Gap <= viewport)
-            return;
-
-        var distance = w + Gap;
-        var pixelsPerSecond = Math.Max(10, Speed);
-        var seconds = distance / pixelsPerSecond;
-
-        var anim = new DoubleAnimation
+        if (_lastRender == TimeSpan.Zero)
         {
-            From = 0,
-            To = -distance,
-            Duration = TimeSpan.FromSeconds(seconds),
-            RepeatBehavior = RepeatBehavior.Forever
-        };
-
-        _storyboard = new Storyboard();
-        _storyboard.Children.Add(anim);
-        Storyboard.SetTarget(anim, _translate);
-        Storyboard.SetTargetProperty(anim, new PropertyPath(TranslateTransform.XProperty));
-
-        _storyboard.Begin(this, true);
-    }
-}
-
-/// <summary>Visibility converter with optional inversion: ConverterParameter="invert".</summary>
-public sealed class BooleanToVisibilityConverterEx : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        var b = value is bool bb && bb;
-        if (parameter is string s && s.Equals("invert", StringComparison.OrdinalIgnoreCase))
-            b = !b;
-
-        return b ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is Visibility v)
-        {
-            var b = v == Visibility.Visible;
-            if (parameter is string s && s.Equals("invert", StringComparison.OrdinalIgnoreCase))
-                b = !b;
-            return b;
+            _lastRender = args.RenderingTime;
+            return;
         }
 
-        return false;
+        double delta = (args.RenderingTime - _lastRender).TotalSeconds;
+        _lastRender = args.RenderingTime;
+
+        _offset -= Speed * delta;
+
+        if (_offset <= -_distance)
+            _offset += _distance;
+
+        _translate.X = _offset;
     }
 }
