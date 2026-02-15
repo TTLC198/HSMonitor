@@ -82,7 +82,7 @@ public class HardwareMonitorService
     public static IEnumerable<IHardware> GetGraphicCards() => Computer.Hardware.Where(h =>
         h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia);
 
-    public async void HardwareInformationUpdate(object? sender, EventArgs eventArgs)
+    public void HardwareInformationUpdate(object? sender, EventArgs eventArgs)
     {
         try
         {
