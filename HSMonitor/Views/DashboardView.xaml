@@ -42,13 +42,12 @@
             <Setter Property="Foreground" Value="White" />
         </Style>
 
-        <!-- Reusable circular marquee used for "+0 MHz" and BOOST ribbons -->
         <Style TargetType="{x:Type local:MarqueeText}">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontFamily" Value="{DynamicResource org_01}" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="Speed" Value="55" />
-            <Setter Property="Gap" Value="18" />
+            <Setter Property="Gap" Value="40" />
             <Setter Property="Padding" Value="6,0,6,0" />
             <Setter Property="ClipToBounds" Value="True" />
             <Setter Property="Template">
@@ -89,7 +88,9 @@
         <local:MarqueeText
             Canvas.Top="2"
             Canvas.Left="12"
-            Width="230"
+            Width="220"
+            Height="20"
+            VerticalContentAlignment="Center"
             Text="{Binding Cpu.Name}"
             FontSize="14" />
 
@@ -255,7 +256,8 @@
         <local:MarqueeText
             Canvas.Top="120"
             Canvas.Left="16"
-            Width="230"
+            Width="220"
+            Height="20"
             Text="{Binding Gpu.Name}"
             FontSize="14" />
 

@@ -117,7 +117,16 @@ public sealed class MarqueeText : Control
             return;
 
         _text1.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        double width = _text1.DesiredSize.Width;
+        var ft = new FormattedText(
+            Text ?? string.Empty,
+            System.Globalization.CultureInfo.CurrentUICulture,
+            FlowDirection.LeftToRight,
+            new Typeface(_text1.FontFamily, _text1.FontStyle, _text1.FontWeight, _text1.FontStretch),
+            _text1.FontSize,
+            Brushes.Black,
+            VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+        double width = ft.WidthIncludingTrailingWhitespace;
 
         if (width <= 0 || ActualWidth <= 0)
             return;
@@ -132,7 +141,7 @@ public sealed class MarqueeText : Control
         }
 
         _distance = width + Gap;
-
+        
         Canvas.SetLeft(_text1, 0);
         Canvas.SetLeft(_text2, _distance);
 
