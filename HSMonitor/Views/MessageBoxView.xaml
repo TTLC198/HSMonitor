@@ -39,13 +39,13 @@
                     Grid.Column="0"
                     Width="24"
                     Height="24"
-                    Kind="MessageAlert"
+                    Kind="Warning"
                     Margin="4"
                     VerticalAlignment="Center" />
 
                 <TextBlock
                     Grid.Column="1"
-                    Margin="16"
+                    Margin="6"
                     FontSize="19"
                     FontWeight="Light"
                     Text="{Binding Title}"
@@ -71,7 +71,7 @@
         <UniformGrid
             Grid.Row="2"
             Margin="16"
-            HorizontalAlignment="Right"
+            HorizontalAlignment="Center"
             Columns="{Binding ButtonsCount}">
             <!--  OK  -->
             <Button
