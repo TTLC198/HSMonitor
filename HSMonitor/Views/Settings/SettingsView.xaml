@@ -29,10 +29,10 @@
                 Value="0, 4, 4, 4" />
         </Style>
     </Window.Resources>
+    
     <Border CornerRadius="5"
             Background="{DynamicResource PrimaryHueLightBrush}"
             SnapsToDevicePixels="True">
-
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />
@@ -45,7 +45,8 @@
                 Grid.Row="0"
                 Padding="4,6"
                 Background="{DynamicResource PrimaryHueMidBrush}"
-                TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                MouseDown="HeaderBorder_OnMouseDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -86,6 +87,7 @@
                         <Button
                             Padding="6,2"
                             VerticalAlignment="Center"
+                            s:View.ActionTarget="{Binding }"
                             Style="{DynamicResource MaterialDesignFlatDarkButton}"
                             Command="{s:Action Reset}"
                             ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
@@ -229,6 +231,7 @@
                                             Width="64"
                                             Height="64"
                                             Padding="0"
+                                            s:View.ActionTarget="{Binding }"
                                             Command="{s:Action ActivateTab}"
                                             CommandParameter="{Binding}"
                                             ToolTip="{Binding Converter={x:Static converters:SettingsTabsToLocalizedNameConverter.Instance}}"

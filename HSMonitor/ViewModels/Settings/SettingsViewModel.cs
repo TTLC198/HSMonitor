@@ -6,7 +6,7 @@ using HSMonitor.ViewModels.Framework.Dialog;
 
 namespace HSMonitor.ViewModels.Settings;
 
-public class SettingsViewModel : INotifyPropertyChanged
+public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
 {
     private readonly SettingsService _settingsService;
 
