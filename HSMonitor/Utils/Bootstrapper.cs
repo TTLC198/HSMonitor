@@ -49,7 +49,6 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     protected override void Launch()
     {
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
-        _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
         
         base.Launch();
     }

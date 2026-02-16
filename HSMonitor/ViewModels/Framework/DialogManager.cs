@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using HSMonitor.ViewModels.Framework.Dialog;
+using HSMonitor.ViewModels.Settings;
 using HSMonitor.Views;
 using HSMonitor.Views.Settings;
 using MaterialDesignThemes.Wpf;
@@ -68,40 +69,6 @@ public sealed class DialogManager : IDisposable
             {
                 var owner = Application.Current.MainWindow;
 
-                var isSettings =
-                    dialogScreen.GetType().Name == "SettingsViewModel" ||
-                    (dialogScreen.GetType().FullName?.EndsWith(".SettingsViewModel", StringComparison.Ordinal) ?? false);
-
-                if (isSettings && owner is not null)
-                {
-                    double width = 460;
-                    double minWidth = 360;
-
-                    if (dialogScreen is IOpenInOwnWindowDialog ownWindow)
-                    {
-                        if (ownWindow.Width > 0) width = ownWindow.Width;
-                        if (ownWindow.MinWidth > 0) minWidth = ownWindow.MinWidth;
-                    }
-
-                    var wnd = new SettingsView(owner, gap: 10)
-                    {
-                        Width = width,
-                        MinWidth = minWidth,
-                    };
-
-                    wnd.Closing += (_, __) =>
-                    {
-                        try { _currentSession?.Close(); } catch { /* ignore */ }
-                    };
-
-                    _closeWindowFallback = () =>
-                    {
-                        try { wnd.Close(); } catch { /* ignore */ }
-                    };
-
-                    wnd.Show();
-                }
-
                 if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
                 {
                     var wnd = new DialogHostWindow
@@ -168,6 +135,68 @@ public sealed class DialogManager : IDisposable
         finally
         {
             _dialogLock.Release();
+        }
+    }
+
+    public async Task ShowSettingsDialogAsync(IOpenInOwnWindowDialog settingsDialog)
+    {
+        try
+        {
+            var owner = Application.Current.MainWindow;
+
+            if (owner is not null)
+            {
+                double width = 460;
+                double minWidth = 360;
+
+                if (settingsDialog is { } ownWindow)
+                {
+                    if (ownWindow.Width > 0) width = ownWindow.Width;
+                    if (ownWindow.MinWidth > 0) minWidth = ownWindow.MinWidth;
+                }
+
+                if (settingsDialog is not SettingsViewModel settingsViewModel)
+                {
+                    //todo: log error
+                    return;
+                }
+                
+                var wnd = new SettingsView(owner, settingsViewModel, gap: 10)
+                {
+                    Width = width,
+                    MinWidth = minWidth,
+                };
+
+                wnd.Closing += (_, __) =>
+                {
+                    try
+                    {
+                        _currentSession?.Close();
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+                };
+
+                _closeWindowFallback = () =>
+                {
+                    try
+                    {
+                        wnd.Close();
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+                };
+
+                wnd.Show();
+            }
+        }
+        catch (Exception exception)
+        {
+            //todo: logging
         }
     }
 

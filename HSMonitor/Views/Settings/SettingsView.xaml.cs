@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using HSMonitor.ViewModels.Settings;
 
 namespace HSMonitor.Views.Settings;
 
@@ -13,9 +14,11 @@ public partial class SettingsView : Window
 
     private bool _firstRenderSynced;
 
-    public SettingsView(Window owner, double gap = 10)
+    public SettingsView(Window owner, SettingsViewModel viewModel, double gap = 10)
     {
         InitializeComponent();
+        
+        DataContext = viewModel;
 
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _gap = gap;
@@ -59,6 +62,12 @@ public partial class SettingsView : Window
         Closed += (_, _) => Unsubscribe();
         
         SyncToOwner(forceShow: false);
+    }
+    
+    private void HeaderBorder_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+            DragMove();
     }
     
     private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)

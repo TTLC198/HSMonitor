@@ -90,7 +90,7 @@ public class MainWindowViewModel : Screen
                 var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                 settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
 
-                await _dialogManager.ShowDialogAsync(settingsDialog);
+                await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
             }
             _isConnectionErrorWindowOpened = dialogResult;
         }
@@ -156,8 +156,6 @@ public class MainWindowViewModel : Screen
 
     public async void OnViewFullyLoaded()
     {
-        _dialogManager.GetViewForDialogScreen(_viewModelFactory.CreateSettingsViewModel()); //preload
-        
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
             var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
@@ -203,7 +201,7 @@ public class MainWindowViewModel : Screen
                             var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                             settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
 
-                            await _dialogManager.ShowDialogAsync(settingsDialog);
+                            await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
                         }
                     }
                 }
@@ -239,7 +237,7 @@ public class MainWindowViewModel : Screen
     public async void ShowSettings()
     {
         await _settingsService.LoadAsync();
-        await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
+        await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
     public void ShowAbout() => OpenUrl.Open(App.GitHubProjectUrl);
