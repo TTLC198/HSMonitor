@@ -13,6 +13,8 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
     public IReadOnlyList<ISettingsTabViewModel> Tabs { get; }
 
     public ISettingsTabViewModel? ActiveTab { get; private set; }
+    
+    public event EventHandler CloseRequested;
 
     public SettingsViewModel(SettingsService settingsService, IEnumerable<ISettingsTabViewModel> tabs)
     {
@@ -114,7 +116,7 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
     public async void Cancel()
     {
         await _settingsService.LoadAsync();
-        //Close(false); todo:
+        OnCloseRequested();
     }
 
     public string Title => "Настройки";
@@ -134,5 +136,9 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
         field = value;
         OnPropertyChanged(propertyName);
         return true;
+    }
+    protected virtual void OnCloseRequested()
+    {
+        CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 }

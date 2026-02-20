@@ -236,7 +236,7 @@ public class MainWindowViewModel : Screen
 
     public async void ShowSettings()
     {
-        await _settingsService.LoadAsync();
+        //await _settingsService.LoadAsync();
         await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
