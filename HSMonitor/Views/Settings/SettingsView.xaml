@@ -188,7 +188,7 @@
                                         <ContentControl s:View.Model="{Binding}" />
                                         <Border
                                             Background="Transparent"
-                                            Height="200px" />
+                                            Height="100px" />
                                     </StackPanel>
                                 </ScrollViewer>
                             </Grid>

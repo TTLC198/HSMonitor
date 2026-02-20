@@ -37,18 +37,18 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<MainWindowViewModel>().ToSelf().InSingletonScope();
         builder.Bind<DashboardViewModel>().ToSelf().InSingletonScope();
         builder.Bind<SettingsViewModel>().ToSelf().InSingletonScope();
-        builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope();
+        builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope().AsWeakBinding();
     }
 
     protected override void Configure()
     {
-        GetInstance<SettingsService>().Load();
         base.Configure();
     }
 
     protected override void Launch()
     {
         GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
+        GetInstance<SettingsService>().Load();
         
         base.Launch();
     }

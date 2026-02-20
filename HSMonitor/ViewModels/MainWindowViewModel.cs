@@ -9,6 +9,7 @@ using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using NetSparkleUpdater.Enums;
+using Stylet;
 using Application = System.Windows.Application;
 using Screen = Stylet.Screen;
 
@@ -236,8 +237,19 @@ public class MainWindowViewModel : Screen
 
     public async void ShowSettings()
     {
-        //await _settingsService.LoadAsync();
-        await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
+        //todo: переделать и оптимизировать
+        await Execute.PostToUIThreadAsync(async void () =>
+        {
+            try
+            {
+                //await _settingsService.LoadAsync();
+                await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
+            }
+            catch (Exception e)
+            {
+                throw; // TODO handle exception
+            }
+        });
     }
 
     public void ShowAbout() => OpenUrl.Open(App.GitHubProjectUrl);
