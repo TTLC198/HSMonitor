@@ -10,6 +10,7 @@
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+    xmlns:settings1="clr-namespace:HSMonitor.Views.Settings"
     WindowStyle="None"
     AllowsTransparency="True"
     ShowInTaskbar="False"
@@ -22,6 +23,21 @@
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
     mc:Ignorable="d">
     <Window.Resources>
+        <DataTemplate DataType="{x:Type settings:AdvancedSettingsTabViewModel}">
+            <settings1:AdvancedSettingsTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settings:AppearanceSettingsTabViewModel}">
+            <settings1:AppearanceSettingsTabView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settings:ConnectionSettingsTabViewModel}">
+            <settings1:ConnectionSettingsTabView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settings:HardwareSettingsTabViewModel}">
+            <settings1:HardwareSettingsTabView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settings:UpdateSettingsTabViewModel}">
+            <settings1:UpdateSettingsTabView />
+        </DataTemplate>
         <Style
             TargetType="{x:Type Button}"
             BasedOn="{StaticResource MaterialDesignFlatButton}">
@@ -156,27 +172,11 @@
             <!-- Content + bottom carousel -->
             <Grid Grid.Row="1">
                 <!-- Active settings tab -->
-                <materialDesign:Transitioner
+                <ContentControl 
                     Grid.Row="0"
-                    ItemsSource="{Binding Tabs}"
-                    SelectedItem="{Binding ActiveTab, Mode=OneWay}">
-                    <materialDesign:Transitioner.Resources>
-                        <Style TargetType="{x:Type materialDesign:TransitionerSlide}">
-                            <Setter Property="BackwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideOutWipe></materialDesign:SlideOutWipe>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ForwardWipe">
-                                <Setter.Value>
-                                    <materialDesign:SlideOutWipe></materialDesign:SlideOutWipe>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </materialDesign:Transitioner.Resources>
-
-                    <materialDesign:Transitioner.ItemTemplate>
-                        <DataTemplate>
+                    Content="{Binding ActiveTab}" >
+                    <ContentControl.Template>
+                        <ControlTemplate>
                             <Grid PreviewMouseWheel="OnPreviewMouseWheel">
                                 <ScrollViewer
                                     Padding="4"
@@ -185,16 +185,16 @@
                                     VerticalScrollBarVisibility="Visible">
                                     <StackPanel
                                         Orientation="Vertical">
-                                        <ContentControl s:View.Model="{Binding}" />
+                                        <ContentControl s:View.Model="{Binding ActiveTab}" />
                                         <Border
                                             Background="Transparent"
                                             Height="100px" />
                                     </StackPanel>
                                 </ScrollViewer>
                             </Grid>
-                        </DataTemplate>
-                    </materialDesign:Transitioner.ItemTemplate>
-                </materialDesign:Transitioner>
+                        </ControlTemplate>
+                    </ContentControl.Template>
+                </ContentControl>
 
                 <!-- Settings tab carousel (bottom) -->
                 <Grid>
