@@ -67,7 +67,7 @@ public partial class SettingsView : Window
     private void HeaderBorder_OnMouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ChangedButton == MouseButton.Left)
-            DragMove();
+            _owner.DragMove();
     }
     
     private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
