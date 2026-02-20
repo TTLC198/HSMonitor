@@ -14,11 +14,12 @@ public sealed class DialogManager : IDisposable
 
     private readonly Dictionary<Type, UIElement> _dialogScreenViewCache = new();
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
-    private readonly SemaphoreSlim _settingsLock = new(1, 1);
 
     private DialogSession? _currentSession;
 
     private Action? _closeWindowFallback;
+    
+    private bool _isSettingsWindowOpen = false;
 
     public DialogManager(IViewManager viewManager)
     {
@@ -136,10 +137,10 @@ public sealed class DialogManager : IDisposable
 
     public async Task ShowSettingsDialogAsync(IOpenInOwnWindowDialog settingsDialog)
     {
-        if (!await _settingsLock.WaitAsync(0).ConfigureAwait(false))
+        if (_isSettingsWindowOpen)
         {
             await CloseCurrentDialogAsync().ConfigureAwait(false);
-            _settingsLock.Release();
+            _isSettingsWindowOpen = false;
             return;
         }
         
@@ -174,22 +175,22 @@ public sealed class DialogManager : IDisposable
                 {
                     try
                     {
-                        _currentSession?.Close();
                         wnd.Close();
+                        _isSettingsWindowOpen = false;
                     }
                     catch
                     {
                         /* ignore */
                     }
-                    finally
-                    {
-                        _settingsLock.Release();
-                    }
                 };
 
                 wnd.Closing += (_, __) =>
                 {
-                    try { _currentSession?.Close(); }
+                    try
+                    {
+                        _currentSession?.Close(); 
+                        _isSettingsWindowOpen = false;
+                    }
                     catch
                     {
                         /* ignore */
@@ -201,6 +202,7 @@ public sealed class DialogManager : IDisposable
                     try
                     {
                         wnd.Close();
+                        _isSettingsWindowOpen = false;
                     }
                     catch
                     {
@@ -209,13 +211,14 @@ public sealed class DialogManager : IDisposable
                 };
                 
                 wnd.Show();
+                _isSettingsWindowOpen = true;
             }
         }
         catch (Exception exception)
         {
+            
             //todo: logging
         }
-        
     }
 
     private Task CloseCurrentDialogAsync()
@@ -240,6 +243,5 @@ public sealed class DialogManager : IDisposable
     public void Dispose()
     {
         _dialogLock.Dispose();
-        _settingsLock.Dispose();
     }
 }
