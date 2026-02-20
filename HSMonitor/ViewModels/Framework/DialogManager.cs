@@ -12,15 +12,12 @@ public sealed class DialogManager : IDisposable
 {
     private readonly IViewManager _viewManager;
 
-    // Cache and re-use dialog screen views, as creating them is incredibly slow
     private readonly Dictionary<Type, UIElement> _dialogScreenViewCache = new();
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
+    private readonly SemaphoreSlim _settingsLock = new(1, 1);
 
-    // MaterialDesignThemes 5.3.0 uses DialogSession (not DialogHostSession).
-    // We store the currently opened session so we can reliably close the dialog programmatically.
     private DialogSession? _currentSession;
 
-    // Fallback closer for dialogs shown in their own Window (close the window itself).
     private Action? _closeWindowFallback;
 
     public DialogManager(IViewManager viewManager)
@@ -113,7 +110,6 @@ public sealed class DialogManager : IDisposable
                     }
                 }
 
-                // ===== DialogHost overlay in main window =====
                 try
                 {
                     await DialogHost.Show(
@@ -140,6 +136,13 @@ public sealed class DialogManager : IDisposable
 
     public async Task ShowSettingsDialogAsync(IOpenInOwnWindowDialog settingsDialog)
     {
+        if (!await _settingsLock.WaitAsync(0).ConfigureAwait(false))
+        {
+            await CloseCurrentDialogAsync().ConfigureAwait(false);
+            _settingsLock.Release();
+            return;
+        }
+        
         try
         {
             var owner = Application.Current.MainWindow;
@@ -167,12 +170,26 @@ public sealed class DialogManager : IDisposable
                     MinWidth = minWidth,
                 };
 
-                wnd.Closing += (_, __) =>
+                settingsViewModel.CloseRequested += (_, __) =>
                 {
                     try
                     {
                         _currentSession?.Close();
+                        wnd.Close();
                     }
+                    catch
+                    {
+                        /* ignore */
+                    }
+                    finally
+                    {
+                        _settingsLock.Release();
+                    }
+                };
+
+                wnd.Closing += (_, __) =>
+                {
+                    try { _currentSession?.Close(); }
                     catch
                     {
                         /* ignore */
@@ -190,7 +207,7 @@ public sealed class DialogManager : IDisposable
                         /* ignore */
                     }
                 };
-
+                
                 wnd.Show();
             }
         }
@@ -198,6 +215,7 @@ public sealed class DialogManager : IDisposable
         {
             //todo: logging
         }
+        
     }
 
     private Task CloseCurrentDialogAsync()
@@ -222,5 +240,6 @@ public sealed class DialogManager : IDisposable
     public void Dispose()
     {
         _dialogLock.Dispose();
+        _settingsLock.Dispose();
     }
 }
