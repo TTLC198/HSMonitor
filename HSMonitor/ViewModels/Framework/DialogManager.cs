@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Concurrent;
+using System.Windows;
 using HSMonitor.ViewModels.Framework.Dialog;
 using HSMonitor.ViewModels.Settings;
 using HSMonitor.Views;
@@ -12,43 +13,27 @@ public sealed class DialogManager : IDisposable
 {
     private readonly IViewManager _viewManager;
 
-    private readonly Dictionary<Type, UIElement> _dialogScreenViewCache = new();
+    private readonly ConcurrentDictionary<Type, UIElement> _dialogScreenViewCache = new();
+
     private readonly SemaphoreSlim _dialogLock = new(1, 1);
 
     private DialogSession? _currentSession;
-
     private Action? _closeWindowFallback;
-    
-    private bool _isSettingsWindowOpen = false;
+
+    private Window? _settingsWindow;
 
     public DialogManager(IViewManager viewManager)
     {
-        _viewManager = viewManager;
+        _viewManager = viewManager ?? throw new ArgumentNullException(nameof(viewManager));
     }
 
-    public UIElement GetViewForDialogScreen<T>(DialogScreen<T> dialogScreen)
-    {
-        var dialogScreenType = dialogScreen.GetType();
-
-        if (_dialogScreenViewCache.TryGetValue(dialogScreenType, out var cachedView))
-        {
-            _viewManager.BindViewToModel(cachedView, dialogScreen);
-            return cachedView;
-        }
-
-        var view = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
-
-        // Warm-up the view and trigger all bindings (nested ContentControls etc.).
-        view.Arrange(new Rect(0, 0, 500, 500));
-
-        return _dialogScreenViewCache[dialogScreenType] = view;
-    }
-
+    /// <summary>
+    /// Показ диалога с результатом. Toggle: если диалог уже открыт — текущий закрывается, метод возвращает default.
+    /// </summary>
     public async Task<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
     {
-        var view = GetViewForDialogScreen(dialogScreen);
+        if (dialogScreen is null) throw new ArgumentNullException(nameof(dialogScreen));
 
-        // Toggle: if another dialog is currently open, the repeated call closes that dialog and returns.
         if (!await _dialogLock.WaitAsync(0).ConfigureAwait(false))
         {
             await CloseCurrentDialogAsync().ConfigureAwait(false);
@@ -57,77 +42,16 @@ public sealed class DialogManager : IDisposable
 
         try
         {
+            var view = await GetOrCreateViewOnUiAsync(dialogScreen).ConfigureAwait(false);
+
             if (Application.Current?.Dispatcher is null)
             {
                 await DialogHost.Show(view).ConfigureAwait(false);
                 return dialogScreen.DialogResult;
             }
 
-            return await Application.Current.Dispatcher.InvokeAsync(async () =>
-            {
-                var owner = Application.Current.MainWindow;
-
-                if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
-                {
-                    var wnd = new DialogHostWindow
-                    {
-                        Title = string.IsNullOrWhiteSpace(ownWindowDialog.Title) ? "Диалог" : ownWindowDialog.Title,
-                        Width = ownWindowDialog.Width > 0 ? ownWindowDialog.Width : 900,
-                        MinWidth = ownWindowDialog.MinWidth > 0 ? ownWindowDialog.MinWidth : 720,
-                        Owner = owner,
-                    };
-
-                    if (ownWindowDialog.Height is var h and > 0) wnd.Height = h;
-                    if (ownWindowDialog.MinHeight is var mh and > 0) wnd.MinHeight = mh;
-
-                    wnd.Closing += (_, __) =>
-                    {
-                        try { _currentSession?.Close(); } catch { /* ignore */ }
-                    };
-
-                    _closeWindowFallback = () =>
-                    {
-                        try { wnd.Close(); } catch { /* ignore */ }
-                    };
-
-                    wnd.Show();
-
-                    try
-                    {
-                        await wnd.DialogHostControl.ShowDialog(
-                            view,
-                            openedEventHandler: (_, args) =>
-                            {
-                                _currentSession = args.Session;
-                            }).ConfigureAwait(true);
-
-                        return dialogScreen.DialogResult;
-                    }
-                    finally
-                    {
-                        _currentSession = null;
-                        _closeWindowFallback = null;
-                        try { wnd.Close(); } catch { /* ignore */ }
-                    }
-                }
-
-                try
-                {
-                    await DialogHost.Show(
-                        view,
-                        openedEventHandler: (_, args) =>
-                        {
-                            _currentSession = args.Session;
-                        }).ConfigureAwait(true);
-
-                    return dialogScreen.DialogResult;
-                }
-                finally
-                {
-                    _currentSession = null;
-                }
-
-            }).Task.Unwrap().ConfigureAwait(false);
+            return await await Application.Current.Dispatcher.InvokeAsync(() => ShowOnUi(dialogScreen, view)).Task
+                .ConfigureAwait(false);
         }
         finally
         {
@@ -135,90 +59,172 @@ public sealed class DialogManager : IDisposable
         }
     }
 
-    public async Task ShowSettingsDialogAsync(IOpenInOwnWindowDialog settingsDialog)
+    /// <summary>
+    /// Toggle-окно настроек: если уже открыто — закрываем; иначе открываем.
+    /// </summary>
+    public Task ShowSettingsDialogAsync(IOpenInOwnWindowDialog settingsDialog)
     {
-        if (_isSettingsWindowOpen)
+        if (settingsDialog is null) throw new ArgumentNullException(nameof(settingsDialog));
+
+        if (Application.Current?.Dispatcher is null)
         {
-            await CloseCurrentDialogAsync().ConfigureAwait(false);
-            _isSettingsWindowOpen = false;
-            return;
+            return Task.CompletedTask;
         }
-        
-        try
+
+        return Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            var owner = Application.Current.MainWindow;
-
-            if (owner is not null)
+            if (_settingsWindow is { } existing)
             {
-                double width = 460;
-                double minWidth = 360;
+                try { existing.Close(); } catch { /* ignore */ }
+                _settingsWindow = null;
+                return;
+            }
 
-                if (settingsDialog is { } ownWindow)
-                {
-                    if (ownWindow.Width > 0) width = ownWindow.Width;
-                    if (ownWindow.MinWidth > 0) minWidth = ownWindow.MinWidth;
-                }
+            var owner = Application.Current.MainWindow;
+            if (owner is null)
+                return;
 
-                if (settingsDialog is not SettingsViewModel settingsViewModel)
-                {
-                    //todo: log error
-                    return;
-                }
-                
-                var wnd = new SettingsView(owner, settingsViewModel, gap: 10)
-                {
-                    Width = width,
-                    MinWidth = minWidth,
-                };
+            if (settingsDialog is not SettingsViewModel settingsViewModel)
+            {
+                // TODO: logging (оставлено как в оригинале)
+                return;
+            }
 
-                settingsViewModel.CloseRequested += (_, __) =>
-                {
-                    try
-                    {
-                        wnd.Close();
-                        _isSettingsWindowOpen = false;
-                    }
-                    catch
-                    {
-                        /* ignore */
-                    }
-                };
+            var (width, minWidth) = ResolveWidth(settingsDialog, fallbackWidth: 460, fallbackMinWidth: 360);
 
-                wnd.Closing += (_, __) =>
-                {
-                    try
-                    {
-                        _currentSession?.Close(); 
-                        _isSettingsWindowOpen = false;
-                    }
-                    catch
-                    {
-                        /* ignore */
-                    }
-                };
+            var wnd = new SettingsView(owner, settingsViewModel, gap: 10)
+            {
+                Width = width,
+                MinWidth = minWidth,
+            };
 
-                _closeWindowFallback = () =>
-                {
-                    try
-                    {
-                        wnd.Close();
-                        _isSettingsWindowOpen = false;
-                    }
-                    catch
-                    {
-                        /* ignore */
-                    }
-                };
-                
-                wnd.Show();
-                _isSettingsWindowOpen = true;
+            _settingsWindow = wnd;
+
+            settingsViewModel.CloseRequested += (_, __) =>
+            {
+                try { wnd.Close(); } catch { /* ignore */ }
+            };
+
+            wnd.Closing += (_, __) =>
+            {
+                try { _currentSession?.Close(); } catch { /* ignore */ }
+
+                if (ReferenceEquals(_settingsWindow, wnd))
+                    _settingsWindow = null;
+            };
+
+            _closeWindowFallback = () =>
+            {
+                try { wnd.Close(); } catch { /* ignore */ }
+            };
+
+            wnd.Show();
+        }).Task;
+    }
+
+    private async Task<UIElement> GetOrCreateViewOnUiAsync<T>(DialogScreen<T> dialogScreen)
+    {
+        if (Application.Current?.Dispatcher is null)
+            return GetOrCreateView(dialogScreen);
+
+        if (Application.Current.Dispatcher.CheckAccess())
+            return GetOrCreateView(dialogScreen);
+
+        return await Application.Current.Dispatcher.InvokeAsync(() => GetOrCreateView(dialogScreen)).Task
+            .ConfigureAwait(false);
+    }
+
+    private UIElement GetOrCreateView<T>(DialogScreen<T> dialogScreen)
+    {
+        var dialogScreenType = dialogScreen.GetType();
+
+        var view = _dialogScreenViewCache.GetOrAdd(dialogScreenType, _ =>
+        {
+            var created = _viewManager.CreateAndBindViewForModelIfNecessary(dialogScreen);
+
+            created.Arrange(new Rect(0, 0, 500, 500));
+
+            return created;
+        });
+
+        _viewManager.BindViewToModel(view, dialogScreen);
+
+        return view;
+    }
+
+    private async Task<T?> ShowOnUi<T>(DialogScreen<T> dialogScreen, UIElement view)
+    {
+        var owner = Application.Current?.MainWindow;
+
+        if (dialogScreen is IOpenInOwnWindowDialog ownWindowDialog)
+        {
+            var wnd = CreateDialogWindow(owner, ownWindowDialog);
+
+            wnd.Closing += (_, __) =>
+            {
+                try { _currentSession?.Close(); } catch { /* ignore */ }
+            };
+
+            _closeWindowFallback = () =>
+            {
+                try { wnd.Close(); } catch { /* ignore */ }
+            };
+
+            wnd.Show();
+
+            try
+            {
+                await wnd.DialogHostControl.ShowDialog(
+                    view,
+                    openedEventHandler: (_, args) => _currentSession = args.Session
+                ).ConfigureAwait(true);
+
+                return dialogScreen.DialogResult;
+            }
+            finally
+            {
+                _currentSession = null;
+                _closeWindowFallback = null;
+                try { wnd.Close(); } catch { /* ignore */ }
             }
         }
-        catch (Exception exception)
+
+        try
         {
-            
-            //todo: logging
+            await DialogHost.Show(
+                view,
+                openedEventHandler: (_, args) => _currentSession = args.Session
+            ).ConfigureAwait(true);
+
+            return dialogScreen.DialogResult;
         }
+        finally
+        {
+            _currentSession = null;
+        }
+    }
+
+    private static DialogHostWindow CreateDialogWindow(Window? owner, IOpenInOwnWindowDialog dialog)
+    {
+        var wnd = new DialogHostWindow
+        {
+            Title = string.IsNullOrWhiteSpace(dialog.Title) ? "Диалог" : dialog.Title,
+            Width = dialog.Width > 0 ? dialog.Width : 900,
+            MinWidth = dialog.MinWidth > 0 ? dialog.MinWidth : 720,
+            Owner = owner,
+        };
+
+        if (dialog.Height > 0) wnd.Height = dialog.Height;
+        if (dialog.MinHeight > 0) wnd.MinHeight = dialog.MinHeight;
+
+        return wnd;
+    }
+
+    private static (double width, double minWidth) ResolveWidth(IOpenInOwnWindowDialog dialog, double fallbackWidth, double fallbackMinWidth)
+    {
+        var width = dialog.Width > 0 ? dialog.Width : fallbackWidth;
+        var minWidth = dialog.MinWidth > 0 ? dialog.MinWidth : fallbackMinWidth;
+        return (width, minWidth);
     }
 
     private Task CloseCurrentDialogAsync()
@@ -242,6 +248,37 @@ public sealed class DialogManager : IDisposable
 
     public void Dispose()
     {
+        try
+        {
+            // Освобождаем UI-ресурсы максимально корректно.
+            _ = CloseCurrentDialogAsync();
+        }
+        catch
+        {
+            // ignore
+        }
+
+        try
+        {
+            if (Application.Current?.Dispatcher?.CheckAccess() == true)
+            {
+                try { _settingsWindow?.Close(); } catch { /* ignore */ }
+                _settingsWindow = null;
+            }
+            else
+            {
+                Application.Current?.Dispatcher?.Invoke(() =>
+                {
+                    try { _settingsWindow?.Close(); } catch { /* ignore */ }
+                    _settingsWindow = null;
+                });
+            }
+        }
+        catch
+        {
+            // ignore
+        }
+
         _dialogLock.Dispose();
     }
 }

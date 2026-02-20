@@ -37,7 +37,7 @@ public class AppearanceSettingsTabViewModel : SettingsTabBaseViewModel
         set => SettingsService.Settings.MemoryCustomType = value;
     }
 
-    public IReadOnlyList<string> CpuCustomTypes { get; } = new List<string>()
+    public IReadOnlyList<string> CpuCustomTypes { get; } = new List<string>
     {
         "Amd",
         "Intel"

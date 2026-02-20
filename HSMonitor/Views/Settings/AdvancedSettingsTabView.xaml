@@ -7,10 +7,12 @@
              xmlns:p="clr-namespace:HSMonitor.Properties"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
+             xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:AdvancedSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
-             Background="Transparent">
+             Background="Transparent"
+             Loaded="{s:Action OnViewFullyLoaded}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
