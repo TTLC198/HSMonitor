@@ -20,354 +20,348 @@
     MinWidth="320"
     MinHeight="380"
 
-    ResizeMode="CanResize"
+    ResizeMode="NoResize"
     WindowStyle="None"
     WindowStartupLocation="CenterScreen"
-    AllowsTransparency="True"
+    AllowsTransparency="False"
     Background="Transparent"
     Title="{x:Static hsMonitor:App.Name}"
     Icon="/Resources/Images/favicon.ico"
     Loaded="MainWindow_OnLoaded"
     mc:Ignorable="d">
 
-    <Border
-        CornerRadius="5"
-        Padding="0"
+    <Grid
         Background="{DynamicResource PrimaryHueLightBrush}"
-        SnapsToDevicePixels="True"
         Loaded="{s:Action OnViewFullyLoaded}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <Grid IsEnabled="{Binding IsOpen, ElementName=DialogHost, Converter={x:Static converters:InverseBoolConverter.Instance}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="48" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <tb:TaskbarIcon
+            Grid.Row="0"
+            x:Name="MainTaskbarIcon"
+            ToolTipText="{x:Static hsMonitor:App.Name}"
+            NoLeftClickDelay="True"
+            TrayMouseDoubleClick="MainTaskbarIcon_OnTrayBalloonTipClicked">
+            <tb:TaskbarIcon.Style>
+                <Style TargetType="tb:TaskbarIcon">
+                    <Setter
+                        Property="IconSource"
+                        Value="/Resources/Images/favicon_wrong.ico" />
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsSerialMonitorEnabled}"
+                            Value="True">
+                            <Setter
+                                Property="IconSource"
+                                Value="/Resources/Images/favicon.ico" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </tb:TaskbarIcon.Style>
 
-            <tb:TaskbarIcon
-                Grid.Row="0"
-                x:Name="MainTaskbarIcon"
-                ToolTipText="{x:Static hsMonitor:App.Name}"
-                NoLeftClickDelay="True"
-                TrayMouseDoubleClick="MainTaskbarIcon_OnTrayBalloonTipClicked">
-                <tb:TaskbarIcon.Style>
-                    <Style TargetType="tb:TaskbarIcon">
-                        <Setter
-                            Property="IconSource"
-                            Value="/Resources/Images/favicon_wrong.ico" />
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsSerialMonitorEnabled}"
-                                Value="True">
-                                <Setter
-                                    Property="IconSource"
-                                    Value="/Resources/Images/favicon.ico" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </tb:TaskbarIcon.Style>
-
-                <tb:TaskbarIcon.ContextMenu>
-                    <ContextMenu Background="{DynamicResource PrimaryHueLightBrush}">
-                        <MenuItem
-                            IsEnabled="False"
-                            Click="Show_OnClick">
-                            <MenuItem.Header>
-                                <TextBlock
-                                    FontSize="14"
-                                    Margin="0"
-                                    Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
-                                    Text="HSMonitor" />
-                            </MenuItem.Header>
-                            <MenuItem.Icon>
-                                <!-- Application Logo -->
-                                <Image VerticalAlignment="Center">
-                                    <Image.Style>
-                                        <Style TargetType="{x:Type Image}">
-                                            <Setter
-                                                Property="Source"
-                                                Value="../Resources/Images/favicon_wrong_light.ico" />
-                                            <Style.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding IsSerialMonitorEnabled}"
-                                                    Value="True">
-                                                    <Setter
-                                                        Property="Source"
-                                                        Value="../Resources/Images/favicon_light.ico" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <Separator />
-
-                        <MenuItem Click="Show_OnClick">
-                            <MenuItem.Header>
-                                <TextBlock
-                                    FontSize="14"
-                                    Margin="0"
-                                    Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
-                                    Text="{x:Static p:Resources.ShowWindowFromTrayButtonText}" />
-                            </MenuItem.Header>
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon
-                                    Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
-                                    Kind="WindowMaximize" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <MenuItem Click="Close_OnClick">
-                            <MenuItem.Header>
-                                <TextBlock
-                                    FontSize="14"
-                                    Margin="0"
-                                    Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
-                                    Text="{x:Static p:Resources.CloseAppFromTrayButtonText}" />
-                            </MenuItem.Header>
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon
-                                    Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
-                                    Kind="WindowClose" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </tb:TaskbarIcon.ContextMenu>
-            </tb:TaskbarIcon>
-
-            <Border
-                x:Name="HeaderBorder"
-                Grid.Row="1"
-                Padding="4,6"
-                CornerRadius="5 5 0 0"
-                Background="{DynamicResource PrimaryHueMidBrush}"
-                TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                MouseDown="HeaderBorder_OnMouseDown">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Application Logo -->
-                    <Image
-                        Grid.Column="0"
-                        Width="28"
-                        Height="28"
-                        Margin="4"
-                        VerticalAlignment="Center">
-                        <Image.Style>
-                            <Style TargetType="{x:Type Image}">
-                                <Setter
-                                    Property="Source"
-                                    Value="../Resources/Images/favicon_wrong_light.ico" />
-                                <Style.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding IsSerialMonitorEnabled}"
-                                        Value="True">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu Background="{DynamicResource PrimaryHueLightBrush}">
+                    <MenuItem
+                        IsEnabled="False"
+                        Click="Show_OnClick">
+                        <MenuItem.Header>
+                            <TextBlock
+                                FontSize="14"
+                                Margin="0"
+                                Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
+                                Text="HSMonitor" />
+                        </MenuItem.Header>
+                        <MenuItem.Icon>
+                            <!-- Application Logo -->
+                            <Image VerticalAlignment="Center">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
                                         <Setter
                                             Property="Source"
-                                            Value="../Resources/Images/favicon_light.ico" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
+                                            Value="../Resources/Images/favicon_wrong_light.ico" />
+                                        <Style.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding IsSerialMonitorEnabled}"
+                                                Value="True">
+                                                <Setter
+                                                    Property="Source"
+                                                    Value="../Resources/Images/favicon_light.ico" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                    <!--  Application name and version  -->
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="4,1,0,0"
-                        VerticalAlignment="Center"
-                        FontSize="16">
-                        <Run
-                            FontSize="19"
-                            FontWeight="Medium"
-                            Text="{x:Static hsMonitor:App.Name}" />
-                        <Run FontWeight="Light" Text="{x:Static hsMonitor:App.VersionString}" />
-                    </TextBlock>
+                    <Separator />
 
-                    <!--  Hide button  -->
-                    <Button
-                        Grid.Column="3"
-                        Padding="2"
-                        VerticalAlignment="Center"
-                        Click="Hide_OnClick"
-                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                        ToolTip="{x:Static p:Resources.HideButtonTooltip}"
-                        Width="24"
-                        Height="24">
-                        <materialDesign:PackIcon
-                            Width="18"
-                            Height="18"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                            Kind="WindowMinimize" />
-                    </Button>
+                    <MenuItem Click="Show_OnClick">
+                        <MenuItem.Header>
+                            <TextBlock
+                                FontSize="14"
+                                Margin="0"
+                                Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
+                                Text="{x:Static p:Resources.ShowWindowFromTrayButtonText}" />
+                        </MenuItem.Header>
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon
+                                Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
+                                Kind="WindowMaximize" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                    <!--  Close button  -->
-                    <Button
-                        Grid.Column="4"
-                        Padding="2"
-                        VerticalAlignment="Center"
-                        Click="Close_OnClick"
-                        Style="{DynamicResource MaterialDesignFlatDarkButton}"
-                        ToolTip="{x:Static p:Resources.CloseButtonTooltip}"
-                        Width="24"
-                        Height="24">
-                        <materialDesign:PackIcon
-                            Width="18"
-                            Height="18"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                            Kind="WindowClose" />
-                    </Button>
-                </Grid>
-            </Border>
+                    <MenuItem Click="Close_OnClick">
+                        <MenuItem.Header>
+                            <TextBlock
+                                FontSize="14"
+                                Margin="0"
+                                Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
+                                Text="{x:Static p:Resources.CloseAppFromTrayButtonText}" />
+                        </MenuItem.Header>
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon
+                                Foreground="{StaticResource PrimaryHueLightForegroundBrush}"
+                                Kind="WindowClose" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
 
-            <!-- Центр: пропорциональное масштабирование макета 280x320 -->
-            <Grid Grid.Row="2" Margin="0,2,0,2">
-                <Viewbox
-                    Stretch="Uniform"
-                    StretchDirection="Both"
-                    HorizontalAlignment="Center"
+        <Border
+            x:Name="HeaderBorder"
+            Grid.Row="1"
+            Padding="4,6"
+            CornerRadius="0"
+            Background="{DynamicResource PrimaryHueMidBrush}"
+            TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+            MouseDown="HeaderBorder_OnMouseDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Application Logo -->
+                <Image
+                    Grid.Column="0"
+                    Width="28"
+                    Height="28"
+                    Margin="4"
                     VerticalAlignment="Center">
-                    
-                    <Viewbox.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform
-                                ScaleX="1.1"
-                                ScaleY="1.1"/>
-                            <TranslateTransform
-                                X="-10"
-                                Y="-30"/>
-                        </TransformGroup>
-                    </Viewbox.RenderTransform>
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter
+                                Property="Source"
+                                Value="../Resources/Images/favicon_wrong_light.ico" />
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsSerialMonitorEnabled}"
+                                    Value="True">
+                                    <Setter
+                                        Property="Source"
+                                        Value="../Resources/Images/favicon_light.ico" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
 
-                    <!-- Внутренний “референсный” размер макета -->
-                    <Grid Width="280" Height="320">
-                        <Image
-                            x:Name="DashboardImage"
-                            Source="../Resources/Images/MainWindowDevice.png"
-                            Stretch="Uniform"
-                            SnapsToDevicePixels="True" />
+                <!--  Application name and version  -->
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="4,1,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    <Run
+                        FontSize="19"
+                        FontWeight="Medium"
+                        Text="{x:Static hsMonitor:App.Name}" />
+                    <Run FontWeight="Light" Text="{x:Static hsMonitor:App.VersionString}" />
+                </TextBlock>
 
-                        <Viewport3D>
-                            <Viewport3D.Camera>
-                                <PerspectiveCamera
-                                    Position="0, 0, 4"
-                                    FieldOfView="30.6" />
-                            </Viewport3D.Camera>
+                <!--  Hide button  -->
+                <Button
+                    Grid.Column="3"
+                    Padding="2"
+                    VerticalAlignment="Center"
+                    Click="Hide_OnClick"
+                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    ToolTip="{x:Static p:Resources.HideButtonTooltip}"
+                    Width="24"
+                    Height="24">
+                    <materialDesign:PackIcon
+                        Width="18"
+                        Height="18"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        Kind="WindowMinimize" />
+                </Button>
 
-                            <Viewport2DVisual3D>
-                                <Viewport2DVisual3D.Geometry>
-                                    <MeshGeometry3D
-                                        Positions="
+                <!--  Close button  -->
+                <Button
+                    Grid.Column="4"
+                    Padding="2"
+                    VerticalAlignment="Center"
+                    Click="Close_OnClick"
+                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    ToolTip="{x:Static p:Resources.CloseButtonTooltip}"
+                    Width="24"
+                    Height="24">
+                    <materialDesign:PackIcon
+                        Width="18"
+                        Height="18"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        Kind="WindowClose" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Центр: пропорциональное масштабирование макета 280x320 -->
+        <Grid Grid.Row="2" Margin="0,2,0,2">
+            <Viewbox
+                Stretch="Uniform"
+                StretchDirection="Both"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+                <Viewbox.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform
+                            ScaleX="1.1"
+                            ScaleY="1.1" />
+                        <TranslateTransform
+                            X="-10"
+                            Y="-30" />
+                    </TransformGroup>
+                </Viewbox.RenderTransform>
+
+                <!-- Внутренний “референсный” размер макета -->
+                <Grid Width="280" Height="320">
+                    <Image
+                        x:Name="DashboardImage"
+                        Source="../Resources/Images/MainWindowDevice.png"
+                        Stretch="Uniform"
+                        SnapsToDevicePixels="True" />
+
+                    <Viewport3D>
+                        <Viewport3D.Camera>
+                            <PerspectiveCamera
+                                Position="0, 0, 4"
+                                FieldOfView="30.6" />
+                        </Viewport3D.Camera>
+
+                        <Viewport2DVisual3D>
+                            <Viewport2DVisual3D.Geometry>
+                                <MeshGeometry3D
+                                    Positions="
                                             -0.63,0.75,0
                                             -0.63,-0.38,0
                                             0.18,-0.38,0
                                             0.17,0.75,0"
-                                        TextureCoordinates="0,0 0,1 1,1 1,0"
-                                        TriangleIndices="0 1 2 0 2 3" />
-                                </Viewport2DVisual3D.Geometry>
+                                    TextureCoordinates="0,0 0,1 1,1 1,0"
+                                    TriangleIndices="0 1 2 0 2 3" />
+                            </Viewport2DVisual3D.Geometry>
 
-                                <Viewport2DVisual3D.Material>
-                                    <DiffuseMaterial
-                                        Viewport2DVisual3D.IsVisualHostMaterial="True"
-                                        Brush="White" />
-                                </Viewport2DVisual3D.Material>
+                            <Viewport2DVisual3D.Material>
+                                <DiffuseMaterial
+                                    Viewport2DVisual3D.IsVisualHostMaterial="True"
+                                    Brush="White" />
+                            </Viewport2DVisual3D.Material>
 
-                                <Viewport2DVisual3D.Visual>
-                                    <ContentControl s:View.Model="{Binding Dashboard}" />
-                                </Viewport2DVisual3D.Visual>
+                            <Viewport2DVisual3D.Visual>
+                                <ContentControl s:View.Model="{Binding Dashboard}" />
+                            </Viewport2DVisual3D.Visual>
 
-                                <Viewport2DVisual3D.Transform>
-                                    <Transform3DGroup>
-                                        <RotateTransform3D>
-                                            <RotateTransform3D.Rotation>
-                                                <AxisAngleRotation3D Angle="-14" Axis="1, 0, 0" />
-                                            </RotateTransform3D.Rotation>
-                                        </RotateTransform3D>
-                                        <RotateTransform3D>
-                                            <RotateTransform3D.Rotation>
-                                                <AxisAngleRotation3D Angle="-29" Axis="0, 1, 0" />
-                                            </RotateTransform3D.Rotation>
-                                        </RotateTransform3D>
-                                        <RotateTransform3D>
-                                            <RotateTransform3D.Rotation>
-                                                <AxisAngleRotation3D Angle="-4" Axis="0, 0, 1" />
-                                            </RotateTransform3D.Rotation>
-                                        </RotateTransform3D>
-                                    </Transform3DGroup>
-                                </Viewport2DVisual3D.Transform>
-                            </Viewport2DVisual3D>
+                            <Viewport2DVisual3D.Transform>
+                                <Transform3DGroup>
+                                    <RotateTransform3D>
+                                        <RotateTransform3D.Rotation>
+                                            <AxisAngleRotation3D Angle="-14" Axis="1, 0, 0" />
+                                        </RotateTransform3D.Rotation>
+                                    </RotateTransform3D>
+                                    <RotateTransform3D>
+                                        <RotateTransform3D.Rotation>
+                                            <AxisAngleRotation3D Angle="-29" Axis="0, 1, 0" />
+                                        </RotateTransform3D.Rotation>
+                                    </RotateTransform3D>
+                                    <RotateTransform3D>
+                                        <RotateTransform3D.Rotation>
+                                            <AxisAngleRotation3D Angle="-4" Axis="0, 0, 1" />
+                                        </RotateTransform3D.Rotation>
+                                    </RotateTransform3D>
+                                </Transform3DGroup>
+                            </Viewport2DVisual3D.Transform>
+                        </Viewport2DVisual3D>
 
-                            <!-- Lights -->
-                            <ModelVisual3D>
-                                <ModelVisual3D.Content>
-                                    <DirectionalLight Color="#FFFFFFFF" Direction="0,0,-1" />
-                                </ModelVisual3D.Content>
-                            </ModelVisual3D>
-                        </Viewport3D>
-                    </Grid>
-                </Viewbox>
-            </Grid>
-
-            <!-- Buttons: перенос при узком окне -->
-            <WrapPanel
-                Grid.Row="3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-
-                <!--  Settings  -->
-                <Button
-                    Margin="8"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    ToolTip="{x:Static p:Resources.OpenSettingsTooltip}"
-                    Command="{s:Action ShowSettings}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="Settings" />
-                        <TextBlock
-                            FontSize="14"
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            Typography.Capitals="AllSmallCaps"
-                            Text="{x:Static p:Resources.SettingsButtonContent}" />
-                    </StackPanel>
-                </Button>
-
-                <!--  About  -->
-                <Button
-                    Margin="8"
-                    Style="{DynamicResource MaterialDesignFlatButton}"
-                    Command="{s:Action ShowAbout}"
-                    ToolTip="{x:Static p:Resources.AboutButtonTooltip}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="Web" />
-                        <TextBlock
-                            FontSize="14"
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            Typography.Capitals="AllSmallCaps"
-                            Text="{x:Static p:Resources.AboutButtonContent}" />
-                    </StackPanel>
-                </Button>
-            </WrapPanel>
-
+                        <!-- Lights -->
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <DirectionalLight Color="#FFFFFFFF" Direction="0,0,-1" />
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                    </Viewport3D>
+                </Grid>
+            </Viewbox>
         </Grid>
-    </Border>
+
+        <!-- Buttons: перенос при узком окне -->
+        <WrapPanel
+            Grid.Row="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+
+            <!--  Settings  -->
+            <Button
+                Margin="8"
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                ToolTip="{x:Static p:Resources.OpenSettingsTooltip}"
+                Command="{s:Action ShowSettings}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Settings" />
+                    <TextBlock
+                        FontSize="14"
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Typography.Capitals="AllSmallCaps"
+                        Text="{x:Static p:Resources.SettingsButtonContent}" />
+                </StackPanel>
+            </Button>
+
+            <!--  About  -->
+            <Button
+                Margin="8"
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                Command="{s:Action ShowAbout}"
+                ToolTip="{x:Static p:Resources.AboutButtonTooltip}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Web" />
+                    <TextBlock
+                        FontSize="14"
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Typography.Capitals="AllSmallCaps"
+                        Text="{x:Static p:Resources.AboutButtonContent}" />
+                </StackPanel>
+            </Button>
+        </WrapPanel>
+
+    </Grid>
 </Window>

@@ -12,7 +12,19 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
 
     public IReadOnlyList<ISettingsTabViewModel> Tabs { get; }
 
-    public ISettingsTabViewModel? ActiveTab { get; private set; }
+    private ISettingsTabViewModel? _activeTab;
+    public ISettingsTabViewModel? ActiveTab
+    {
+        get => _activeTab;
+        private set
+        {
+            if (_activeTab == value)
+                return;
+
+            _activeTab = value;
+            OnPropertyChanged(nameof(ActiveTab));
+        }
+    }
     
     public event EventHandler CloseRequested;
 
@@ -105,15 +117,15 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
             ActivateTab(tab);
     }
 
-    public async void Reset() =>
+    public async Task Reset() =>
         await _settingsService.Reset();
 
-    public async void Save()
+    public async Task Save()
     {
         await _settingsService.Save();
     }
 
-    public async void Cancel()
+    public async Task Cancel()
     {
         await _settingsService.LoadAsync();
         OnCloseRequested();
