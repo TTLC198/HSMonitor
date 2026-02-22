@@ -2,7 +2,7 @@
 using HSMonitor.Models;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
+using HSMonitor.Utils.Usb.Serial;
 using LibreHardwareMonitor.Hardware;
 
 namespace HSMonitor.Services;

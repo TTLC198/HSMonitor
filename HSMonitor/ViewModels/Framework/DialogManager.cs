@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Windows;
+using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework.Dialog;
 using HSMonitor.ViewModels.Settings;
 using HSMonitor.Views;
@@ -21,10 +22,13 @@ public sealed class DialogManager : IDisposable
     private Action? _closeWindowFallback;
 
     private Window? _settingsWindow;
+    
+    private readonly ILogger<DialogManager> _logger;
 
-    public DialogManager(IViewManager viewManager)
+    public DialogManager(IViewManager viewManager, ILogger<DialogManager> logger)
     {
         _viewManager = viewManager ?? throw new ArgumentNullException(nameof(viewManager));
+        _logger = logger;
     }
 
     /// <summary>
@@ -86,7 +90,7 @@ public sealed class DialogManager : IDisposable
 
             if (settingsDialog is not SettingsViewModel settingsViewModel)
             {
-                // TODO: logging (оставлено как в оригинале)
+                _logger.Error(null, $"SettingsDialog не является SettingsViewModel");
                 return;
             }
 
