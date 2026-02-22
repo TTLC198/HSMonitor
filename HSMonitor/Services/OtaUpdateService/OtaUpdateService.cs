@@ -18,7 +18,7 @@ using NetSparkleUpdater.SignatureVerifiers;
 namespace HSMonitor.Services.OtaUpdateService;
 
 [SuppressMessage("Interoperability", "CA1416:Проверка совместимости платформы")]
-public class OtaUpdateService
+public abstract class OtaUpdateService
 {
   private const int Chunk = 1024;
 
@@ -33,6 +33,8 @@ public class OtaUpdateService
   private readonly Subject<DownloadHadErrorEvent> _downloadHadErrorFlowSubject = new();
   private readonly Subject<DownloadHadErrorEvent> _uploadHadErrorFlowSubject = new();
   private readonly Subject<UploadFinishedEvent> _uploadFinishedFlowSubject = new();
+
+  private readonly SemaphoreSlim _otaLock = new(1, 1);
 
   private UpdateInfo? _updateInfo;
 
@@ -50,14 +52,14 @@ public class OtaUpdateService
       CustomInstallerArguments = null,
       ClearOldInstallers = null,
       UIFactory = null,
-      Configuration = new JSONConfiguration(new ManualAssemblyAccessor(GetProjectVersion)), //todo: переделать
-      RestartExecutablePath = null,
-      RestartExecutableName = null,
+      Configuration = new JSONConfiguration(new ManualAssemblyAccessor(GetProjectVersionAsync)),
+      RestartExecutablePath = null!,
+      RestartExecutableName = null!,
       RelaunchAfterUpdateCommandPrefix = null,
       UseNotificationToast = false,
       LogWriter = null,
       CheckServerFileName = false,
-      UpdateDownloader = null,
+      UpdateDownloader = null!,
       AppCastDataDownloader = null,
     };
   }
@@ -72,11 +74,6 @@ public class OtaUpdateService
   public IObservable<DownloadHadErrorEvent> UploadHadErrorFlow => _uploadHadErrorFlowSubject;
   public IObservable<UploadFinishedEvent> UploadFinishedFlow => _uploadFinishedFlowSubject;
 
-  public IEnumerable<AppCastItem> GetVersions() =>
-    (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
-    .Updates
-    .ToList();
-
   public async Task<UpdateInfo> CheckForUpdates() =>
     _updateInfo = await _updater.CheckForUpdatesQuietly();
 
@@ -86,33 +83,48 @@ public class OtaUpdateService
   private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
     _downloadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, path, exception));
 
-  //todo: добавить lock
-  public string GetProjectVersion()
+  public async Task<string> GetProjectVersionAsync()
   {
-    var serialPortName = GetDeviceInfo();
-    
-    if (serialPortName?.PortName is null)
+    await _otaLock.WaitAsync(0).ConfigureAwait(false);
+    var version = "";
+
+    try
     {
-      _logger.Warn("Устройство для обновления не найдено!");
-      return string.Empty;
+      var serialPortName = GetDeviceInfo();
+
+      if (serialPortName?.PortName is null)
+      {
+        _logger.Warn("Устройство для обновления не найдено!");
+        return string.Empty;
+      }
+
+      using var sp = OpenPort(serialPortName.PortName);
+
+      sp.Open();
+
+      sp.DiscardInBuffer();
+      sp.DiscardOutBuffer();
+      Thread.Sleep(200);
+
+      var client = new UsbOtaClient(sp);
+
+      version = client.GetProjectVersion();
+
+      if (string.IsNullOrEmpty(version))
+      {
+        _logger.Warn($"Не удалось определить версию устройства! Полученная версия: [{version}]");
+        return string.Empty;
+      }
+
+
     }
-    
-    using var sp = OpenPort(serialPortName.PortName);
-
-    sp.Open();
-
-    sp.DiscardInBuffer();
-    sp.DiscardOutBuffer();
-    Thread.Sleep(200);
-
-    var client = new UsbOtaClient(sp);
-
-    var version = client.GetProjectVersion();
-    
-    if (string.IsNullOrEmpty(version))
+    catch (Exception exception)
     {
-      _logger.Warn($"Не удалось определить версию устройства! Полученная версия: [{version}]");
-      return string.Empty;
+      _logger.Error(exception);
+    }
+    finally
+    {
+      _otaLock.Release();
     }
 
     return version;
@@ -177,16 +189,18 @@ public class OtaUpdateService
 
   private async Task StartUploadAsync(AppCastItem item, FileInfo file)
   {
+    await _otaLock.WaitAsync(0).ConfigureAwait(false);
+    
     try
     {
       if (!file.Exists)
       {
         _logger.Warn("Файл обновления не найден!");
-        
+
         _uploadHadErrorFlowSubject.OnNext(
           new DownloadHadErrorEvent(
-            item, 
-            file.ToString(), 
+            item,
+            file.ToString(),
             new InvalidOperationException("Файл обновления не найден!")));
         return;
       }
@@ -201,19 +215,19 @@ public class OtaUpdateService
         _logger.Warn("Поток данных пустой.");
         _uploadHadErrorFlowSubject.OnNext(
           new DownloadHadErrorEvent(
-            item, 
-            file.ToString(), 
+            item,
+            file.ToString(),
             new InvalidOperationException("Поток данных пустой.")));
       }
-      
+
       var serialPortName = GetDeviceInfo();
       if (serialPortName is null)
       {
         _logger.Warn("Устройство для обновления не найдено!");
         _uploadHadErrorFlowSubject.OnNext(
           new DownloadHadErrorEvent(
-            item, 
-            file.ToString(), 
+            item,
+            file.ToString(),
             new InvalidOperationException("Устройство для обновления не найдено!")));
         return;
       }
@@ -225,9 +239,13 @@ public class OtaUpdateService
       _logger.Error(exception);
       _uploadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, file.ToString(), exception));
     }
+    finally
+    {
+      _otaLock.Release();
+    }
   }
 
-  private DeviceInfo? GetDeviceInfo() => 
+  private DeviceInfo? GetDeviceInfo() =>
     Serial.GetPorts().ToList().FirstOrDefault(p => p.IsHsMonitorOta);
 
   private SerialPort OpenPort(string portName)
@@ -237,7 +255,7 @@ public class OtaUpdateService
     sp.WriteTimeout = 5000;
     sp.DtrEnable = true;
     sp.RtsEnable = true;
-    
+
     return sp;
   }
 
