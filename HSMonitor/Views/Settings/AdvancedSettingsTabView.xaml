@@ -9,7 +9,7 @@
              xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:AdvancedSettingsTabViewModel}"
-             Style="{DynamicResource MaterialDesignRoot}"
+             Style="{StaticResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent"
              Loaded="{s:Action OnViewFullyLoaded}">

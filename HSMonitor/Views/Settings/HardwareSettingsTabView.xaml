@@ -9,7 +9,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:HardwareSettingsTabViewModel}"
-             Style="{DynamicResource MaterialDesignRoot}"
+             Style="{StaticResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
 

@@ -36,7 +36,7 @@
         </Style>
 
         <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="FontFamily" Value="{DynamicResource org_01}" />
+            <Setter Property="FontFamily" Value="{StaticResource org_01}" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontSize" Value="34" />
             <Setter Property="Foreground" Value="White" />
@@ -44,7 +44,7 @@
 
         <Style TargetType="{x:Type local:MarqueeText}">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontFamily" Value="{DynamicResource org_01}" />
+            <Setter Property="FontFamily" Value="{StaticResource org_01}" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="Speed" Value="55" />
             <Setter Property="Gap" Value="40" />

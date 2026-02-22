@@ -13,7 +13,7 @@
     <materialDesign:DialogHost 
         CornerRadius="0"
         x:Name="RootDialogHost"
-        Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
+        Style="{StaticResource MaterialDesignEmbeddedDialogHost}"
         DialogBackground="{StaticResource PrimaryHueMidBrush}"
         Background="{StaticResource PrimaryHueMidBrush}"
         DialogTheme="Light"

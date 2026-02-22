@@ -10,7 +10,7 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:p="clr-namespace:HSMonitor.Properties"
              d:DataContext="{d:DesignInstance Type=settings:UpdateSettingsTabViewModel}"
-             Style="{DynamicResource MaterialDesignRoot}"
+             Style="{StaticResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
 
@@ -101,7 +101,7 @@
                                 Grid.Column="2"
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Right">
-                        <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                                 Width="40"
                                 Height="40"
                                 Padding="0"
@@ -115,7 +115,7 @@
                                                      VerticalAlignment="Center" />
                         </Button>
 
-                        <Button Style="{DynamicResource MaterialDesignRaisedButton}"
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                 Width="40"
                                 Height="40"
                                 Padding="0"
@@ -241,7 +241,7 @@
                                 Grid.Column="2"
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Right">
-                        <Button Style="{DynamicResource MaterialDesignOutlinedButton}"
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                                 Width="40"
                                 Height="40"
                                 Padding="0"
@@ -255,7 +255,7 @@
                                                      VerticalAlignment="Center" />
                         </Button>
 
-                        <Button Style="{DynamicResource MaterialDesignRaisedButton}"
+                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                 Width="40"
                                 Height="40"
                                 Padding="0"
@@ -282,7 +282,7 @@
                     <StackPanel>
                         <TextBlock Text="{x:Static p:Resources.ProjectURLText}" />
 
-                        <Button Style="{DynamicResource MaterialDesignFlatButton}"
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
                                 HorizontalAlignment="Left"
                                 Padding="0"
                                 ToolTip="Github URL"

@@ -16,8 +16,8 @@
     ShowInTaskbar="False"
     ResizeMode="NoResize"
     WindowStartupLocation="Manual"
-    Style="{DynamicResource MaterialDesignRoot}"
-    Background="{DynamicResource PrimaryHueLightBrush}"
+    Style="{StaticResource MaterialDesignRoot}"
+    Background="{StaticResource PrimaryHueLightBrush}"
     d:DesignWidth="{Binding Width}"
     d:DesignHeight="{Binding MaxHeight}"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
@@ -48,7 +48,7 @@
     </Window.Resources>
     
     <Border CornerRadius="5"
-            Background="{DynamicResource PrimaryHueLightBrush}"
+            Background="{StaticResource PrimaryHueLightBrush}"
             SnapsToDevicePixels="True">
         <Grid>
             <Grid.RowDefinitions>
@@ -61,8 +61,8 @@
                 x:Name="HeaderBorder"
                 Grid.Row="0"
                 Padding="4,6"
-                Background="{DynamicResource PrimaryHueMidBrush}"
-                TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                Background="{StaticResource PrimaryHueMidBrush}"
+                TextElement.Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                 MouseDown="HeaderBorder_OnMouseDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -104,7 +104,7 @@
                         <Button
                             Padding="6,2"
                             VerticalAlignment="Center"
-                            Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                            Style="{StaticResource MaterialDesignFlatDarkButton}"
                             s:View.ActionTarget="{Binding ElementName=SettingsWindow, Path=DataContext}"
                             Command="{s:Action Reset}"
                             ToolTip="{x:Static p:Resources.ResetButtonTooltip}">
@@ -113,11 +113,11 @@
                                     Width="18"
                                     Height="18"
                                     Margin="0,0,6,0"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Kind="Restart" />
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Text="Сброс" />
                             </StackPanel>
                         </Button>
@@ -126,7 +126,7 @@
                         <Button
                             Padding="6,2"
                             VerticalAlignment="Center"
-                            Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                            Style="{StaticResource MaterialDesignFlatDarkButton}"
                             s:View.ActionTarget="{Binding ElementName=SettingsWindow, Path=DataContext}"
                             Command="{s:Action Cancel}"
                             ToolTip="{x:Static p:Resources.CloseAppFromTrayButtonText}">
@@ -135,11 +135,11 @@
                                     Width="18"
                                     Height="18"
                                     Margin="0,0,6,0"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Kind="Close" />
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Text="{x:Static p:Resources.CloseAppFromTrayButtonText}" />
                             </StackPanel>
                         </Button>
@@ -148,7 +148,7 @@
                         <Button
                             Padding="6,2"
                             VerticalAlignment="Center"
-                            Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                            Style="{StaticResource MaterialDesignFlatDarkButton}"
                             s:View.ActionTarget="{Binding ElementName=SettingsWindow, Path=DataContext}"
                             Command="{s:Action Save}"
                             ToolTip="{x:Static p:Resources.SaveButtonTooltip}">
@@ -157,11 +157,11 @@
                                     Width="18"
                                     Height="18"
                                     Margin="0,0,6,0"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Kind="ContentSave" />
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                                     Text="Сохранить" />
                             </StackPanel>
                         </Button>
@@ -180,7 +180,7 @@
                             <Grid PreviewMouseWheel="OnPreviewMouseWheel">
                                 <ScrollViewer
                                     Padding="4"
-                                    Background="{DynamicResource PrimaryHueLightBrush}"
+                                    Background="{StaticResource PrimaryHueLightBrush}"
                                     HorizontalScrollBarVisibility="Disabled"
                                     VerticalScrollBarVisibility="Visible">
                                     <StackPanel
@@ -208,7 +208,7 @@
                         ClipToBounds="True">
                         <Border
                             Height="70px"
-                            Background="{DynamicResource PrimaryHueMidBrush}"
+                            Background="{StaticResource PrimaryHueMidBrush}"
                             VerticalAlignment="Bottom">
 
                         </Border>
@@ -242,11 +242,11 @@
                                             <Button.Style>
                                                 <Style TargetType="{x:Type Button}">
                                                     <Setter Property="Background"
-                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                            Value="{StaticResource PrimaryHueMidBrush}" />
                                                     <Setter Property="Foreground"
-                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
+                                                            Value="{StaticResource PrimaryHueLightBrush}" />
                                                     <Setter Property="BorderBrush"
-                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
+                                                            Value="{StaticResource PrimaryHueLightBrush}" />
                                                     <Setter Property="BorderThickness" Value="1" />
                                                     <Setter Property="Cursor" Value="Hand" />
                                                     <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -292,22 +292,22 @@
                                                                             <Condition Property="Tag" Value="False" />
                                                                         </MultiTrigger.Conditions>
                                                                         <Setter TargetName="Bd" Property="Background"
-                                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                            Value="{StaticResource PrimaryHueMidForegroundBrush}" />
                                                                         <Setter Property="Foreground"
-                                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                                            Value="{StaticResource PrimaryHueMidBrush}" />
                                                                         <Setter Property="BorderBrush"
-                                                                            Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                                            Value="{StaticResource PrimaryHueMidForegroundBrush}" />
                                                                     </MultiTrigger>
 
                                                                     <!-- Выбранная (Tag=True): инверсия + увеличение -->
                                                                     <DataTrigger Binding="{Binding IsSelected}"
                                                                         Value="True">
                                                                         <Setter TargetName="Bd" Property="Background"
-                                                                            Value="{DynamicResource PrimaryHueMidBrush}" />
+                                                                            Value="{StaticResource PrimaryHueMidBrush}" />
                                                                         <Setter Property="Foreground"
-                                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
+                                                                            Value="{StaticResource PrimaryHueLightBrush}" />
                                                                         <Setter Property="BorderBrush"
-                                                                            Value="{DynamicResource PrimaryHueLightBrush}" />
+                                                                            Value="{StaticResource PrimaryHueLightBrush}" />
                                                                         <Setter Property="BorderThickness" Value="2" />
 
                                                                         <DataTrigger.EnterActions>
