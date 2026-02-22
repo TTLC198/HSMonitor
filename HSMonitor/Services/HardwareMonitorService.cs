@@ -144,23 +144,21 @@ public class HardwareMonitorService
 
             var cpuHardwareSensors = cpuHardware
                 .Sensors
-                .Where(s => s.SensorType is SensorType.Clock or SensorType.SmallData or SensorType.Load
-                    or SensorType.Temperature or SensorType.Power or SensorType.Voltage)
-                .ToArray();
+                .ToList();
 
-            if (cpuHardwareSensors is null or {Length: 0})
+            if (cpuHardwareSensors is null or {Count: 0})
                 return cpuInfo;
             
             var clockSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Clock);
+                .FirstOrDefault(s => s.SensorType == SensorType.Clock && s.Value > 0);
             var loadSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.Name.Contains("Total") && s.SensorType == SensorType.Load);
             var powerSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Power);
+                .FirstOrDefault(s => s.SensorType == SensorType.Power && s.Value > 0);
             var voltageSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID"));
+                .FirstOrDefault(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID") && s.Value > 0);
             var temperatureSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Temperature);
+                .FirstOrDefault(s => s.SensorType == SensorType.Temperature && s.Value > 0);
             
             cpuInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
                 ? cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"
@@ -180,7 +178,7 @@ public class HardwareMonitorService
             if (powerSensor is not null and {Value: not null})
                 cpuInfo.Power = Math.Round(
                     powerSensor.Value.GetFloatAsCorrectNumber(),
-                    1,
+                    0,
                     MidpointRounding.ToEven);
             if (voltageSensor is not null and {Value: not null})
                 cpuInfo.Voltage = Math.Round(
