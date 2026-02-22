@@ -21,6 +21,31 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
   private readonly ILogger<UpdateSettingsTabViewModel> _logger;
 
+  public bool IsAppInfoLoading
+  {
+    get;
+    set
+    {
+      field = value;
+      OnPropertyChanged();
+      OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
+      OnPropertyChanged(nameof(AppPrimaryActionText));
+    }
+  }
+
+  public bool IsDeviceInfoLoading
+  {
+    get;
+    set
+    {
+      field = value;
+      OnPropertyChanged();
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(DevicePrimaryActionTooltip));
+    }
+  }
+
   public int UpdateAppDownloadPercent
   {
     get;
@@ -28,8 +53,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (AppPrimaryActionText));
-      OnPropertyChanged(nameof (IsAppPrimaryActionEnabled));
+      OnPropertyChanged(nameof(AppPrimaryActionText));
+      OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
     }
   }
 
@@ -40,8 +65,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (DevicePrimaryActionText));
-      OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
     }
   }
 
@@ -52,8 +77,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (DevicePrimaryActionText));
-      OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
     }
   }
 
@@ -64,9 +89,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (AppPrimaryActionText));
-      OnPropertyChanged(nameof (IsAppPrimaryActionEnabled));
-      OnPropertyChanged(nameof (AppProgressStageText));
+      OnPropertyChanged(nameof(AppPrimaryActionText));
+      OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
+      OnPropertyChanged(nameof(AppProgressStageText));
     }
   }
 
@@ -77,9 +102,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (DevicePrimaryActionText));
-      OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
-      OnPropertyChanged(nameof (DeviceDownloadProgressStageText));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DeviceDownloadProgressStageText));
     }
   }
 
@@ -90,9 +115,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     {
       field = value;
       OnPropertyChanged();
-      OnPropertyChanged(nameof (DevicePrimaryActionText));
-      OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
-      OnPropertyChanged(nameof (DeviceUploadProgressStageText));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DeviceUploadProgressStageText));
     }
   }
 
@@ -102,7 +127,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       : "Проверить";
 
   public bool IsAppPrimaryActionEnabled =>
-    !IsAppProgressBarActive && (AppUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
+    !IsAppInfoLoading &&
+    !IsAppProgressBarActive &&
+    (AppUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
 
   public string AppProgressStageText =>
     IsAppProgressBarActive ? Resources.DownloadingText : string.Empty;
@@ -113,7 +140,9 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       : "Проверить";
 
   public bool IsDevicePrimaryActionEnabled =>
-    !IsDeviceDownloadProgressBarActive && (DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
+    !IsDeviceInfoLoading &&
+    !IsDeviceDownloadProgressBarActive &&
+    (DeviceUpdateStatus is UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped);
 
   public string DeviceDownloadProgressStageText =>
     IsDeviceDownloadProgressBarActive ? Resources.DownloadingText : string.Empty;
@@ -140,8 +169,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           _ => Resources.NoConnectionText
         };
       OnPropertyChanged();
-      OnPropertyChanged(nameof (AppPrimaryActionText));
-      OnPropertyChanged(nameof (IsAppPrimaryActionEnabled));
+      OnPropertyChanged(nameof(AppPrimaryActionText));
+      OnPropertyChanged(nameof(IsAppPrimaryActionEnabled));
     }
   } = UpdateStatus.CouldNotDetermine;
 
@@ -158,11 +187,11 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
           _ => Resources.NoConnectionText
         };
-      
+
       OnPropertyChanged();
-      OnPropertyChanged(nameof (DevicePrimaryActionText));
-      OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
-      OnPropertyChanged(nameof (DevicePrimaryActionTooltip));
+      OnPropertyChanged(nameof(DevicePrimaryActionText));
+      OnPropertyChanged(nameof(IsDevicePrimaryActionEnabled));
+      OnPropertyChanged(nameof(DevicePrimaryActionTooltip));
     }
   } = UpdateStatus.CouldNotDetermine;
 
@@ -208,27 +237,37 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
   public async Task CheckAppUpdates()
   {
-    var updateInfo = await _appUpdateService.CheckForUpdates();
-    AppUpdateStatus = _appUpdateService.UpdateStatus;
-    
-    AppVersionString =
-      updateInfo.Status switch
+    IsAppInfoLoading = true;
+    AppStatusString = "Обновление...";
+    AppVersionString = "—";
+
+    try
+    {
+      var updateInfo = await _appUpdateService.CheckForUpdates();
+      AppUpdateStatus = _appUpdateService.UpdateStatus;
+
+      AppVersionString =
+        updateInfo.Status switch
+        {
+          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => updateInfo.Updates.First().Version,
+          _ => App.VersionString
+        } ?? "";
+      
+      AppStatusString = AppUpdateStatus switch
       {
-        UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => updateInfo.Updates.First().Version,
-        _ => App.VersionString
-      } ?? "";
+        UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+        UpdateStatus.UpdateAvailable => Resources.UpdateAvailableText,
+        _ => Resources.NoConnectionText
+      };
 
-    // Force status text when nothing is available
-    if (AppUpdateStatus is UpdateStatus.UpdateNotAvailable)
-      AppStatusString = Resources.UpToDateText;
-    else if (AppUpdateStatus is UpdateStatus.CouldNotDetermine)
-      AppStatusString = Resources.NoConnectionText;
-
-    AppVersionString = App.VersionString;
-    
-    OnPropertyChanged(nameof(AppUpdateStatus));
-    OnPropertyChanged(nameof(AppStatusString));
-    OnPropertyChanged(nameof(AppVersionString));
+      OnPropertyChanged(nameof(AppUpdateStatus));
+      OnPropertyChanged(nameof(AppStatusString));
+      OnPropertyChanged(nameof(AppVersionString));
+    }
+    finally
+    {
+      IsAppInfoLoading = false;
+    }
   }
 
   public async Task AppPrimaryAction()
@@ -243,30 +282,43 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
   public async Task CheckDeviceUpdates()
   {
-    var updateInfo = await _deviceUpdateService.CheckForUpdates();
-    
-    var deviceVersion = await _deviceUpdateService.GetProjectVersionAsync();
-    var versionString = string.IsNullOrWhiteSpace(deviceVersion) 
-      ? "Не удалось получить версию"
-      : $"v{deviceVersion}";
-    
-    DeviceVersionString =
-      updateInfo.Status switch
-      {
-        UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => updateInfo.Updates.FirstOrDefault()?.Version,
-        _ => versionString
-      };
-    
-    DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
+    IsDeviceInfoLoading = true;
+    DeviceStatusString = "Обновление...";
+    DeviceVersionString = "—";
 
-    if (DeviceUpdateStatus is UpdateStatus.UpdateNotAvailable)
-      DeviceStatusString = Resources.UpToDateText;
-    else if (DeviceUpdateStatus is UpdateStatus.CouldNotDetermine)
-      DeviceStatusString = Resources.NoConnectionText;
-    
-    OnPropertyChanged(nameof(DeviceUpdateStatus));
-    OnPropertyChanged(nameof(DeviceStatusString));
-    OnPropertyChanged(nameof(DeviceVersionString));
+    try
+    {
+      var updateInfo = await _deviceUpdateService.CheckForUpdates();
+
+      var deviceVersion = await _deviceUpdateService.GetProjectVersionAsync();
+      var currentDeviceVersionString = string.IsNullOrWhiteSpace(deviceVersion)
+        ? "Не удалось получить версию"
+        : $"v{deviceVersion}";
+
+      DeviceVersionString =
+        updateInfo.Status switch
+        {
+          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => $"v{updateInfo.Updates.FirstOrDefault()?.Version}",
+          _ => currentDeviceVersionString
+        };
+
+      DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
+
+      DeviceStatusString = DeviceUpdateStatus switch
+      {
+        UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
+        UpdateStatus.UpdateAvailable => Resources.UpdateAvailableText,
+        _ => Resources.NoConnectionText
+      };
+
+      OnPropertyChanged(nameof(DeviceUpdateStatus));
+      OnPropertyChanged(nameof(DeviceStatusString));
+      OnPropertyChanged(nameof(DeviceVersionString));
+    }
+    finally
+    {
+      IsDeviceInfoLoading = false;
+    }
   }
 
   public async Task DevicePrimaryAction()
@@ -308,8 +360,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   {
     try
     {
-      await CheckAppUpdates();
-      await CheckDeviceUpdates();
+      await Task.WhenAll(CheckAppUpdates(), CheckDeviceUpdates());
     }
     catch (Exception exception)
     {
@@ -321,14 +372,14 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   {
     IsAppProgressBarActive = false;
     AppUpdateStatus = UpdateStatus.CouldNotDetermine;
-    AppStatusString = $"{exception.Message}"; //todo: локализация
+    AppStatusString = $"{exception.Message}"; // todo: локализация
   }
 
   private void AppUpdateServiceOnDownloadCancelledEvent(AppCastItem item, string path)
   {
     IsAppProgressBarActive = false;
     AppUpdateStatus = UpdateStatus.UserSkipped;
-    AppStatusString = $"Скачивание отменено."; //todo: локализация
+    AppStatusString = $"Скачивание отменено."; // todo: локализация
   }
 
   private void DeviceUpdateServiceOnDownloadErrorEvent(DownloadHadErrorEvent errorEvent)
@@ -338,17 +389,25 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       IsDeviceDownloadProgressBarActive = false;
       IsDeviceUploadProgressBarActive = false;
       DeviceUpdateStatus = UpdateStatus.CouldNotDetermine;
-      DeviceStatusString = $"{errorEvent.Exception.Message}"; //todo: локализация
+      DeviceStatusString = $"{errorEvent.Exception.Message}"; // todo: локализация
     });
   }
 
-  public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService, HardwareMonitorServiceImpl hardwareMonitorServiceImpl, ILogger<UpdateSettingsTabViewModel> logger)
+  public UpdateSettingsTabViewModel(
+    SettingsService settingsService,
+    UpdateService appUpdateService,
+    OtaUpdateService otaUpdateService,
+    HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
+    ILogger<UpdateSettingsTabViewModel> logger)
     : base(settingsService, 4, "Update")
   {
     _appUpdateService = appUpdateService;
     _deviceUpdateService = otaUpdateService;
     _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
     _logger = logger;
+
+    IsAppInfoLoading = true;
+    IsDeviceInfoLoading = true;
 
     _appUpdateService.UpdateDownloadProcessEvent += (_, args) => UpdateAppDownloadPercent = args.ProgressPercentage;
     _appUpdateService.UpdateDownloadFinishedEvent += (_, _) => IsAppProgressBarActive = false;
