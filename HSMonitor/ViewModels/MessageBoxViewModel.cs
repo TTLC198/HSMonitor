@@ -8,8 +8,8 @@ public class MessageBoxViewModel : DialogScreen<bool>, IOpenInOwnWindowDialog
     public string? Title { get; set; }
     public double Width => 400;
     public double MinWidth => 360;
-    public double Height => 260;
-    public double MinHeight => 300;
+    public double MaxHeight => 240;
+    public double MinHeight => 100;
 
     public string? Message { get; set; }
 

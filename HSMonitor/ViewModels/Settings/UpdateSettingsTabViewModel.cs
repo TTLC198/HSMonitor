@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using HSMonitor.Properties;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
 using HSMonitor.Services.OtaUpdateService;
 using HSMonitor.Services.OtaUpdateService.Parts;
 using HSMonitor.Utils.Logger;
@@ -17,7 +18,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 {
   private readonly UpdateService _appUpdateService;
   private readonly OtaUpdateService _deviceUpdateService;
-  private readonly HardwareMonitorService _hardwareMonitorService;
+  private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
   private readonly ILogger<UpdateSettingsTabViewModel> _logger;
 
   public int UpdateAppDownloadPercent
@@ -278,7 +279,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
     try
     {
-      _hardwareMonitorService.Stop();
+      _hardwareMonitorServiceImpl.Stop();
       await _deviceUpdateService.StartDownloadAsync();
     }
     catch (Exception exception)
@@ -341,12 +342,12 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     });
   }
 
-  public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService, HardwareMonitorService hardwareMonitorService, ILogger<UpdateSettingsTabViewModel> logger)
+  public UpdateSettingsTabViewModel(SettingsService settingsService, UpdateService appUpdateService, OtaUpdateService otaUpdateService, HardwareMonitorServiceImpl hardwareMonitorServiceImpl, ILogger<UpdateSettingsTabViewModel> logger)
     : base(settingsService, 4, "Update")
   {
     _appUpdateService = appUpdateService;
     _deviceUpdateService = otaUpdateService;
-    _hardwareMonitorService = hardwareMonitorService;
+    _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
     _logger = logger;
 
     _appUpdateService.UpdateDownloadProcessEvent += (_, args) => UpdateAppDownloadPercent = args.ProgressPercentage;
@@ -389,7 +390,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         IsDeviceDownloadProgressBarActive = false;
         IsDeviceUploadProgressBarActive = false;
       });
-      _hardwareMonitorService.Stop();
+      _hardwareMonitorServiceImpl.Stop();
     });
     _deviceUpdateService.DownloadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);
     _deviceUpdateService.UploadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);

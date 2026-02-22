@@ -5,6 +5,6 @@ public interface IOpenInOwnWindowDialog
   string Title { get; }
   double Width { get; }
   double MinWidth { get; }
-  double Height { get; }
+  double MaxHeight { get; }
   double MinHeight { get; }
 }

@@ -2,7 +2,7 @@
 using System.Text;
 using HSMonitor.Models;
 
-namespace HSMonitor.Utils.Usb;
+namespace HSMonitor.Services.SerialDataService.Parts;
 
 public class Win32DeviceMgmt
 {

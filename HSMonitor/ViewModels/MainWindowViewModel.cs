@@ -1,15 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Threading;
 using HSMonitor.Properties;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
 using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
 using NetSparkleUpdater.Enums;
-using Stylet;
 using Application = System.Windows.Application;
 using Screen = Stylet.Screen;
 
@@ -22,7 +22,7 @@ public class MainWindowViewModel : Screen
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
     private readonly SerialDataService _serialDataService;
-    private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
     private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
     public DashboardViewModel Dashboard { get; }
@@ -44,7 +44,7 @@ public class MainWindowViewModel : Screen
     public MainWindowViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        HardwareMonitorService hardwareMonitorService,
+        HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
         SettingsService settingsService,
         SerialDataService serialDataService,
         UpdateService updateService, 
@@ -52,7 +52,7 @@ public class MainWindowViewModel : Screen
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
-        _hardwareMonitorService = hardwareMonitorService;
+        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _settingsService = settingsService;
         _serialDataService = serialDataService;
         _updateService = updateService;
@@ -146,6 +146,11 @@ public class MainWindowViewModel : Screen
             Process.Start(startInfo);
             Exit();
         }
+        //todo
+        /*catch (Win32Exception exception)
+        {
+            /* ignored #1#
+        }*/
         catch (Exception exception)
         {
             _logger.Error(exception);
@@ -154,7 +159,7 @@ public class MainWindowViewModel : Screen
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
 {Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last()}".Trim(),
+{exception.Message.Split('\'').Last().Replace(".", "").Trim()}".Trim(),
                 okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
@@ -238,7 +243,7 @@ public class MainWindowViewModel : Screen
                     await ShowAdminPrivilegesRequirement();
             }
 
-            _hardwareMonitorService.Start();
+            _hardwareMonitorServiceImpl.Start();
         }
     }
 

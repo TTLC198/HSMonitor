@@ -19,7 +19,7 @@
     Style="{DynamicResource MaterialDesignRoot}"
     Background="{DynamicResource PrimaryHueLightBrush}"
     d:DesignWidth="{Binding Width}"
-    d:DesignHeight="{Binding Height}"
+    d:DesignHeight="{Binding MaxHeight}"
     d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
     mc:Ignorable="d">
     <Window.Resources>

@@ -1,7 +1,7 @@
 ﻿using System.IO.Ports;
 using HSMonitor.Models;
 using HSMonitor.Services;
-using HSMonitor.Utils.Usb.Serial;
+using HSMonitor.Services.SerialDataService.Parts;
 
 namespace HSMonitor.ViewModels.Settings;
 

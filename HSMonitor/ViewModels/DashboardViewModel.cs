@@ -5,13 +5,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using HSMonitor.Models;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
 
 namespace HSMonitor.ViewModels;
 
 public class DashboardViewModel : INotifyPropertyChanged
 {
     private readonly SettingsService _settingsService;
-    private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
 
     private CpuInformation _cpu = null!;
     private GpuInformation _gpu = null!;
@@ -165,12 +166,12 @@ public class DashboardViewModel : INotifyPropertyChanged
         }
     } = new();
 
-    public DashboardViewModel(HardwareMonitorService hardwareMonitorService, SettingsService settingsService)
+    public DashboardViewModel(HardwareMonitorServiceImpl hardwareMonitorServiceImpl, SettingsService settingsService)
     {
-        _hardwareMonitorService = hardwareMonitorService;
+        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _settingsService = settingsService;
 
-        hardwareMonitorService.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
+        hardwareMonitorServiceImpl.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
         settingsService.SettingsSaved += UpdateImageFromSettings;
 
         HardwareInformationUpdated();
@@ -178,9 +179,9 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     private void HardwareInformationUpdated()
     {
-        Cpu = _hardwareMonitorService.Cpu;
-        Gpu = _hardwareMonitorService.Gpu;
-        Memory = _hardwareMonitorService.Memory;
+        Cpu = _hardwareMonitorServiceImpl.Cpu;
+        Gpu = _hardwareMonitorServiceImpl.Gpu;
+        Memory = _hardwareMonitorServiceImpl.Memory;
         
         if (string.IsNullOrWhiteSpace(CpuOcMarqueeText)) 
             CpuOcMarqueeText = "+0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz  +0MHz";
