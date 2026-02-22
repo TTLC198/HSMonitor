@@ -146,11 +146,10 @@ public class MainWindowViewModel : Screen
             Process.Start(startInfo);
             Exit();
         }
-        //todo
-        /*catch (Win32Exception exception)
+        catch (Win32Exception exception)
         {
-            /* ignored #1#
-        }*/
+            /* ignored */
+        }
         catch (Exception exception)
         {
             _logger.Error(exception);
