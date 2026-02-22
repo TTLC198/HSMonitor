@@ -48,7 +48,7 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
     {
     }
 
-    public async void OnViewFullyLoaded()
+    public void OnViewFullyLoaded()
     {
         _languages = LocalizationManager.GetAvailableCultures();
     }

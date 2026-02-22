@@ -68,36 +68,43 @@ public class MainWindowViewModel : Screen
     
     private async void SerialDataServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
     {
-        IsSerialMonitorEnabled = false;
-        _serialDataService.OpenPortAttemptFailed -= SerialDataServiceOnOpenPortAttemptFailed;
-        _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
-        
-        if (_isConnectionErrorWindowOpened)
-            return;
-        
         try
         {
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
-                message: Resources.NoConnectionErrorMessageText,
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: Resources.MessageBoxCancelButtonText
-            );
-
-            _isConnectionErrorWindowOpened = true;
-            var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
-            if (dialogResult)
+            IsSerialMonitorEnabled = false;
+            _serialDataService.OpenPortAttemptFailed -= SerialDataServiceOnOpenPortAttemptFailed;
+            _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
+        
+            if (_isConnectionErrorWindowOpened)
+                return;
+        
+            try
             {
-                var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
-                settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
+                    message: Resources.NoConnectionErrorMessageText,
+                    okButtonText: Resources.MessageBoxOkButtonText,
+                    cancelButtonText: Resources.MessageBoxCancelButtonText
+                );
 
-                await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
+                _isConnectionErrorWindowOpened = true;
+                var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
+                if (dialogResult)
+                {
+                    var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
+                    settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+
+                    await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
+                }
+                _isConnectionErrorWindowOpened = dialogResult;
             }
-            _isConnectionErrorWindowOpened = dialogResult;
+            catch 
+            {
+                _isConnectionErrorWindowOpened = false;
+            }
         }
-        catch 
+        catch (Exception exception)
         {
-            _isConnectionErrorWindowOpened = false;
+            _logger.Error(exception);
         }
     }
     
@@ -155,7 +162,7 @@ public class MainWindowViewModel : Screen
         }
     }
 
-    public async void OnViewFullyLoaded()
+    public async Task OnViewFullyLoaded()
     {
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
@@ -235,21 +242,10 @@ public class MainWindowViewModel : Screen
         }
     }
 
-    public async void ShowSettings()
+    public async Task ShowSettings()
     {
-        //todo: переделать и оптимизировать
-        await Execute.PostToUIThreadAsync(async void () =>
-        {
-            try
-            {
-                //await _settingsService.LoadAsync();
-                await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
-            }
-            catch (Exception e)
-            {
-                throw; // TODO handle exception
-            }
-        });
+        await _settingsService.LoadAsync();
+        await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
     public void ShowAbout() => OpenUrl.Open(App.GitHubProjectUrl);

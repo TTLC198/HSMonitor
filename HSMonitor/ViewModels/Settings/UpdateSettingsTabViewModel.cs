@@ -291,12 +291,15 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     }
   }
 
-  public async void OnViewFullyLoaded()
+  public async Task OnViewFullyLoaded()
   {
     try
     {
-      await _appUpdateService.CheckForUpdates();
-      await _deviceUpdateService.CheckForUpdates();
+      await Task.Run(async () =>
+      {
+        await _appUpdateService.CheckForUpdates();
+        await _deviceUpdateService.CheckForUpdates();
+      });
       
       AppUpdateStatus = _appUpdateService.UpdateStatus;
       AppStatusString =

@@ -7,13 +7,16 @@
              xmlns:validationRules="clr-namespace:HSMonitor.Utils.ValidationRules"
              xmlns:p="clr-namespace:HSMonitor.Properties"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:HardwareSettingsTabViewModel}"
              Style="{DynamicResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer 
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled"
+        Loaded="{s:Action OnViewFullyLoaded}">
         <StackPanel Margin="0,8"
                     Orientation="Vertical">
 
