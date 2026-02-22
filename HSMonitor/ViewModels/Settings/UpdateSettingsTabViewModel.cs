@@ -164,7 +164,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           _ => Resources.NoConnectionText
         };
 
-      var deviceVersion = _deviceUpdateService.GetProjectVersion();
+      var deviceVersion = _deviceUpdateService.GetProjectVersionAsync();
       var versionString = string.IsNullOrWhiteSpace(deviceVersion) 
         ? "Не удалось получить версию"
         : $"v{deviceVersion}";
