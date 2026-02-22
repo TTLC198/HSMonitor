@@ -90,7 +90,6 @@
             Canvas.Left="12"
             Width="220"
             Height="20"
-            VerticalContentAlignment="Center"
             Text="{Binding Cpu.Name}"
             FontSize="14" />
 
