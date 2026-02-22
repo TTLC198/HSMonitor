@@ -9,7 +9,7 @@
              xmlns:p="clr-namespace:HSMonitor.Properties"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance Type=settings:ConnectionSettingsTabViewModel}"
-             Style="{DynamicResource MaterialDesignRoot}"
+             Style="{StaticResource MaterialDesignRoot}"
              mc:Ignorable="d"
              Background="Transparent">
 
@@ -202,7 +202,7 @@
                                 Minimum="10"
                                 SmallChange="1"
                                 TickFrequency="10"
-                                Style="{DynamicResource MaterialDesignThinSlider}"
+                                Style="{StaticResource MaterialDesignThinSlider}"
                                 Value="{Binding DeviceDisplayBrightness}" />
                         </Grid>
                     </StackPanel>

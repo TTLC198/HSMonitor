@@ -11,8 +11,8 @@
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
     xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
     xmlns:p="clr-namespace:HSMonitor.Properties"
-    FontFamily="{DynamicResource MaterialDesignFont}"
-    Style="{DynamicResource MaterialDesignRoot}"
+    FontFamily="{StaticResource MaterialDesignFont}"
+    Style="{StaticResource MaterialDesignRoot}"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
 
     Width="320"
@@ -31,7 +31,7 @@
     mc:Ignorable="d">
 
     <Grid
-        Background="{DynamicResource PrimaryHueLightBrush}"
+        Background="{StaticResource PrimaryHueLightBrush}"
         Loaded="{s:Action OnViewFullyLoaded}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -64,7 +64,7 @@
             </tb:TaskbarIcon.Style>
 
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu Background="{DynamicResource PrimaryHueLightBrush}">
+                <ContextMenu Background="{StaticResource PrimaryHueLightBrush}">
                     <MenuItem
                         IsEnabled="False"
                         Click="Show_OnClick">
@@ -138,8 +138,8 @@
             Grid.Row="1"
             Padding="4,6"
             CornerRadius="0"
-            Background="{DynamicResource PrimaryHueMidBrush}"
-            TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+            Background="{StaticResource PrimaryHueMidBrush}"
+            TextElement.Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
             MouseDown="HeaderBorder_OnMouseDown">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -194,7 +194,7 @@
                     Padding="2"
                     VerticalAlignment="Center"
                     Click="Hide_OnClick"
-                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}"
                     ToolTip="{x:Static p:Resources.HideButtonTooltip}"
                     Width="24"
                     Height="24">
@@ -203,7 +203,7 @@
                         Height="18"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                         Kind="WindowMinimize" />
                 </Button>
 
@@ -213,7 +213,7 @@
                     Padding="2"
                     VerticalAlignment="Center"
                     Click="Close_OnClick"
-                    Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                    Style="{StaticResource MaterialDesignFlatDarkButton}"
                     ToolTip="{x:Static p:Resources.CloseButtonTooltip}"
                     Width="24"
                     Height="24">
@@ -222,7 +222,7 @@
                         Height="18"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"
                         Kind="WindowClose" />
                 </Button>
             </Grid>
@@ -325,7 +325,7 @@
             <!--  Settings  -->
             <Button
                 Margin="8"
-                Style="{DynamicResource MaterialDesignFlatButton}"
+                Style="{StaticResource MaterialDesignFlatButton}"
                 ToolTip="{x:Static p:Resources.OpenSettingsTooltip}"
                 Command="{s:Action ShowSettings}">
                 <StackPanel Orientation="Horizontal">
@@ -345,7 +345,7 @@
             <!--  About  -->
             <Button
                 Margin="8"
-                Style="{DynamicResource MaterialDesignFlatButton}"
+                Style="{StaticResource MaterialDesignFlatButton}"
                 Command="{s:Action ShowAbout}"
                 ToolTip="{x:Static p:Resources.AboutButtonTooltip}">
                 <StackPanel Orientation="Horizontal">
