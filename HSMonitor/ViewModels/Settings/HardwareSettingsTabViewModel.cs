@@ -1,4 +1,5 @@
 ﻿using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
 using LibreHardwareMonitor.Hardware;
 using LibreHardwareMonitor.Hardware.Cpu;
 
@@ -52,8 +53,8 @@ public class HardwareSettingsTabViewModel(SettingsService settingsService) : Set
 
     public async Task OnViewFullyLoaded()
     {
-        Processors = HardwareMonitorService.GetProcessors().ToList();
-        GraphicCards = HardwareMonitorService.GetGraphicCards().ToList();
+        Processors = HardwareMonitorServiceImpl.GetProcessors().ToList();
+        GraphicCards = HardwareMonitorServiceImpl.GetGraphicCards().ToList();
         
         if (SettingsService is not {Settings: not null}) return;
         if (Processors is {Count: > 0})

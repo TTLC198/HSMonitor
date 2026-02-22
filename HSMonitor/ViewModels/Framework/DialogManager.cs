@@ -218,8 +218,10 @@ public sealed class DialogManager : IDisposable
             Owner = owner,
         };
 
-        if (dialog.Height > 0) wnd.Height = dialog.Height;
-        if (dialog.MinHeight > 0) wnd.MinHeight = dialog.MinHeight;
+        if (dialog.MaxHeight > 0) 
+            wnd.MaxHeight = dialog.MaxHeight;
+        if (dialog.MinHeight > 0) 
+            wnd.MinHeight = dialog.MinHeight;
 
         return wnd;
     }

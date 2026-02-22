@@ -134,8 +134,8 @@ public class SettingsViewModel : IOpenInOwnWindowDialog, INotifyPropertyChanged
     public string Title => "Настройки";
     public double Width => 500;
     public double MinWidth => 360;
-    public double Height => 500;
-    public double MinHeight => 350;
+    public double MaxHeight => 0;
+    public double MinHeight => 120;
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

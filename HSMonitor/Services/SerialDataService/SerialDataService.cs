@@ -1,13 +1,13 @@
 ﻿using System.Text.Json;
-using HSMonitor.Services.OtaUpdateService.Parts;
+using HSMonitor.Services.SerialDataService.Parts;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Usb.Serial;
+using HSMonitor.Services.HardwareMonitorService;
 
 namespace HSMonitor.Services.SerialDataService;
 
 public class SerialDataService : IDisposable
 {
-    private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
     private readonly SettingsService _settingsService;
     private readonly ILogger<SerialDataService> _logger;
 
@@ -17,16 +17,16 @@ public class SerialDataService : IDisposable
 
     public SerialDataService(
         SettingsService settingsService,
-        HardwareMonitorService hardwareMonitorService,
+        HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
         ILogger<SerialDataService> logger)
     {
         _settingsService = settingsService;
-        _hardwareMonitorService = hardwareMonitorService;
+        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _logger = logger;
         _serialData = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
-        _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
+        _hardwareMonitorServiceImpl.HardwareInformationUpdated += SendInformationToMonitor;
     }
 
     private void UpdateSerialSettings()
@@ -37,7 +37,7 @@ public class SerialDataService : IDisposable
 
     private void SendInformationToMonitor(object? sender, EventArgs args)
     {
-        if (sender is not HardwareMonitorService hardwareMonitorService) return;
+        if (sender is not HardwareMonitorServiceImpl hardwareMonitorService) return;
         var message = hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
         if (_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
         {

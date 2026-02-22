@@ -1,8 +1,7 @@
 ﻿using System.IO.Ports;
 using HSMonitor.Models;
-using HSMonitor.Services;
 
-namespace HSMonitor.Utils.Usb.Serial;
+namespace HSMonitor.Services.SerialDataService.Parts;
 
 public class Serial : IDisposable
 {

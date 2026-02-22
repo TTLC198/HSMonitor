@@ -1,20 +1,20 @@
 ﻿using System.Windows.Threading;
 using HSMonitor.Models;
+using HSMonitor.Services.HardwareMonitorService.Parts;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Usb.Serial;
 using LibreHardwareMonitor.Hardware;
 
-namespace HSMonitor.Services;
+namespace HSMonitor.Services.HardwareMonitorService;
 
-public class HardwareMonitorService
+public class HardwareMonitorServiceImpl
 {
     public CpuInformation Cpu = new();
     public GpuInformation Gpu = new();
     public MemoryInformation Memory = new();
 
     private readonly SettingsService _settingsService;
-    private readonly ILogger<HardwareMonitorService> _logger;
+    private readonly ILogger<HardwareMonitorServiceImpl> _logger;
 
     public event EventHandler? HardwareInformationUpdated;
 
@@ -27,7 +27,7 @@ public class HardwareMonitorService
         IsMemoryEnabled = true
     };
 
-    public HardwareMonitorService(SettingsService settingsService, ILogger<HardwareMonitorService> logger)
+    public HardwareMonitorServiceImpl(SettingsService settingsService, ILogger<HardwareMonitorServiceImpl> logger)
     {
         _settingsService = settingsService;
         _logger = logger;

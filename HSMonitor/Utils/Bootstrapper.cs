@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
 using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
@@ -27,7 +28,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 
         builder.Bind(typeof(ILogger<>)).To(typeof(FileLogger<>));
         
-        builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
+        builder.Bind<HardwareMonitorServiceImpl>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<SerialDataService>().ToSelf().InSingletonScope();
         builder.Bind<DialogManager>().ToSelf().InSingletonScope();
@@ -47,7 +48,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 
     protected override void Launch()
     {
-        GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
+        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate(this, EventArgs.Empty);
         GetInstance<SettingsService>().Load();
         
         base.Launch();
