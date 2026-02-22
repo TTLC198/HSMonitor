@@ -62,12 +62,10 @@
             CornerRadius="0"
             BorderBrush="{StaticResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <TextBlock
-                    Margin="16,8"
-                    Text="{Binding Message}"
-                    TextWrapping="Wrap" />
-            </ScrollViewer>
+            <TextBlock
+                Margin="16,8"
+                Text="{Binding Message}"
+                TextWrapping="Wrap" />
         </Border>
 
         <UniformGrid
