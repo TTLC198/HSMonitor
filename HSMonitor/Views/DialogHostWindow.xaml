@@ -5,22 +5,25 @@
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
         WindowStyle="None"
-        AllowsTransparency="True"
-        Background="Transparent"
+        AllowsTransparency="False"
+        Background="{StaticResource PrimaryHueMidBrush}"
         ResizeMode="NoResize"
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True"
+        SizeToContent="Height">
     <materialDesign:DialogHost 
+        CornerRadius="0"
         x:Name="RootDialogHost"
         Style="{DynamicResource MaterialDesignEmbeddedDialogHost}"
-        DialogBackground="Transparent"
-        Background="Transparent"
+        DialogBackground="{StaticResource PrimaryHueMidBrush}"
+        Background="{StaticResource PrimaryHueMidBrush}"
         DialogTheme="Light"
-        ApplyBlurBackground="True"
+        ApplyBlurBackground="False"
         HorizontalAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
         VerticalAlignment="Stretch"
         VerticalContentAlignment="Stretch"
-        DialogMargin="0">
+        DialogMargin="0"
+        materialDesign:TransitionAssist.DisableTransitions="True">
         <Grid/>
     </materialDesign:DialogHost>
 </Window>

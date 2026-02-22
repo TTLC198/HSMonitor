@@ -24,6 +24,7 @@
             x:Name="HeaderBorder"
             Grid.Row="0"
             Padding="4,6"
+            CornerRadius="0"
             Background="{DynamicResource PrimaryHueMidBrush}"
             TextElement.Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
             <Grid>
@@ -58,6 +59,7 @@
         <Border
             Grid.Row="1"
             Padding="0,8"
+            CornerRadius="0"
             BorderBrush="{DynamicResource MaterialDesignDivider}"
             BorderThickness="0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
