@@ -93,11 +93,6 @@ public class UpdateService
         }
     }
 
-    public IEnumerable<AppCastItem> GetVersions() =>
-        (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
-        .Updates
-        .ToList();
-
     public async Task<UpdateInfo> CheckForUpdates() => 
         _updateInfo = await _updater.CheckForUpdatesQuietly();
 

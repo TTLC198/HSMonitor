@@ -138,12 +138,6 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
           _ => Resources.NoConnectionText
         };
-      AppVersionString =
-        value switch
-        {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().First().Version,
-          _ => App.VersionString
-        } ?? "";
       OnPropertyChanged();
       OnPropertyChanged(nameof (AppPrimaryActionText));
       OnPropertyChanged(nameof (IsAppPrimaryActionEnabled));
@@ -163,17 +157,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
           UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
           _ => Resources.NoConnectionText
         };
-
-      var deviceVersion = _deviceUpdateService.GetProjectVersionAsync();
-      var versionString = string.IsNullOrWhiteSpace(deviceVersion) 
-        ? "Не удалось получить версию"
-        : $"v{deviceVersion}";
-      DeviceVersionString =
-        value switch
-        {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().FirstOrDefault()?.Version,
-          _ => versionString
-        } ?? "";
+      
       OnPropertyChanged();
       OnPropertyChanged(nameof (DevicePrimaryActionText));
       OnPropertyChanged(nameof (IsDevicePrimaryActionEnabled));
@@ -223,8 +207,15 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
   public async Task CheckAppUpdates()
   {
-    await _appUpdateService.CheckForUpdates();
+    var updateInfo = await _appUpdateService.CheckForUpdates();
     AppUpdateStatus = _appUpdateService.UpdateStatus;
+    
+    AppVersionString =
+      updateInfo.Status switch
+      {
+        UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => updateInfo.Updates.First().Version,
+        _ => App.VersionString
+      } ?? "";
 
     // Force status text when nothing is available
     if (AppUpdateStatus is UpdateStatus.UpdateNotAvailable)
@@ -233,6 +224,10 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       AppStatusString = Resources.NoConnectionText;
 
     AppVersionString = App.VersionString;
+    
+    OnPropertyChanged(nameof(AppUpdateStatus));
+    OnPropertyChanged(nameof(AppStatusString));
+    OnPropertyChanged(nameof(AppVersionString));
   }
 
   public async Task AppPrimaryAction()
@@ -247,13 +242,30 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
 
   public async Task CheckDeviceUpdates()
   {
-    await _deviceUpdateService.CheckForUpdates();
+    var updateInfo = await _deviceUpdateService.CheckForUpdates();
+    
+    var deviceVersion = await _deviceUpdateService.GetProjectVersionAsync();
+    var versionString = string.IsNullOrWhiteSpace(deviceVersion) 
+      ? "Не удалось получить версию"
+      : $"v{deviceVersion}";
+    
+    DeviceVersionString =
+      updateInfo.Status switch
+      {
+        UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => updateInfo.Updates.FirstOrDefault()?.Version,
+        _ => versionString
+      };
+    
     DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
 
     if (DeviceUpdateStatus is UpdateStatus.UpdateNotAvailable)
       DeviceStatusString = Resources.UpToDateText;
     else if (DeviceUpdateStatus is UpdateStatus.CouldNotDetermine)
       DeviceStatusString = Resources.NoConnectionText;
+    
+    OnPropertyChanged(nameof(DeviceUpdateStatus));
+    OnPropertyChanged(nameof(DeviceStatusString));
+    OnPropertyChanged(nameof(DeviceVersionString));
   }
 
   public async Task DevicePrimaryAction()
@@ -295,37 +307,8 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   {
     try
     {
-      await Task.Run(async () =>
-      {
-        await _appUpdateService.CheckForUpdates();
-        await _deviceUpdateService.CheckForUpdates();
-      });
-      
-      AppUpdateStatus = _appUpdateService.UpdateStatus;
-      AppStatusString =
-        AppUpdateStatus switch
-        {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
-          UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
-          _ => Resources.NoConnectionText
-        };
-      AppVersionString =
-        AppUpdateStatus switch
-        {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => _appUpdateService.GetVersions().Any()
-            ? $"v{_appUpdateService.GetVersions().First().Version}"
-            : App.VersionString,
-          _ => App.VersionString
-        } ?? "";
-
-      DeviceUpdateStatus = _deviceUpdateService.UpdateStatus;
-      DeviceStatusString =
-        DeviceUpdateStatus switch
-        {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => Resources.UpdateAvailableText,
-          UpdateStatus.UpdateNotAvailable => Resources.UpToDateText,
-          _ => Resources.NoConnectionText
-        };
+      await CheckAppUpdates();
+      await CheckDeviceUpdates();
     }
     catch (Exception exception)
     {

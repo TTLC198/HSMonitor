@@ -14,13 +14,15 @@
              mc:Ignorable="d"
              Background="Transparent">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer 
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
 
-        <StackPanel Loaded="{s:Action OnViewFullyLoaded}"
-                    Margin="0,8"
-                    Orientation="Vertical"
-                    Grid.IsSharedSizeScope="True">
+        <StackPanel 
+            Loaded="{s:Action OnViewFullyLoaded}"
+            Margin="0,8"
+            Orientation="Vertical"
+            Grid.IsSharedSizeScope="True">
 
             <materialDesign:Card Margin="12,6" Padding="12">
                 <Grid>

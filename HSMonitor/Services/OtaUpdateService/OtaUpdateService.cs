@@ -18,7 +18,7 @@ using NetSparkleUpdater.SignatureVerifiers;
 namespace HSMonitor.Services.OtaUpdateService;
 
 [SuppressMessage("Interoperability", "CA1416:Проверка совместимости платформы")]
-public abstract class OtaUpdateService
+public class OtaUpdateService
 {
   private const int Chunk = 1024;
 
