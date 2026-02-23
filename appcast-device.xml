@@ -8,7 +8,7 @@
         <item>
             <title>Version 0.2.0</title>
             <pubDate>Sat, 07 Feb 2026</pubDate>
-            <enclosure url="https://github.com/TTLC198/HSMonitor/releases/download/1.1.3/HSMonitor-S2.bin" sparkle:version="0.2.0" type="application/octet-stream"/>
+            <enclosure url="https://github.com/TTLC198/HSMonitor/releases/download/1.2.0/HSMonitor-S2.bin" sparkle:version="0.2.0" type="application/octet-stream"/>
         </item>
     </channel>
 </rss>
