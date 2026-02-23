@@ -443,12 +443,20 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
     });
     _deviceUpdateService.UploadFinishedFlow.Subscribe(_ =>
     {
-      Execute.OnUIThread(() =>
+      Execute.OnUIThread(async () =>
       {
         UpdateDeviceUploadPercent = 100;
         IsDeviceDownloadProgressBarActive = false;
         IsDeviceUploadProgressBarActive = false;
         DeviceStatusString = $"Устройство успешно обновлено!";
+        
+        var deviceVersion = await _deviceUpdateService.GetProjectVersionAsync();
+        var currentDeviceVersionString = string.IsNullOrWhiteSpace(deviceVersion)
+          ? "Не удалось получить версию"
+          : $"v{deviceVersion}";
+        
+        DeviceVersionString = currentDeviceVersionString;
+
       });
       Task.Run(() =>
       {
