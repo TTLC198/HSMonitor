@@ -298,7 +298,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       DeviceVersionString =
         updateInfo.Status switch
         {
-          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => $"v{updateInfo.Updates.FirstOrDefault()?.Version}",
+          UpdateStatus.UpdateAvailable or UpdateStatus.UserSkipped => $"{currentDeviceVersionString} -> v{updateInfo.Updates.FirstOrDefault()?.Version}",
           _ => currentDeviceVersionString
         };
 
@@ -448,8 +448,12 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
         UpdateDeviceUploadPercent = 100;
         IsDeviceDownloadProgressBarActive = false;
         IsDeviceUploadProgressBarActive = false;
+        DeviceStatusString = $"Устройство успешно обновлено!";
       });
-      _hardwareMonitorServiceImpl.Stop();
+      Task.Run(() =>
+      {
+        _hardwareMonitorServiceImpl.Start();
+      });
     });
     _deviceUpdateService.DownloadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);
     _deviceUpdateService.UploadHadErrorFlow.Subscribe(DeviceUpdateServiceOnDownloadErrorEvent);

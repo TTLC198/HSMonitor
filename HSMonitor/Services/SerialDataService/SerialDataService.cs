@@ -48,7 +48,7 @@ public class SerialDataService : IDisposable
         }
         
         var jsonMessage = JsonSerializer.Serialize(message);
-        jsonMessage += "\n\0";
+        jsonMessage += "\n";
         var jsonData = jsonMessage
             .Select(s => (byte) s);
         

@@ -85,7 +85,7 @@ public class OtaUpdateService
 
   public async Task<string> GetProjectVersionAsync()
   {
-    await _otaLock.WaitAsync(0).ConfigureAwait(false);
+    await _otaLock.WaitAsync().ConfigureAwait(false);
     var version = "";
 
     try
@@ -189,7 +189,7 @@ public class OtaUpdateService
 
   private async Task StartUploadAsync(AppCastItem item, FileInfo file)
   {
-    await _otaLock.WaitAsync(0).ConfigureAwait(false);
+    await _otaLock.WaitAsync().ConfigureAwait(false);
     
     try
     {
@@ -210,7 +210,7 @@ public class OtaUpdateService
 
       await fileDataStream.ReadExactlyAsync(fileDataBuffer, 0, fileDataBuffer.Length);
 
-      if (fileDataBuffer.Length != fileDataStream.Length || fileDataBuffer.Length == 0)
+      if (fileDataBuffer.Length == 0)
       {
         _logger.Warn("Поток данных пустой.");
         _uploadHadErrorFlowSubject.OnNext(
@@ -218,6 +218,7 @@ public class OtaUpdateService
             item,
             file.ToString(),
             new InvalidOperationException("Поток данных пустой.")));
+        return;
       }
 
       var serialPortName = GetDeviceInfo();

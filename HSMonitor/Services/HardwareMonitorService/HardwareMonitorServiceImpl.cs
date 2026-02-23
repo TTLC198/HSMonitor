@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.Windows;
+using System.Windows.Threading;
 using HSMonitor.Models;
 using HSMonitor.Services.HardwareMonitorService.Parts;
 using HSMonitor.Utils;
@@ -18,14 +19,16 @@ public class HardwareMonitorServiceImpl
 
     public event EventHandler? HardwareInformationUpdated;
 
-    private DispatcherTimer _updateHardwareMonitorTimer = new();
-
     private static readonly Computer Computer = new()
     {
         IsCpuEnabled = true,
         IsGpuEnabled = true,
         IsMemoryEnabled = true
     };
+    
+    private PeriodicTimer? _hardwareTimer;
+    private CancellationTokenSource? _hardwareCts;
+    private Task? _hardwareTask;
 
     public HardwareMonitorServiceImpl(SettingsService settingsService, ILogger<HardwareMonitorServiceImpl> logger)
     {
@@ -37,30 +40,48 @@ public class HardwareMonitorServiceImpl
 
     public void Start()
     {
-        _updateHardwareMonitorTimer = new DispatcherTimer(
-            priority: DispatcherPriority.Background,
-            interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0
-                ? 500
-                : _settingsService.Settings.SendInterval),
-            callback: HardwareInformationUpdate,
-            dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException("Current thread is null")
-        );
-        _updateHardwareMonitorTimer.Start();
-    }
+        Stop();
 
+        var intervalMs = _settingsService.Settings.SendInterval == 0
+            ? 500
+            : _settingsService.Settings.SendInterval;
+
+        _hardwareCts = new CancellationTokenSource();
+        _hardwareTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(intervalMs));
+
+        _hardwareTask = Task.Run(async () =>
+        {
+            try
+            {
+                while (await _hardwareTimer.WaitForNextTickAsync(_hardwareCts.Token))
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        HardwareInformationUpdate(null, EventArgs.Empty);
+                    });
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // штатная остановка
+            }
+        });
+    }
+    
     public void Stop()
     {
-        _updateHardwareMonitorTimer?.Stop();
+        _hardwareCts?.Cancel();
+        _hardwareTimer?.Dispose();
     }
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
     {
-        if (sender is not SettingsService service) return;
+        if (sender is not SettingsService service) 
+            return;
+
         _settingsService.Settings = service.Settings;
-        _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
-            _settingsService.Settings.SendInterval == 0 
-                ? 500 
-                :_settingsService.Settings.SendInterval);
+
+        Start();
     }
 
     public Message GetHwInfoMessage()

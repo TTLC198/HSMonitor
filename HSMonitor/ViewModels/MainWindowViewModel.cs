@@ -146,7 +146,7 @@ public class MainWindowViewModel : Screen
             Process.Start(startInfo);
             Exit();
         }
-        catch (Win32Exception exception)
+        catch (Win32Exception)
         {
             /* ignored */
         }
