@@ -1,5 +1,5 @@
 ﻿#define AppName "HSMonitor"
-#define AppVersion "1.1.3"
+#define AppVersion "1.2.0"
 #define GithubPage "https://github.com/TTLC198/HSMonitor"
 
 #define RegistryStartup "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
@@ -28,7 +28,7 @@ LicenseFile=..\License.txt
 OutputDir=bin\
 Compression=lzma2
 SolidCompression=yes
-OutputBaseFilename=HSMonitor-1-1-3
+OutputBaseFilename=HSMonitor-1-2-0
 PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
