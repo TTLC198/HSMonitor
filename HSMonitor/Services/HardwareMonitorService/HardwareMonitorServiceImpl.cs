@@ -50,8 +50,7 @@ public class HardwareMonitorServiceImpl
 
     public void Stop()
     {
-        _updateHardwareMonitorTimer.Stop();
-        _updateHardwareMonitorTimer = null;
+        _updateHardwareMonitorTimer?.Stop();
     }
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
