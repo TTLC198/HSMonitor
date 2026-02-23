@@ -171,7 +171,10 @@ public class DashboardViewModel : INotifyPropertyChanged
         _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _settingsService = settingsService;
 
-        hardwareMonitorServiceImpl.HardwareInformationUpdated += (_, _) => HardwareInformationUpdated();
+        hardwareMonitorServiceImpl.HardwareInformationUpdated += (_, _) =>
+        {
+            Application.Current.Dispatcher.Invoke(HardwareInformationUpdated);
+        };
         settingsService.SettingsSaved += UpdateImageFromSettings;
 
         HardwareInformationUpdated();

@@ -48,7 +48,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 
     protected override void Launch()
     {
-        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate(this, EventArgs.Empty);
+        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate();
         GetInstance<SettingsService>().Load();
         
         base.Launch();

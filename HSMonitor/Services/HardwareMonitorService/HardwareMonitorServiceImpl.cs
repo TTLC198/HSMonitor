@@ -55,10 +55,7 @@ public class HardwareMonitorServiceImpl
             {
                 while (await _hardwareTimer.WaitForNextTickAsync(_hardwareCts.Token))
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        HardwareInformationUpdate(null, EventArgs.Empty);
-                    });
+                    HardwareInformationUpdate();
                 }
             }
             catch (OperationCanceledException)
@@ -102,7 +99,7 @@ public class HardwareMonitorServiceImpl
     public static IEnumerable<IHardware> GetGraphicCards() => Computer.Hardware.Where(h =>
         h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia);
 
-    public void HardwareInformationUpdate(object? sender, EventArgs eventArgs)
+    public void HardwareInformationUpdate()
     {
         try
         {
