@@ -1,25 +1,21 @@
-﻿using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
+﻿using System.IO.Ports;
 using HSMonitor.Models;
 using HSMonitor.Services;
-using HSMonitor.Utils.Serial;
-using HSMonitor.Utils.Usb.Serial;
+using HSMonitor.Services.SerialDataService.Parts;
 
 namespace HSMonitor.ViewModels.Settings;
 
 public class ConnectionSettingsTabViewModel : SettingsTabBaseViewModel
 {
-    private IEnumerable<DeviceInfo> _availablePorts = Serial.GetPorts();
     public IEnumerable<DeviceInfo> AvailablePorts
     {
-        get => _availablePorts;
+        get;
         private set
         {
-            _availablePorts = value;
-            OnPropertyChanged(nameof(AvailablePorts));
+            field = value;
+            OnPropertyChanged(nameof (AvailablePorts));
         }
-    }
+    } = Serial.GetPorts();
 
     public static IEnumerable<int> SupportedBaudRates => new List<int>()
     {

@@ -1,4 +1,4 @@
-﻿namespace HSMonitor.ViewModels.Settings;
+﻿namespace HSMonitor.ViewModels;
 
 public interface ISettingsTabViewModel
 {

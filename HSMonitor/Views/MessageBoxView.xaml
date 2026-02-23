@@ -7,10 +7,11 @@
     xmlns:s="https://github.com/canton7/Stylet"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     d:DesignWidth="280"
     d:DataContext="{d:DesignInstance Type=viewModels:MessageBoxViewModel}"
-    Style="{DynamicResource MaterialDesignRoot}"
-    Background="{DynamicResource MaterialDesignCardBackground}"
+    Style="{StaticResource MaterialDesignRoot}"
+    Background="{StaticResource MaterialDesignCardBackground}"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -18,35 +19,59 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <!--  Title  -->
-        <TextBlock
+        
+        <Border
+            x:Name="HeaderBorder"
             Grid.Row="0"
-            Margin="16"
-            FontSize="19"
-            FontWeight="Light"
-            Text="{Binding Title}"
-            TextTrimming="CharacterEllipsis"
-            ToolTip="{Binding Title}" />
+            Padding="4,6"
+            CornerRadius="0"
+            Background="{StaticResource PrimaryHueMidBrush}"
+            TextElement.Foreground="{StaticResource PrimaryHueDarkForegroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo -->
+                <materialDesign:PackIcon
+                    Grid.Column="0"
+                    Width="24"
+                    Height="24"
+                    Kind="Warning"
+                    Margin="4"
+                    VerticalAlignment="Center" />
+
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="6"
+                    FontSize="19"
+                    FontWeight="Light"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis"
+                    ToolTip="{Binding Title}" />
+            </Grid>
+        </Border>
 
         <!--  Message  -->
         <Border
             Grid.Row="1"
             Padding="0,8"
-            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            CornerRadius="0"
+            BorderBrush="{StaticResource MaterialDesignDivider}"
             BorderThickness="0,1">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <TextBlock
-                    Margin="16,8"
-                    Text="{Binding Message}"
-                    TextWrapping="Wrap" />
-            </ScrollViewer>
+            <TextBlock
+                Margin="16,8"
+                Text="{Binding Message}"
+                TextWrapping="Wrap" />
         </Border>
 
         <UniformGrid
             Grid.Row="2"
             Margin="16"
-            HorizontalAlignment="Right"
+            HorizontalAlignment="Center"
             Columns="{Binding ButtonsCount}">
             <!--  OK  -->
             <Button
@@ -54,7 +79,7 @@
                 Content="{Binding OkButtonText}"
                 IsDefault="False"
                 FontSize="12"
-                Style="{DynamicResource MaterialDesignOutlinedButton}"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
                 Visibility="{Binding IsOkButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                 <Button.CommandParameter>
                     <sys:Boolean>True</sys:Boolean>
@@ -69,7 +94,7 @@
                 Content="{Binding CancelButtonText}"
                 IsCancel="True"
                 FontSize="12"
-                Style="{DynamicResource MaterialDesignOutlinedButton}"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
                 Visibility="{Binding IsCancelButtonVisible, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" >
                 <Button.CommandParameter>
                     <sys:Boolean>False</sys:Boolean>

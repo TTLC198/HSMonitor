@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Windows;
 using HSMonitor.Properties;
 using HSMonitor.Utils.Logger;
@@ -25,10 +21,12 @@ public class UpdateService
     private UpdateInfo? _updateInfo;
     
     public event DownloadProgressEvent? UpdateDownloadProcessEvent;
+    public event DownloadEvent? DownloadCancelledEvent;
+    public event DownloadErrorEvent? DownloadErrorEvent;
     public event DownloadDataCompletedEventHandler? UpdateDownloadFinishedEvent;
 
     public UpdateStatus UpdateStatus =>
-        _updateInfo is not null ? _updateInfo.Status : UpdateStatus.CouldNotDetermine;
+        _updateInfo?.Status ?? UpdateStatus.CouldNotDetermine;
 
     public async Task UpdateAsync()
     {
@@ -37,6 +35,8 @@ public class UpdateService
             if (_updateInfo is null || _updateInfo.Updates.Count <= 0) throw new InvalidOperationException("UpdateInfo is null");
             _updater.DownloadMadeProgress += UpdaterOnDownloadMadeProgress;
             _updater.DownloadFinished += async (item, path) => await UpdaterOnDownloadFinished(item, path);
+            _updater.DownloadCanceled += UpdaterOnDownloadCanceled;
+            _updater.DownloadHadError += UpdaterOnDownloadHadError;
             await _updater.InitAndBeginDownload(_updateInfo.Updates.First());
         }
         catch (Exception exception)
@@ -73,7 +73,7 @@ public class UpdateService
 
             if (await _dialogManager.ShowDialogAsync(restartBoxDialog) == true)
             {
-                _updater.InstallUpdate(_updateInfo.Updates.First());
+                await _updater.InstallUpdate(_updateInfo.Updates.First());
             }
         }
         catch (Exception exception)
@@ -93,27 +93,27 @@ public class UpdateService
         }
     }
 
-    public IEnumerable<AppCastItem> GetVersions() =>
-        (_updateInfo ?? CheckForUpdates().GetAwaiter().GetResult())
-        .Updates
-        .ToList();
-
     public async Task<UpdateInfo> CheckForUpdates() => 
         _updateInfo = await _updater.CheckForUpdatesQuietly();
 
     private void UpdaterOnDownloadMadeProgress(object sender, AppCastItem item, ItemDownloadProgressEventArgs args) =>
         UpdateDownloadProcessEvent?.Invoke(this, args);
 
+    private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
+        DownloadErrorEvent?.Invoke(item, path, exception);
+    
+    private void UpdaterOnDownloadCanceled(AppCastItem item, string path) =>
+        DownloadCancelledEvent?.Invoke(item, path);
+
     private void UpdaterOnCloseApplication() =>
         Application.Current.Shutdown();
-
 
     public UpdateService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<UpdateService> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
         _logger = logger;
-        _updater = new SparkleUpdater(App.GitHubAutoUpdateConfigUrl,
+        _updater = new SparkleUpdater(App.AppAutoUpdateConfigUrl,
             new Ed25519Checker(SecurityMode.Unsafe))
         {
             UserInteractionMode = UserInteractionMode.DownloadNoInstall,

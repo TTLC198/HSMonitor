@@ -1,0 +1,29 @@
+<Window x:Class="HSMonitor.Views.DialogHostWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Background="{StaticResource PrimaryHueMidBrush}"
+        ResizeMode="NoResize"
+        SnapsToDevicePixels="True"
+        SizeToContent="Height">
+    <materialDesign:DialogHost 
+        CornerRadius="0"
+        x:Name="RootDialogHost"
+        Style="{StaticResource MaterialDesignEmbeddedDialogHost}"
+        DialogBackground="{StaticResource PrimaryHueMidBrush}"
+        Background="{StaticResource PrimaryHueMidBrush}"
+        DialogTheme="Light"
+        ApplyBlurBackground="False"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        VerticalContentAlignment="Stretch"
+        DialogMargin="0"
+        materialDesign:TransitionAssist.DisableTransitions="True">
+        <Grid/>
+    </materialDesign:DialogHost>
+</Window>

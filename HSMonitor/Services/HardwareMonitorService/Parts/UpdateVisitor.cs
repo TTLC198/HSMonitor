@@ -1,6 +1,6 @@
 ﻿using LibreHardwareMonitor.Hardware;
 
-namespace HSMonitor.Utils.Serial;
+namespace HSMonitor.Services.HardwareMonitorService.Parts;
 
 public class UpdateVisitor : IVisitor
 {

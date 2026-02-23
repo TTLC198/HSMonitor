@@ -15,8 +15,8 @@ using System.Windows;
 [assembly: AssemblyConfiguration("release")]
 [assembly: AssemblyCompany("ttlc198")]
 [assembly: AssemblyProduct("HSMonitor")]
-[assembly: AssemblyCopyright("ttlc198 2023")]
+[assembly: AssemblyCopyright("ttlc198 2026")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.3")]
+[assembly: AssemblyVersion("1.2.0")]

@@ -11,21 +11,21 @@
     <Color x:Key="TextColor">#FFFFFF</Color>
     <Color x:Key="InverseTextColor">#FFFFFF</Color>
 
-    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{DynamicResource PrimaryLightColor}" />
-    <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{DynamicResource PrimaryColor}" />
-    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{DynamicResource PrimaryDarkColor}" />
-    <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{DynamicResource InverseTextColor}" />
-    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{DynamicResource AccentColor}" />
-    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{DynamicResource TextColor}" />
+    <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{StaticResource PrimaryLightColor}" />
+    <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="{StaticResource InverseTextColor}" />
+    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource InverseTextColor}" />
+    <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{StaticResource PrimaryDarkColor}" />
+    <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="{StaticResource InverseTextColor}" />
+    <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="{StaticResource TextColor}" />
 
     <!--  Styles  -->
     <Style x:Key="MaterialDesignRoot" TargetType="{x:Type FrameworkElement}">
         <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="TextElement.Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-        <Setter Property="TextElement.FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+        <Setter Property="TextElement.Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
+        <Setter Property="TextElement.FontFamily" Value="{StaticResource MaterialDesignFont}" />
         <Setter Property="TextElement.FontSize" Value="13" />
         <Setter Property="TextElement.FontWeight" Value="Regular" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
@@ -41,7 +41,7 @@
             <SolidColorBrush x:Key="MaterialDesignFlatButtonClick" Color="#4C4C4C" />
         </Style.Resources>
 
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidForegroundBrush}" />
     </Style>
 
     <Style x:Key="MaterialDesignHorizontalTrackRepeatButton" TargetType="{x:Type RepeatButton}">
@@ -197,8 +197,8 @@
                 </Trigger.ExitActions>
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter TargetName="grip" Property="Fill" Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
-                <Setter TargetName="grip" Property="Stroke" Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource MaterialDesignCheckBoxDisabled}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource MaterialDesignCheckBoxDisabled}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -236,7 +236,7 @@
                     x:Name="PART_SelectionRange"
                     Grid.Row="1"
                     Height="4.0"
-                    Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                    Fill="{StaticResource {x:Static SystemColors.HighlightBrushKey}}"
                     Visibility="Hidden" />
                 <Track
                     x:Name="PART_Track"
@@ -284,7 +284,7 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="IncreaseRepeatButton" Property="Background"
-                        Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
+                        Value="{StaticResource MaterialDesignCheckBoxDisabled}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -322,7 +322,7 @@
                     x:Name="PART_SelectionRange"
                     Grid.Column="1"
                     Height="4.0"
-                    Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                    Fill="{StaticResource {x:Static SystemColors.HighlightBrushKey}}"
                     Visibility="Hidden" />
                 <Track x:Name="PART_Track" Grid.Column="1">
                     <Track.DecreaseRepeatButton>
@@ -367,7 +367,7 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="IncreaseRepeatButton" Property="Background"
-                        Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
+                        Value="{StaticResource MaterialDesignCheckBoxDisabled}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -378,14 +378,14 @@
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
         <Setter Property="Template" Value="{StaticResource MaterialDesignSliderHorizontal}" />
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Vertical">
                 <Setter Property="Template" Value="{StaticResource MaterialDesignSliderVertical}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignCheckBoxDisabled}" />
+                <Setter Property="Foreground" Value="{StaticResource MaterialDesignCheckBoxDisabled}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -476,10 +476,10 @@
     <!--  Fonts  -->
     <FontFamily
         x:Key="VT323">
-        pack://application:,,,/Resources/Fonts/#VT323
+        pack://application:,,,/HSMonitor;component/Resources/Fonts/#VT323
     </FontFamily>
     <FontFamily
         x:Key="org_01">
-        pack://application:,,,/Resources/Fonts/#org_01
+        pack://application:,,,/HSMonitor;component/Resources/Fonts/#Org_v01
     </FontFamily>
 </ResourceDictionary>

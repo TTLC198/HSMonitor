@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 using HSMonitor.Services;
 using HSMonitor.ViewModels.Settings;
@@ -41,8 +37,11 @@ namespace HSMonitor
         public static string GitHubClientProjectUrl { get; } = 
             "https://github.com/TTLC198/HSMonitorClient";
 
-        public static string GitHubAutoUpdateConfigUrl { get; } =
-            "https://raw.githubusercontent.com/TTLC198/HSMonitor/master/appcast.xml";
+        public static string AppAutoUpdateConfigUrl { get; } =
+            "https://raw.githubusercontent.com/TTLC198/HSMonitor/dev/1.1/appcast.xml";
+        
+        public static string DeviceAutoUpdateConfigUrl { get; } =
+            "https://raw.githubusercontent.com/TTLC198/HSMonitor/dev/1.1/appcast-device.xml";
     }
 
     public partial class App

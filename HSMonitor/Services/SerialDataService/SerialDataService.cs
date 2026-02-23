@@ -1,45 +1,43 @@
-﻿using System;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
+using HSMonitor.Services.SerialDataService.Parts;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
-using HSMonitor.Utils.Usb.Serial;
+using HSMonitor.Services.HardwareMonitorService;
 
-namespace HSMonitor.Services;
+namespace HSMonitor.Services.SerialDataService;
 
-public class SerialMonitorService : IDisposable
+public class SerialDataService : IDisposable
 {
-    private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
     private readonly SettingsService _settingsService;
-    private readonly ILogger<SerialMonitorService> _logger;
+    private readonly ILogger<SerialDataService> _logger;
 
-    private Serial _serial;
+    private Serial _serialData;
     public event EventHandler? OpenPortAttemptFailed;
     public event EventHandler? OpenPortAttemptSuccessful;
 
-    public SerialMonitorService(
+    public SerialDataService(
         SettingsService settingsService,
-        HardwareMonitorService hardwareMonitorService,
-        ILogger<SerialMonitorService> logger)
+        HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
+        ILogger<SerialDataService> logger)
     {
         _settingsService = settingsService;
-        _hardwareMonitorService = hardwareMonitorService;
+        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _logger = logger;
-        _serial = new Serial(settingsService);
+        _serialData = new Serial(settingsService);
 
         _settingsService.SettingsSaved += (_, _) => UpdateSerialSettings();
-        _hardwareMonitorService.HardwareInformationUpdated += SendInformationToMonitor;
+        _hardwareMonitorServiceImpl.HardwareInformationUpdated += SendInformationToMonitor;
     }
 
     private void UpdateSerialSettings()
     {
-        _serial.Dispose();
-        _serial = new Serial(_settingsService ?? throw new InvalidOperationException());
+        _serialData.Dispose();
+        _serialData = new Serial(_settingsService ?? throw new InvalidOperationException());
     }
 
     private void SendInformationToMonitor(object? sender, EventArgs args)
     {
-        if (sender is not HardwareMonitorService hardwareMonitorService) return;
+        if (sender is not HardwareMonitorServiceImpl hardwareMonitorService) return;
         var message = hardwareMonitorService.GetHwInfoMessage() ?? throw new Exception("Message empty");
         if (_settingsService.Settings.IsDeviceBackwardCompatibilityEnabled)
         {
@@ -50,15 +48,15 @@ public class SerialMonitorService : IDisposable
         }
         
         var jsonMessage = JsonSerializer.Serialize(message);
-        jsonMessage += "\n\0";
+        jsonMessage += "\n";
         var jsonData = jsonMessage
             .Select(s => (byte) s);
         
-        if (_serial.CheckAccess())
+        if (_serialData.CheckAccess())
         {
             try
             {
-                _serial.Write(jsonData.ToArray());
+                _serialData.Write(jsonData.ToArray());
                 OpenPortAttemptSuccessful?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception exception)
@@ -73,5 +71,5 @@ public class SerialMonitorService : IDisposable
         }
     }
 
-    public void Dispose() => _serial.Dispose();
+    public void Dispose() => _serialData.Dispose();
 }

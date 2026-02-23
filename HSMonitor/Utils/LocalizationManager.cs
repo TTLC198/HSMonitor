@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Globalization;
 using System.Resources;
-using System.Threading;
 using HSMonitor.Properties;
 
 namespace HSMonitor.Utils;

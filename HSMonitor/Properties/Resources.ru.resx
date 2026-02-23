@@ -249,4 +249,19 @@
   <data name="UpToDateText" xml:space="preserve">
     <value>Нет обновлений</value>
   </data>
+  <data name="Connection" xml:space="preserve">
+    <value>Подключение</value>
+  </data>
+  <data name="Hardware" xml:space="preserve">
+    <value>Компьютер</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Внешний вид</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Расширенные</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновление</value>
+  </data>
 </root>

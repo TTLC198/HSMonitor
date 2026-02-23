@@ -1,12 +1,10 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using HSMonitor.Properties;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
+using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
@@ -23,8 +21,8 @@ public class MainWindowViewModel : Screen
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
     private readonly SettingsService _settingsService;
-    private readonly SerialMonitorService _serialMonitorService;
-    private readonly HardwareMonitorService _hardwareMonitorService;
+    private readonly SerialDataService _serialDataService;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
     private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
     public DashboardViewModel Dashboard { get; }
@@ -46,17 +44,17 @@ public class MainWindowViewModel : Screen
     public MainWindowViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        HardwareMonitorService hardwareMonitorService,
+        HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
         SettingsService settingsService,
-        SerialMonitorService serialMonitorService,
+        SerialDataService serialDataService,
         UpdateService updateService, 
         ILogger<MainWindowViewModel> logger)
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
-        _hardwareMonitorService = hardwareMonitorService;
+        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
         _settingsService = settingsService;
-        _serialMonitorService = serialMonitorService;
+        _serialDataService = serialDataService;
         _updateService = updateService;
         _logger = logger;
 
@@ -68,48 +66,55 @@ public class MainWindowViewModel : Screen
         LocalizationManager.ChangeCurrentCulture(culture);
     }
     
-    private async void SerialMonitorServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
+    private async void SerialDataServiceOnOpenPortAttemptFailed(object? sender, EventArgs e)
     {
-        IsSerialMonitorEnabled = false;
-        _serialMonitorService.OpenPortAttemptFailed -= SerialMonitorServiceOnOpenPortAttemptFailed;
-        _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
-        
-        if (_isConnectionErrorWindowOpened)
-            return;
-        
         try
         {
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
-                message: Resources.NoConnectionErrorMessageText,
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: Resources.MessageBoxCancelButtonText
-            );
-
-            _isConnectionErrorWindowOpened = true;
-            var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
-            if (dialogResult == true)
+            IsSerialMonitorEnabled = false;
+            _serialDataService.OpenPortAttemptFailed -= SerialDataServiceOnOpenPortAttemptFailed;
+            _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
+        
+            if (_isConnectionErrorWindowOpened)
+                return;
+        
+            try
             {
-                var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
-                settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                    title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
+                    message: Resources.NoConnectionErrorMessageText,
+                    okButtonText: Resources.MessageBoxOkButtonText,
+                    cancelButtonText: Resources.MessageBoxCancelButtonText
+                );
 
-                await _dialogManager.ShowDialogAsync(settingsDialog);
+                _isConnectionErrorWindowOpened = true;
+                var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
+                if (dialogResult)
+                {
+                    var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
+                    settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
+
+                    await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
+                }
+                _isConnectionErrorWindowOpened = dialogResult;
             }
-            _isConnectionErrorWindowOpened = dialogResult is null;
+            catch 
+            {
+                _isConnectionErrorWindowOpened = false;
+            }
         }
-        catch 
+        catch (Exception exception)
         {
-            _isConnectionErrorWindowOpened = false;
+            _logger.Error(exception);
         }
     }
     
-    private void SerialMonitorServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
+    private void SerialDataServiceOnOpenPortAttemptSuccessful(object? sender, EventArgs e)
     {
         if (IsSerialMonitorEnabled)
             return;
         IsSerialMonitorEnabled = true;
-        _serialMonitorService.OpenPortAttemptFailed += SerialMonitorServiceOnOpenPortAttemptFailed;
-        _serialMonitorService.OpenPortAttemptSuccessful -= SerialMonitorServiceOnOpenPortAttemptSuccessful;
+        _serialDataService.OpenPortAttemptFailed += SerialDataServiceOnOpenPortAttemptFailed;
+        _serialDataService.OpenPortAttemptSuccessful -= SerialDataServiceOnOpenPortAttemptSuccessful;
     }
 
     private async Task ShowAdminPrivilegesRequirement()
@@ -141,6 +146,10 @@ public class MainWindowViewModel : Screen
             Process.Start(startInfo);
             Exit();
         }
+        catch (Win32Exception)
+        {
+            /* ignored */
+        }
         catch (Exception exception)
         {
             _logger.Error(exception);
@@ -149,7 +158,7 @@ public class MainWindowViewModel : Screen
                 title: Resources.MessageBoxErrorTitle,
                 message: $@"
 {Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last()}".Trim(),
+{exception.Message.Split('\'').Last().Replace(".", "").Trim()}".Trim(),
                 okButtonText: Resources.MessageBoxOkButtonText,
                 cancelButtonText: null
             );
@@ -157,7 +166,7 @@ public class MainWindowViewModel : Screen
         }
     }
 
-    public async void OnViewFullyLoaded()
+    public async Task OnViewFullyLoaded()
     {
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
@@ -173,7 +182,7 @@ public class MainWindowViewModel : Screen
         }
         else
         {
-            _serialMonitorService.OpenPortAttemptSuccessful += SerialMonitorServiceOnOpenPortAttemptSuccessful;
+            _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
 
             try
             {
@@ -204,7 +213,7 @@ public class MainWindowViewModel : Screen
                             var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                             settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
 
-                            await _dialogManager.ShowDialogAsync(settingsDialog);
+                            await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
                         }
                     }
                 }
@@ -233,14 +242,14 @@ public class MainWindowViewModel : Screen
                     await ShowAdminPrivilegesRequirement();
             }
 
-            await _hardwareMonitorService.Start();
+            _hardwareMonitorServiceImpl.Start();
         }
     }
 
-    public async void ShowSettings()
+    public async Task ShowSettings()
     {
         await _settingsService.LoadAsync();
-        await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateSettingsViewModel());
+        await _dialogManager.ShowSettingsDialogAsync(_viewModelFactory.CreateSettingsViewModel());
     }
 
     public void ShowAbout() => OpenUrl.Open(App.GitHubProjectUrl);

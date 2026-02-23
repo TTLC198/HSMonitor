@@ -1,6 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using HSMonitor.Services;
+using HSMonitor.Services.HardwareMonitorService;
+using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
 using HSMonitor.ViewModels.Framework;
@@ -17,7 +18,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     protected override void OnStart()
     {
         Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
-        Stylet.Logging.LogManager.Enabled = false;
+        Stylet.Logging.LogManager.Enabled = true;
         base.OnStart();
     }
     
@@ -27,9 +28,9 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
 
         builder.Bind(typeof(ILogger<>)).To(typeof(FileLogger<>));
         
-        builder.Bind<HardwareMonitorService>().ToSelf().InSingletonScope();
+        builder.Bind<HardwareMonitorServiceImpl>().ToSelf().InSingletonScope();
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
-        builder.Bind<SerialMonitorService>().ToSelf().InSingletonScope();
+        builder.Bind<SerialDataService>().ToSelf().InSingletonScope();
         builder.Bind<DialogManager>().ToSelf().InSingletonScope();
         
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
@@ -37,26 +38,25 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<MainWindowViewModel>().ToSelf().InSingletonScope();
         builder.Bind<DashboardViewModel>().ToSelf().InSingletonScope();
         builder.Bind<SettingsViewModel>().ToSelf().InSingletonScope();
-        builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope();
+        builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope().AsWeakBinding();
     }
 
     protected override void Configure()
     {
-        GetInstance<SettingsService>().Load();
         base.Configure();
     }
 
     protected override void Launch()
     {
-        GetInstance<HardwareMonitorService>().HardwareInformationUpdate(this, EventArgs.Empty);
-        _ = GetInstance<DialogManager>().GetViewForDialogScreen(GetInstance<SettingsViewModel>());
+        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate();
+        GetInstance<SettingsService>().Load();
         
         base.Launch();
     }
     
     protected override void OnExit(ExitEventArgs e)
     {
-        GetInstance<SerialMonitorService>().Dispose();
+        GetInstance<SerialDataService>().Dispose();
         base.OnExit(e);
     }
 }

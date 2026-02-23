@@ -1,304 +1,438 @@
 ﻿<UserControl
     x:Class="HSMonitor.Views.DashboardView"
     xmlns:viewModels="clr-namespace:HSMonitor.ViewModels"
+    xmlns:local="clr-namespace:HSMonitor.Views"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:HSMonitor.Utils.Converters"
     d:DesignHeight="320"
     d:DesignWidth="240"
+    Height="320"
+    Width="240"
     d:DataContext="{d:DesignInstance Type=viewModels:DashboardViewModel}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    SnapsToDevicePixels="True"
+    UseLayoutRounding="True"
+    TextOptions.TextFormattingMode="Display"
+    TextOptions.TextRenderingMode="Aliased"
+    RenderOptions.EdgeMode="Aliased">
     <UserControl.Resources>
-        <Style
-            TargetType="{x:Type Border}">
-            <Setter
-                Property="CornerRadius"
-                Value="4"/>
-            <Setter
-                Property="BorderBrush"
-                Value="Gray"/>
-            <Setter
-                Property="BorderThickness"
-                Value="1"/>
+        <converters:VisibilityBoolConverter x:Key="BoolToVis" />
+
+        <Style TargetType="{x:Type Border}">
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="BorderThickness" Value="1" />
         </Style>
-        <Style
-            TargetType="{x:Type Path}">
-            <Setter
-                Property="Fill"
-                Value="Gray"/>
+
+        <Style TargetType="{x:Type Path}">
+            <Setter Property="Fill" Value="Gray" />
         </Style>
-        <Style
-            TargetType="{x:Type Polygon}">
-            <Setter
-                Property="Fill"
-                Value="Gray"/>
+
+        <Style TargetType="{x:Type Polygon}">
+            <Setter Property="Fill" Value="Gray" />
         </Style>
-        <Style
-            TargetType="{x:Type TextBlock}">
-            <Setter
-                Property="FontFamily"
-                Value="{DynamicResource VT323}"/>
-            <Setter
-                Property="VerticalAlignment"
-                Value="Center"/>
-            <Setter
-                Property="FontSize"
-                Value="34"/>
-            <Setter
-                Property="Foreground"
-                Value="White"/>
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="{StaticResource org_01}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="34" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style TargetType="{x:Type local:MarqueeText}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontFamily" Value="{StaticResource org_01}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Speed" Value="55" />
+            <Setter Property="Gap" Value="40" />
+            <Setter Property="Padding" Value="6,0,6,0" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:MarqueeText}">
+                        <Grid ClipToBounds="True">
+                            <Canvas x:Name="PART_Canvas">
+                                <TextBlock x:Name="PART_Text1"
+                                           Text="{TemplateBinding Text}"
+                                           VerticalAlignment="Center"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}" />
+                                <TextBlock x:Name="PART_Text2"
+                                           Text="{TemplateBinding Text}"
+                                           VerticalAlignment="Center"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}" />
+                            </Canvas>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
-    <Canvas
-        Opacity="{Binding DisplayOpacity}"
-        Background="Black">
-        <Border
-            Canvas.Top="0"
-            Canvas.Left="0"
-            Width="240"
-            Height="120"/>
-        <Border
-            Canvas.Top="122"
-            Canvas.Left="0"
-            Width="240"
-            Height="138"/>
-        <Border
-            Canvas.Top="262"
-            Canvas.Left="0"
-            Width="240"
-            Height="55"/>
-        <Border
-            Canvas.Top="22"
-            Canvas.Left="13"
-            Width="88"
-            Height="89"/>
-        <Border
-            Canvas.Top="140"
-            Canvas.Left="13"
-            Width="88"
-            Height="89"/>
-        <Border
-            Canvas.Top="91"
-            Canvas.Left="107"
-            Width="90"
-            Height="20"/>
-        <Border
-            Canvas.Top="234"
-            Canvas.Left="14"
-            Width="88"
-            Height="24"/>
+
+    <Canvas Opacity="{Binding DisplayOpacity}" Background="Black">
+
+        <Border Canvas.Top="0" Canvas.Left="0" Width="240" Height="120" />
+        <Border Canvas.Top="122" Canvas.Left="0" Width="240" Height="138" />
+        <Border Canvas.Top="262" Canvas.Left="0" Width="240" Height="55" />
+
+        <Border Canvas.Top="22" Canvas.Left="13" Width="88" Height="89" />
+        <Border Canvas.Top="140" Canvas.Left="13" Width="88" Height="89" />
+
         <!--CPU Name-->
-        <TextBlock
-            Canvas.Top="8"
-            Canvas.Left="16"
+        <local:MarqueeText
+            Canvas.Top="2"
+            Canvas.Left="12"
+            Width="220"
+            Height="20"
             Text="{Binding Cpu.Name}"
-            FontSize="14"/>
+            FontSize="14" />
+
         <!-- CPU Logo Image-->
-        <Image
-            Canvas.Top="26"
-            Canvas.Left="16"
-            Width="82"
-            Height="82"
-            Source="{Binding CpuImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
-        <!--CPU Temperature-->
-        <TextBlock
-            Canvas.Top="17"
-            Canvas.Left="105"
-            FontSize="34"
-            Text="{Binding Cpu.Temperature}"/>
-        <!--CPU Temperature Degree-->
-        <TextBlock
-            Canvas.Top="20"
-            Canvas.Left="130"
-            FontSize="18"
-            Text="°C"/>
-        <!--CPU Load-->
-        <TextBlock
-            Canvas.Top="17"
+        <Image Canvas.Top="26" Canvas.Left="16" Width="82" Height="82"
+               Source="{Binding CpuImageSource, Mode=OneWay}" Stretch="Fill" />
+
+        <DockPanel
+            Canvas.Top="10"
+            Canvas.Left="107"
+            HorizontalAlignment="Left">
+            <!--CPU Temperature-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="28"
+                Text="{Binding Cpu.Temperature}" />
+            <!--CPU Temperature Degree-->
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="10"
+                    Text="0"
+                    Margin="0, 0, 0,6" />
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="18"
+                    Text="C"
+                    Margin="0, 0, 0,4" />
+            </StackPanel>
+        </DockPanel>
+
+        <DockPanel
+            Canvas.Top="10"
             Canvas.Left="170"
-            FontSize="34"
-            Text="{Binding Cpu.Load}"/>
-        <!--CPU Load Percent-->
-        <TextBlock
-            Canvas.Top="20"
-            Canvas.Left="200"
-            FontSize="18"
-            Text="%"/>
-        <!--CPU Power-->
-        <TextBlock
-            Canvas.Top="8"
-            Canvas.Left="180"
-            Text="{Binding Cpu.Power}"
-            FontSize="12"/>
-        <!--CPU Power Watt-->
-        <TextBlock
-            Canvas.Top="8"
-            Canvas.Left="200"
-            Text="W"
-            FontSize="12"/>
-        <!--CPU Clock-->
-        <TextBlock
-            Canvas.Top="40"
-            Canvas.Left="105"
-            Text="{Binding Cpu.Clock}"
-            FontSize="54"/>
-        <!--CPU Clock MHz-->
-        <TextBlock
-            Canvas.Top="47"
-            Canvas.Left="200"
-            Text="MHz"
-            FontSize="18"/>
+            HorizontalAlignment="Left">
+            <!--CPU Load-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="28"
+                Text="{Binding Cpu.Load}" />
+            <!--CPU Load Percent-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="13"
+                Text="%"
+                Margin="0, 0, 0,5" />
+        </DockPanel>
+
+        <DockPanel
+            Canvas.Top="32"
+            Canvas.Left="107"
+            HorizontalAlignment="Left">
+            <!--CPU Power-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Cpu.Power}"
+                FontSize="28" />
+            <!--CPU Power Watt-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="W"
+                FontSize="18"
+                Margin="0, 0, 0,5" />
+        </DockPanel>
+
+        <DockPanel
+            Canvas.Top="32"
+            Canvas.Left="170"
+            HorizontalAlignment="Left">
+            <!--CPU Load-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="28"
+                Text="{Binding Cpu.Voltage}" />
+            <!--CPU Load Percent-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="13"
+                Text="V"
+                Margin="0, 0, 0,6" />
+        </DockPanel>
+
+        <DockPanel
+            Canvas.Top="55"
+            Canvas.Left="107"
+            HorizontalAlignment="Left">
+            <!--CPU Clock-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Cpu.Clock}"
+                FontSize="28" />
+            <!--CPU Clock MHz-->
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="MHz"
+                FontSize="18"
+                Margin="0, 0, 0,6" />
+        </DockPanel>
+
+        <!-- CPU OC / BOOST ribbon (looping marquee, same place as the old small box) -->
+        <Grid Canvas.Top="91" Canvas.Left="107" Width="125" Height="20">
+            <Border CornerRadius="4"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Background="Black"
+                    Visibility="{Binding IsCpuBoostActive, Converter={StaticResource BoolToVis}, ConverterParameter=invert}">
+                <local:MarqueeText
+                    VerticalContentAlignment="Center"
+                    Width="125"
+                    Text="{Binding CpuOcMarqueeText}"
+                    FontSize="14">
+                </local:MarqueeText>
+            </Border>
+            <Border
+                CornerRadius="4"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                Background="#7c262e"
+                Visibility="{Binding IsCpuBoostActive, Converter={StaticResource BoolToVis}}">
+                <local:MarqueeText
+                    VerticalContentAlignment="Center"
+                    Width="125"
+                    Text="{Binding CpuBoostMarqueeText}"
+                    FontSize="14"
+                    Foreground="Black" />
+            </Border>
+        </Grid>
+
         <!-- Gpu Logo Image -->
-        <Image
-            Canvas.Top="144"
+        <Image Canvas.Top="144" Canvas.Left="16" Width="82" Height="82"
+               Source="{Binding GpuImageSource, Mode=OneWay}" Stretch="Fill" />
+
+        <!-- GPU OC / BOOST ribbon (looping marquee, same place as the old small box) -->
+        <Grid Canvas.Top="234" Canvas.Left="14" Width="88" Height="24">
+            <Border CornerRadius="4"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Background="Black"
+                    Visibility="{Binding IsGpuBoostActive, Converter={StaticResource BoolToVis}, ConverterParameter=invert}">
+                <local:MarqueeText
+                    VerticalContentAlignment="Center"
+                    Width="88"
+                    Text="{Binding GpuOcMarqueeText}"
+                    FontSize="14" />
+            </Border>
+            <Border
+                CornerRadius="4"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                Background="#7c262e"
+                Visibility="{Binding IsGpuBoostActive, Converter={StaticResource BoolToVis}}">
+                <local:MarqueeText
+                    VerticalContentAlignment="Center"
+                    Width="88"
+                    Text="{Binding GpuBoostMarqueeText}"
+                    FontSize="14"
+                    Foreground="Black" />
+            </Border>
+        </Grid>
+
+        <!--GPU Name-->
+        <local:MarqueeText
+            Canvas.Top="120"
             Canvas.Left="16"
-            Width="82"
-            Height="82"
-            Source="{Binding GpuImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
-        <TextBlock
-            Canvas.Top="95"
-            Canvas.Left="110"
-            Text="OVERCLOCKED"
-            FontSize="12"/>
-        <TextBlock
-            Canvas.Top="240"
-            Canvas.Left="24"
-            Text="BOOST"
-            FontSize="12"/>
-        <!--CPU Name-->
-        <TextBlock
-            Canvas.Top="127"
-            Canvas.Left="16"
+            Width="220"
+            Height="20"
             Text="{Binding Gpu.Name}"
-            FontSize="14"/>
+            FontSize="14" />
+
         <!--GPU Temperature-->
-        <TextBlock
-            Canvas.Top="136"
+        <DockPanel
+            Canvas.Top="126"
             Canvas.Left="105"
-            Text="{Binding Gpu.CoreTemperature}"
-            FontSize="34"/>
-        <!--GPU Temperature Degree-->
-        <TextBlock
-            Canvas.Top="139"
-            Canvas.Left="130"
-            FontSize="18"
-            Text="°C"/>
+            HorizontalAlignment="Left">
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Gpu.CoreTemperature}"
+                FontSize="28" />
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="10"
+                    Text="0"
+                    Margin="0, 0, 0,6" />
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="18"
+                    Text="C"
+                    Margin="0, 0, 0,4" />
+            </StackPanel>
+        </DockPanel>
+
         <!--GPU Load-->
-        <TextBlock
-            Canvas.Top="136"
-            Canvas.Left="170"
-            Text="{Binding Gpu.CoreLoad}"
-            FontSize="34"/>
-        <!--GPU Load Percent-->
-        <TextBlock
-            Canvas.Top="139"
-            Canvas.Left="200"
-            FontSize="18"
-            Text="%"/>
+        <DockPanel
+            Canvas.Top="126"
+            Canvas.Left="180"
+            HorizontalAlignment="Left">
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Gpu.CoreLoad}"
+                FontSize="28" />
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="13"
+                Text="%"
+                Margin="0, 0, 0,5" />
+        </DockPanel>
+
         <!--GPU Clock-->
-        <TextBlock
-            Canvas.Top="165"
+        <DockPanel
+            Canvas.Top="147"
             Canvas.Left="105"
-            Text="{Binding Gpu.CoreClock}"
-            FontSize="34"/>
-        <!--GPU Clock MHz-->
-        <TextBlock
-            Canvas.Top="168"
-            Canvas.Left="165"
-            Text="MHz"
-            FontSize="18"/>
-        <!--GPU VRam Clock-->
-        <TextBlock
-            Canvas.Top="195"
-            Canvas.Left="125"
-            Text="VRam Clock:"
-            FontSize="14"/>
-        <!--GPU VRam Clock-->
-        <TextBlock
-            Canvas.Top="195"
-            Canvas.Left="190"
-            Text="{Binding Gpu.VRamClock}"
-            FontSize="14"/>
-        <!--GPU Power-->
-        <TextBlock
-            Canvas.Top="210"
-            Canvas.Left="125"
-            Text="Power     :"
-            FontSize="14"/>
-        <!--GPU Power-->
-        <TextBlock
-            Canvas.Top="210"
-            Canvas.Left="190"
-            Text="{Binding Gpu.Power}"
-            FontSize="14"/>
-        <!--GPU Fan1 Load-->
-        <TextBlock
-            x:Name="Fan1TextBlock"
-            Canvas.Top="225"
-            Canvas.Left="125"
-            Text="Fan1 Load :"
-            FontSize="14"/>
-        <!--GPU Fan1 Load-->
-        <TextBlock
-            x:Name="Fan1LoadTextBlock"
-            Canvas.Top="225"
-            Canvas.Left="190"
-            Text="{Binding GpuFan1.Load}"
-            FontSize="14"/>
-        <!--GPU Fan2 Load-->
-        <TextBlock
-            x:Name="Fan2TextBlock"
-            Canvas.Top="240"
-            Canvas.Left="125"
-            Text="Fan2 Load :"
-            FontSize="14"/>
-        <!--GPU Fan2 Load-->
-        <TextBlock
-            x:Name="Fan2LoadTextBlock"
-            Canvas.Top="240"
-            Canvas.Left="190"
-            Text="{Binding GpuFan2.Load}"
-            FontSize="14"/>
+            HorizontalAlignment="Left">
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Gpu.CoreClock}"
+                FontSize="28" />
+            <TextBlock
+                DockPanel.Dock="Left"
+                FontSize="13"
+                Text="MHz"
+                Margin="0, 0, 0,6" />
+        </DockPanel>
+
+        <Grid
+            Canvas.Top="180"
+            Canvas.Left="115">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="10" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--GPU VRam -->
+            <TextBlock
+                Grid.Column="0"
+                Grid.Row="0"
+                Text="VRAM"
+                FontSize="12" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                TextAlignment="Right"
+                Grid.Column="1"
+                Grid.Row="0"
+                FontSize="12"
+                Margin="10, 0, 0,0">
+                <Run Text="{Binding Gpu.VRamMemoryUsed}" />
+                <Run Text="Gb" />
+            </TextBlock>
+
+            <!--GPU VRam Clock-->
+            <TextBlock
+                Grid.Column="0"
+                Grid.Row="1"
+                Text="CLOCK"
+                FontSize="12" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                TextAlignment="Right"
+                Grid.Column="1"
+                Grid.Row="1"
+                FontSize="12"
+                Margin="10, 0, 0,0">
+                <Run Text="{Binding Gpu.VRamClock}" />
+                <Run Text="mhz" />
+            </TextBlock>
+
+            <!--GPU Power-->
+            <TextBlock
+                Grid.Column="0"
+                Grid.Row="2"
+                Text="POWER"
+                FontSize="12" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                TextAlignment="Right"
+                Grid.Column="1"
+                Grid.Row="2"
+                FontSize="12"
+                Margin="10, 0, 0,0">
+                <Run Text="{Binding Gpu.Power}" />
+                <Run Text="w" />
+            </TextBlock>
+        </Grid>
+
+        <!-- Two overlaid graphs under POWER -->
+        <Grid Canvas.Top="215" Canvas.Left="115" Width="110" Height="32"
+              ClipToBounds="True" Background="Black">
+            <Polyline Points="{Binding GpuPowerGraphPoints}" Stroke="White" StrokeThickness="1"
+                      SnapsToDevicePixels="True" />
+            <Polyline Points="{Binding GpuLoadGraphPoints}" Stroke="Gray" StrokeThickness="1"
+                      SnapsToDevicePixels="True" />
+        </Grid>
+
         <!--RAM Image-->
         <Image
             Canvas.Top="268"
-            Canvas.Left="16"
-            Width="90"
+            Canvas.Left="14"
+            Width="82"
             Height="40"
             Source="{Binding MemoryImageSource, Mode=OneWay}"
-            Stretch="Fill"/>
+            Stretch="Fill" />
+
         <!--Total / RAM Used-->
         <TextBlock
-            Canvas.Top="270"
-            Canvas.Left="120"
-            Text="Total  /  RAM Used"
-            FontSize="14"/>
-        <!--Total RAM-->
-        <TextBlock
-            Canvas.Top="285"
-            Canvas.Left="120"
-            Text="{Binding Memory.Total}"
-            FontSize="20"/>
-        <!--Total RAM GB-->
-        <TextBlock
-            Canvas.Top="285"
-            Canvas.Left="145"
-            Text="GB"
-            FontSize="12"/>
-        <!--RAM Used-->
-        <TextBlock
-            Canvas.Top="285"
+            Canvas.Top="262"
+            Canvas.Left="115"
+            Text="Total / Used"
+            FontSize="14" />
+
+        <DockPanel
+            Canvas.Top="275"
+            Canvas.Left="105"
+            HorizontalAlignment="Left">
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Memory.Total}"
+                FontSize="24" />
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="GB"
+                FontSize="12"
+                Margin="0, 0, 0,6" />
+        </DockPanel>
+
+        <DockPanel
+            Canvas.Top="275"
             Canvas.Left="170"
-            Text="{Binding Memory.Used}"
-            FontSize="20"/>
-        <!--RAM Used GB-->
-        <TextBlock
-            Canvas.Top="285"
-            Canvas.Left="210"
-            Text="GB"
-            FontSize="12"/>
+            HorizontalAlignment="Left">
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="{Binding Memory.Used}"
+                FontSize="24" />
+            <TextBlock
+                DockPanel.Dock="Left"
+                Text="GB"
+                FontSize="12"
+                Margin="0, 0, 0,6" />
+        </DockPanel>
     </Canvas>
 </UserControl>

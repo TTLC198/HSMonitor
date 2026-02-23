@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Windows;
 using System.Windows.Threading;
 using HSMonitor.Models;
+using HSMonitor.Services.HardwareMonitorService.Parts;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
-using HSMonitor.Utils.Serial;
 using LibreHardwareMonitor.Hardware;
-using MaterialDesignThemes.Wpf;
 
-namespace HSMonitor.Services;
+namespace HSMonitor.Services.HardwareMonitorService;
 
-public class HardwareMonitorService
+public class HardwareMonitorServiceImpl
 {
     public CpuInformation Cpu = new();
     public GpuInformation Gpu = new();
     public MemoryInformation Memory = new();
 
     private readonly SettingsService _settingsService;
-    private readonly ILogger<HardwareMonitorService> _logger;
+    private readonly ILogger<HardwareMonitorServiceImpl> _logger;
 
     public event EventHandler? HardwareInformationUpdated;
-
-    private DispatcherTimer _updateHardwareMonitorTimer = new();
 
     private static readonly Computer Computer = new()
     {
@@ -32,8 +25,12 @@ public class HardwareMonitorService
         IsGpuEnabled = true,
         IsMemoryEnabled = true
     };
+    
+    private PeriodicTimer? _hardwareTimer;
+    private CancellationTokenSource? _hardwareCts;
+    private Task? _hardwareTask;
 
-    public HardwareMonitorService(SettingsService settingsService, ILogger<HardwareMonitorService> logger)
+    public HardwareMonitorServiceImpl(SettingsService settingsService, ILogger<HardwareMonitorServiceImpl> logger)
     {
         _settingsService = settingsService;
         _logger = logger;
@@ -41,30 +38,47 @@ public class HardwareMonitorService
         _settingsService.SettingsSaved += SettingsServiceOnSettingsSaved;
     }
 
-    public async Task Start()
+    public void Start()
     {
-        _updateHardwareMonitorTimer = new DispatcherTimer(
-            priority: DispatcherPriority.Background,
-            interval: TimeSpan.FromMilliseconds(_settingsService.Settings.SendInterval == 0
-                ? 500
-                : _settingsService.Settings.SendInterval),
-            callback: HardwareInformationUpdate,
-            dispatcher: Dispatcher.FromThread(Thread.CurrentThread) ?? throw new InvalidOperationException("Current thread is null")
-        );
-        await Task.Run(() =>
+        Stop();
+
+        var intervalMs = _settingsService.Settings.SendInterval == 0
+            ? 500
+            : _settingsService.Settings.SendInterval;
+
+        _hardwareCts = new CancellationTokenSource();
+        _hardwareTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(intervalMs));
+
+        _hardwareTask = Task.Run(async () =>
         {
-            _updateHardwareMonitorTimer.Start();
+            try
+            {
+                while (await _hardwareTimer.WaitForNextTickAsync(_hardwareCts.Token))
+                {
+                    HardwareInformationUpdate();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // штатная остановка
+            }
         });
+    }
+    
+    public void Stop()
+    {
+        _hardwareCts?.Cancel();
+        _hardwareTimer?.Dispose();
     }
 
     private void SettingsServiceOnSettingsSaved(object? sender, EventArgs e)
     {
-        if (sender is not SettingsService service) return;
+        if (sender is not SettingsService service) 
+            return;
+
         _settingsService.Settings = service.Settings;
-        _updateHardwareMonitorTimer.Interval = TimeSpan.FromMilliseconds(
-            _settingsService.Settings.SendInterval == 0 
-                ? 500 
-                :_settingsService.Settings.SendInterval);
+
+        Start();
     }
 
     public Message GetHwInfoMessage()
@@ -85,7 +99,7 @@ public class HardwareMonitorService
     public static IEnumerable<IHardware> GetGraphicCards() => Computer.Hardware.Where(h =>
         h.HardwareType is HardwareType.GpuAmd or HardwareType.GpuIntel or HardwareType.GpuNvidia);
 
-    public async void HardwareInformationUpdate(object? sender, EventArgs eventArgs)
+    public void HardwareInformationUpdate()
     {
         try
         {
@@ -108,7 +122,7 @@ public class HardwareMonitorService
             Gpu = GpuInformationUpdate(gpuHardware);
             Memory = MemoryInformationUpdate(Computer.Hardware
                 .FirstOrDefault(h =>
-                    h.HardwareType == HardwareType.Memory)!);
+                    h.HardwareType == HardwareType.Memory && h.Identifier.ToString() == "/ram")!);
 
             Cpu.DefaultClock = _settingsService.Settings.DefaultCpuFrequency;
             Gpu.DefaultCoreClock = _settingsService.Settings.DefaultGpuFrequency;
@@ -147,23 +161,21 @@ public class HardwareMonitorService
 
             var cpuHardwareSensors = cpuHardware
                 .Sensors
-                .Where(s => s.SensorType is SensorType.Clock or SensorType.SmallData or SensorType.Load
-                    or SensorType.Temperature or SensorType.Power or SensorType.Voltage)
-                .ToArray();
+                .ToList();
 
-            if (cpuHardwareSensors is null or {Length: 0})
+            if (cpuHardwareSensors is null or {Count: 0})
                 return cpuInfo;
             
             var clockSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Clock);
+                .FirstOrDefault(s => s.SensorType == SensorType.Clock && s.Value > 0);
             var loadSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.Name.Contains("Total") && s.SensorType == SensorType.Load);
             var powerSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Power);
+                .FirstOrDefault(s => s.SensorType == SensorType.Power && s.Value > 0);
             var voltageSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID"));
+                .FirstOrDefault(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID") && s.Value > 0);
             var temperatureSensor = cpuHardwareSensors
-                .FirstOrDefault(s => s.SensorType == SensorType.Temperature);
+                .FirstOrDefault(s => s.SensorType == SensorType.Temperature && s.Value > 0);
             
             cpuInfo.Type = _settingsService.Settings.IsAutoDetectHardwareEnabled
                 ? cpuHardware.GetType().ToString().Split(".").LastOrDefault() ?? "Unknown"
@@ -183,7 +195,7 @@ public class HardwareMonitorService
             if (powerSensor is not null and {Value: not null})
                 cpuInfo.Power = Math.Round(
                     powerSensor.Value.GetFloatAsCorrectNumber(),
-                    1,
+                    0,
                     MidpointRounding.ToEven);
             if (voltageSensor is not null and {Value: not null})
                 cpuInfo.Voltage = Math.Round(
@@ -355,7 +367,7 @@ public class HardwareMonitorService
                     .Value.GetFloatAsCorrectNumber(),
                 1,
                 MidpointRounding.AwayFromZero);
-            memoryInfo.Used = (double) Math.Round(
+            memoryInfo.Used = (int) Math.Round(
                 memoryHardwareSensors
                     .First(s => s.Name.Contains("Memory Used") && s.SensorType == SensorType.Data)
                     .Value.GetFloatAsCorrectNumber(),
