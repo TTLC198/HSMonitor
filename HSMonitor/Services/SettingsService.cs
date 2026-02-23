@@ -49,7 +49,7 @@ public class SettingsService
         IsHiddenAutoStartEnabled = true,
         IsAutoStartEnabled = false,
         IsDeviceBackwardCompatibilityEnabled = false,
-        ApplicationCultureInfo = CultureInfo.InstalledUICulture.Name
+        ApplicationCultureInfo = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName
     };
 
     public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");

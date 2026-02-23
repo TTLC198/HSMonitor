@@ -1,4 +1,4 @@
-<UserControl x:Class="HSMonitor.Views.Settings.AdvancedSettingsTabView"
+﻿<UserControl x:Class="HSMonitor.Views.Settings.AdvancedSettingsTabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,8 +11,7 @@
              d:DataContext="{d:DesignInstance Type=settings:AdvancedSettingsTabViewModel}"
              Style="{StaticResource MaterialDesignRoot}"
              mc:Ignorable="d"
-             Background="Transparent"
-             Loaded="{s:Action OnViewFullyLoaded}">
+             Background="Transparent">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">

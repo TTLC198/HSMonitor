@@ -39,17 +39,10 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
         set => SettingsService.Settings.ApplicationCultureInfo = value;
     }
     
-    public static IEnumerable<CultureInfo> Languages => _languages;
-
-    private static IEnumerable<CultureInfo> _languages = [];
+    public static IEnumerable<CultureInfo> Languages => LocalizationManager.GetAvailableCultures();
     
     public AdvancedSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 3, "Advanced")
     {
-    }
-
-    public void OnViewFullyLoaded()
-    {
-        _languages = LocalizationManager.GetAvailableCultures();
     }
 }
