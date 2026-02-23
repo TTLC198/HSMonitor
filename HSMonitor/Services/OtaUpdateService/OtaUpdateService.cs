@@ -52,7 +52,7 @@ public class OtaUpdateService
       CustomInstallerArguments = null,
       ClearOldInstallers = null,
       UIFactory = null,
-      Configuration = new JSONConfiguration(new ManualAssemblyAccessor(GetProjectVersionAsync)),
+      Configuration = new JSONConfiguration(new ManualAssemblyAccessor(GetProjectVersion)),
       RestartExecutablePath = null!,
       RestartExecutableName = null!,
       RelaunchAfterUpdateCommandPrefix = null,
@@ -83,40 +83,14 @@ public class OtaUpdateService
   private void UpdaterOnDownloadHadError(AppCastItem item, string? path, Exception exception) =>
     _downloadHadErrorFlowSubject.OnNext(new DownloadHadErrorEvent(item, path, exception));
 
-  public async Task<string> GetProjectVersionAsync()
+  public string GetProjectVersion()
   {
-    await _otaLock.WaitAsync().ConfigureAwait(false);
+    _otaLock.Wait();
     var version = "";
 
     try
     {
-      var serialPortName = GetDeviceInfo();
-
-      if (serialPortName?.PortName is null)
-      {
-        _logger.Warn("Устройство для обновления не найдено!");
-        return string.Empty;
-      }
-
-      using var sp = OpenPort(serialPortName.PortName);
-
-      sp.Open();
-
-      sp.DiscardInBuffer();
-      sp.DiscardOutBuffer();
-      Thread.Sleep(200);
-
-      var client = new UsbOtaClient(sp);
-
-      version = client.GetProjectVersion();
-
-      if (string.IsNullOrEmpty(version))
-      {
-        _logger.Warn($"Не удалось определить версию устройства! Полученная версия: [{version}]");
-        return string.Empty;
-      }
-
-
+      version = GetProjectVersionInternal();
     }
     catch (Exception exception)
     {
@@ -127,6 +101,59 @@ public class OtaUpdateService
       _otaLock.Release();
     }
 
+    return version;
+  }
+  
+  public async Task<string> GetProjectVersionAsync()
+  {
+    await _otaLock.WaitAsync().ConfigureAwait(false);
+    var version = "";
+
+    try
+    {
+      version = GetProjectVersionInternal();
+    }
+    catch (Exception exception)
+    {
+      _logger.Error(exception);
+    }
+    finally
+    {
+      _otaLock.Release();
+    }
+
+    return version;
+  }
+
+  private string GetProjectVersionInternal()
+  {
+    var version = "";
+    var serialPortName = GetDeviceInfo();
+
+    if (serialPortName?.PortName is null)
+    {
+      _logger.Warn("Устройство для обновления не найдено!");
+      return string.Empty;
+    }
+
+    using var sp = OpenPort(serialPortName.PortName);
+
+    sp.Open();
+
+    sp.DiscardInBuffer();
+    sp.DiscardOutBuffer();
+    Thread.Sleep(200);
+
+    var client = new UsbOtaClient(sp);
+
+    version = client.GetProjectVersion();
+
+    if (string.IsNullOrEmpty(version))
+    {
+      _logger.Warn($"Не удалось определить версию устройства! Полученная версия: [{version}]");
+      return string.Empty;
+    }
+    
     return version;
   }
 

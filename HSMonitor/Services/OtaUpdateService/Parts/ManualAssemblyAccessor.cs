@@ -2,9 +2,9 @@ using NetSparkleUpdater.Interfaces;
 
 namespace HSMonitor.Services.OtaUpdateService.Parts;
 
-sealed class ManualAssemblyAccessor(Func<Task<string>> version) : IAssemblyAccessor
+sealed class ManualAssemblyAccessor(Func<string> version) : IAssemblyAccessor
 {
-  private readonly string _version = version().GetAwaiter().GetResult();
+  private readonly string _version = version();
 
   public string AssemblyVersion => _version;
   public string AssemblyCompany => "ttlc198";
