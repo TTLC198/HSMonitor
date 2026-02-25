@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="0.2.1" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rss version="0.2.2" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
-        <title>HSMonitor Device 0.2.1</title>
+        <title>HSMonitor Device 0.2.2</title>
         <link>https://raw.githubusercontent.com/TTLC198/HSMonitor/master/appcast-device.xml</link>
         <description>See full description in github</description>
         <language>en</language>
         <item>
-            <title>Version 0.2.1</title>
-            <pubDate>Sat, 07 Feb 2026</pubDate>
-            <enclosure url="https://github.com/TTLC198/HSMonitor/releases/download/1.2.0/HSMonitor-S2.0.2.1.bin" sparkle:version="0.2.1" type="application/octet-stream"/>
+            <title>Version 0.2.2</title>
+            <pubDate>Thr, 26 Feb 2026</pubDate>
+            <enclosure url="https://github.com/TTLC198/HSMonitor/releases/download/1.2.0/HSMonitor-S2.0.2.2.bin" sparkle:version="0.2.2" type="application/octet-stream"/>
         </item>
     </channel>
 </rss>
