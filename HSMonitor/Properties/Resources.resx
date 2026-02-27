@@ -266,13 +266,13 @@ Please reinstall the program to fix the problem.</value>
     <value>Update</value>
   </data>
   <data name="PawnIoOutdated" xml:space="preserve">
-    <value>PawnIO is outdated, do you want to update it?</value>
+    <value>PawnIO is outdated, do you want to update it? Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install.</value>
   </data>
   <data name="PawnIoNotInstalled" xml:space="preserve">
-    <value>PawnIO is not installed, do you want to install it?</value>
+    <value>PawnIO is not installed. Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install.</value>
   </data>
   <data name="PawnIoInfo" xml:space="preserve">
-    <value>PawnIO allows you to get CPU information</value>
+    <value>Less information about CPU</value>
   </data>
   <data name="DownloadCancelled" xml:space="preserve">
     <value>Download cancelled</value>

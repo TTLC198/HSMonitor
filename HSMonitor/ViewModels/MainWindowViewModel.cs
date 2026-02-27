@@ -206,8 +206,8 @@ public class MainWindowViewModel : Screen
                 if (PawnIo.Version < new Version(2, 0, 0, 0))
                 {
                    var dialogResult = await _messageBoxService.ShowAsync(
-                       title: Resources.PawnIoOutdated,
-                       message: Resources.PawnIoInfo,
+                       title: Resources.PawnIoInfo,
+                       message: Resources.PawnIoOutdated,
                        okButtonText: Resources.MessageBoxOkButtonText,
                        cancelButtonText: Resources.MessageBoxCancelButtonText);
                     if (dialogResult)
@@ -217,8 +217,8 @@ public class MainWindowViewModel : Screen
             else
             {
                 var dialogResult = await _messageBoxService.ShowAsync(
-                    title: Resources.PawnIoNotInstalled,
-                    message: Resources.PawnIoInfo,
+                    title: Resources.PawnIoInfo,
+                    message: Resources.PawnIoNotInstalled,
                     okButtonText: Resources.MessageBoxOkButtonText,
                     cancelButtonText: Resources.MessageBoxCancelButtonText);
                 if (dialogResult)

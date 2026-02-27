@@ -265,13 +265,13 @@
     <value>Обновление</value>
   </data>
   <data name="PawnIoOutdated" xml:space="preserve">
-    <value>PawnIO устарел, хотите обновить его?</value>
+    <value>PawnIO устарел, хотите обновить его? Это позволить получать ВСЮ информацию о CPU. Нажмите ОК для установки</value>
   </data>
   <data name="PawnIoNotInstalled" xml:space="preserve">
-    <value>PawnIO не установлен, хотите ли вы его установить?</value>
+    <value>PawnIO не установлен, хотите ли вы его установить? Это позволить получать ВСЮ информацию о CPU. Нажмите ОК для установки</value>
   </data>
   <data name="PawnIoInfo" xml:space="preserve">
-    <value>PawnIO позволяет получать информацию о CPU</value>
+    <value>Урезанная информация о CPU</value>
   </data>
   <data name="DownloadCancelled" xml:space="preserve">
     <value>Скачивание отменено</value>

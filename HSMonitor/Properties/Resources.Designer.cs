@@ -495,7 +495,7 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PawnIO allows you to get CPU information.
+        ///   Looks up a localized string similar to Less information about CPU.
         /// </summary>
         public static string PawnIoInfo {
             get {
@@ -504,7 +504,7 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PawnIO is not installed, do you want to install it?.
+        ///   Looks up a localized string similar to PawnIO is not installed. Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install..
         /// </summary>
         public static string PawnIoNotInstalled {
             get {
@@ -513,7 +513,7 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PawnIO is outdated, do you want to update it?.
+        ///   Looks up a localized string similar to PawnIO is outdated, do you want to update it? Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install..
         /// </summary>
         public static string PawnIoOutdated {
             get {
