@@ -166,22 +166,6 @@ public class HardwareMonitorServiceImpl
             if (cpuHardwareSensors is null or {Count: 0})
                 return cpuInfo;
             
-            var t1 = cpuHardwareSensors
-                .Where(s => s.SensorType == SensorType.Clock)
-                .ToList();
-            var t2 = cpuHardwareSensors
-                .Where(s => s.Name.Contains("Total") && s.SensorType == SensorType.Load)
-                .ToList();
-            var t3 = cpuHardwareSensors
-                .Where(s => s.SensorType == SensorType.Power)
-                .ToList();
-            var t4 = cpuHardwareSensors
-                .Where(s => s.SensorType == SensorType.Voltage && s.Name.Contains("Core") && !s.Name.Contains("VID"))
-                .ToList();
-            var t5 = cpuHardwareSensors
-                .Where(s => s.SensorType == SensorType.Temperature)
-                .ToList();
-            
             var clockSensor = cpuHardwareSensors
                 .FirstOrDefault(s => s.SensorType == SensorType.Clock && s.Value > 0);
             var loadSensor = cpuHardwareSensors
