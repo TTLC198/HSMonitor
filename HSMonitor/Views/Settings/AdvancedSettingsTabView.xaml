@@ -13,8 +13,10 @@
              mc:Ignorable="d"
              Background="Transparent">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer 
+        Loaded="{s:Action OnViewFullyLoaded}"
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,8"
                     Orientation="Vertical">
 

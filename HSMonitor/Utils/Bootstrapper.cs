@@ -43,6 +43,21 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope().AsWeakBinding();
     }
 
+    protected override void DisplayRootView(object rootViewModel)
+    {
+        //GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate();
+        
+        base.DisplayRootView(rootViewModel);
+    }
+
+    /*protected override void Launch()
+    {
+        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate();
+        GetInstance<SettingsService>().Load();
+        
+        base.Launch();
+    }*/
+
     protected override void OnExit(ExitEventArgs e)
     {
         GetInstance<SerialDataService>().Dispose();

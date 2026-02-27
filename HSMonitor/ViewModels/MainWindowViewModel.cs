@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Forms;
 using HSMonitor.Properties;
 using HSMonitor.Services;
@@ -121,8 +122,12 @@ public class MainWindowViewModel : Screen
 
         try
         {
+            foreach (Window currentWindow in Application.Current.Windows)
+            {
+                currentWindow.Close();
+            }
+            Application.Current.Shutdown();
             Process.Start(startInfo);
-            Exit();
         }
         catch (Win32Exception)
         {
@@ -153,6 +158,7 @@ public class MainWindowViewModel : Screen
             {
                 _logger.Error(exception);
             }
+            return Task.CompletedTask;
         });
         
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})

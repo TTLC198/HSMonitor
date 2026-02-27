@@ -11,17 +11,17 @@ public class Serial : IDisposable
     public Serial(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        if (_settingsService is {Settings: not null})
-            _serialPort = new SerialPort(
-                string.IsNullOrEmpty(_settingsService.Settings.LastSelectedPort)
-                    ? "COM1"
-                    : _settingsService.Settings.LastSelectedPort,
-                _settingsService.Settings.LastSelectedBaudRate,
-                Parity.None,
-                8,
-                StopBits.One);
-        else
-            _serialPort = new SerialPort();
+        
+        var port = string.IsNullOrEmpty(_settingsService.Settings?.LastSelectedPort)
+            ? GetPorts().FirstOrDefault(d => d.IsHsMonitorData)?.PortName
+            : _settingsService.Settings?.LastSelectedPort;
+        
+        _serialPort = new SerialPort(
+            port,
+            _settingsService.Settings?.LastSelectedBaudRate ?? 9600,
+            Parity.None,
+            8,
+            StopBits.One);
     }
 
     public static IEnumerable<DeviceInfo> GetPorts()

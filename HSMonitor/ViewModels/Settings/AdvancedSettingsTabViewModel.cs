@@ -6,6 +6,8 @@ namespace HSMonitor.ViewModels.Settings;
 
 public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
 {
+    private readonly SettingsService _settingsService;
+    
     public bool IsAutoUpdateEnabled
     {
         get => SettingsService.Settings.IsAutoUpdateEnabled;
@@ -44,5 +46,11 @@ public class AdvancedSettingsTabViewModel : SettingsTabBaseViewModel
     public AdvancedSettingsTabViewModel(SettingsService settingsService) 
         : base(settingsService, 3, "Advanced")
     {
+        _settingsService = settingsService;
+    }
+
+    public void OnViewFullyLoaded()
+    {
+        ApplicationCultureInfo = _settingsService.Settings.ApplicationCultureInfo;
     }
 }

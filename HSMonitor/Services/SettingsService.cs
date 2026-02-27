@@ -79,7 +79,7 @@ public class SettingsService
             var json = File.ReadAllText(ConfigurationPath);
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
-            Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
+            Settings.ApplicationCultureInfo ??= CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
             SettingsLoaded?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception exception)
@@ -100,7 +100,7 @@ public class SettingsService
             var json = await File.ReadAllTextAsync(ConfigurationPath);
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
-            Settings.LastSelectedPort ??= SerialPort.GetPortNames().FirstOrDefault() ?? "COM1";
+            Settings.ApplicationCultureInfo ??= CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
             SettingsLoaded?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception exception)
@@ -173,13 +173,18 @@ public class SettingsService
             UseShellExecute = true,
             WorkingDirectory = Environment.CurrentDirectory,
             FileName = App.ExecutableFilePath,
-            Arguments = "restart"
+            Arguments = "restart" + (App.IsHiddenOnLaunch ? " " + App.HiddenOnLaunchArgument : null),
+            Verb = "runas"
         };
 
         try
         {
-            Process.Start(startInfo);
+            foreach (Window currentWindow in Application.Current.Windows)
+            {
+                currentWindow.Close();
+            }
             Application.Current.Shutdown();
+            Process.Start(startInfo);
         }
         catch (Exception exception)
         {
