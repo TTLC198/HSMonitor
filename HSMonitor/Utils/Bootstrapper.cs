@@ -32,6 +32,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<SettingsService>().ToSelf().InSingletonScope();
         builder.Bind<SerialDataService>().ToSelf().InSingletonScope();
         builder.Bind<DialogManager>().ToSelf().InSingletonScope();
+        builder.Bind<MessageBoxService>().ToSelf().InSingletonScope();
         
         builder.Bind<IViewModelFactory>().ToAbstractFactory();
 

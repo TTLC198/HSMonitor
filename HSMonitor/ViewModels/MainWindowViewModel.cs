@@ -23,6 +23,8 @@ public class MainWindowViewModel : Screen
 {
     private readonly IViewModelFactory _viewModelFactory;
     private readonly DialogManager _dialogManager;
+    private readonly MessageBoxService _messageBoxService;
+    
     private readonly SettingsService _settingsService;
     private readonly SerialDataService _serialDataService;
     private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
@@ -51,6 +53,7 @@ public class MainWindowViewModel : Screen
         SettingsService settingsService,
         SerialDataService serialDataService,
         UpdateService updateService, 
+        MessageBoxService messageBoxService,
         ILogger<MainWindowViewModel> logger)
     {
         _viewModelFactory = viewModelFactory;
@@ -60,6 +63,7 @@ public class MainWindowViewModel : Screen
         _serialDataService = serialDataService;
         _updateService = updateService;
         _logger = logger;
+        _messageBoxService = messageBoxService;
 
         Dashboard = viewModelFactory.CreateDashboardViewModel();
         DisplayName = $"{App.Name} v{App.VersionString}";
@@ -76,34 +80,6 @@ public class MainWindowViewModel : Screen
             IsSerialMonitorEnabled = false;
             _serialDataService.OpenPortAttemptFailed -= SerialDataServiceOnOpenPortAttemptFailed;
             _serialDataService.OpenPortAttemptSuccessful += SerialDataServiceOnOpenPortAttemptSuccessful;
-        
-            if (_isConnectionErrorWindowOpened)
-                return;
-        
-            try
-            {
-                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: $"{_settingsService.Settings.LastSelectedPort} {Resources.NoConnectionBusyMessageText}",
-                    message: Resources.NoConnectionErrorMessageText,
-                    okButtonText: Resources.MessageBoxOkButtonText,
-                    cancelButtonText: Resources.MessageBoxCancelButtonText
-                );
-
-                _isConnectionErrorWindowOpened = true;
-                var dialogResult = await _dialogManager.ShowDialogAsync(messageBoxDialog);
-                if (dialogResult)
-                {
-                    var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
-                    settingsDialog.ActivateTabByType<ConnectionSettingsTabViewModel>();
-
-                    await _dialogManager.ShowSettingsDialogAsync(settingsDialog);
-                }
-                _isConnectionErrorWindowOpened = dialogResult;
-            }
-            catch 
-            {
-                _isConnectionErrorWindowOpened = false;
-            }
         }
         catch (Exception exception)
         {
@@ -122,18 +98,17 @@ public class MainWindowViewModel : Screen
 
     private async Task ShowAdminPrivilegesRequirement()
     {
-        var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+        var dialogResult = await _messageBoxService.ShowAsync(
             title: Resources.AdminPrivilegesRequirementMessageTitle,
             message: Resources.AdminPrivilegesRequirementMessageText.Trim(),
             okButtonText: Resources.MessageBoxOkButtonText,
             cancelButtonText: Resources.MessageBoxCancelButtonText
         );
-
-        if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
-            RestartAsAdmin();
+        if (dialogResult)
+            await RestartAsAdminAsync();
     }
 
-    private void RestartAsAdmin()
+    private async Task RestartAsAdminAsync()
     {
         var startInfo = new ProcessStartInfo
         {
@@ -156,16 +131,10 @@ public class MainWindowViewModel : Screen
         catch (Exception exception)
         {
             _logger.Error(exception);
-            
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last().Replace(".", "").Trim()}".Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
-            );
-            _dialogManager.ShowDialogAsync(messageBoxDialog).GetAwaiter();
+
+            await _messageBoxService.ShowAsync(message:
+                $@"{Resources.MessageBoxErrorText} 
+                   {exception.Message.Split('\'').Last().Replace(".", "").Trim()}");
         }
     }
 
@@ -173,14 +142,8 @@ public class MainWindowViewModel : Screen
     {
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: Resources.ConfigurationFileErrorMessageText.Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
-            );
-
-            if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+            var dialogResult = await _messageBoxService.ShowAsync(message: Resources.ConfigurationFileErrorMessageText);
+            if (dialogResult)
                 Exit();
         }
         else
@@ -202,16 +165,16 @@ public class MainWindowViewModel : Screen
                     }
                     else
                     {
-                        var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                        var dialogResult = await _messageBoxService.ShowAsync(
                             title: Resources.NewUpdateMessageTitle,
                             message: $@"
 {Resources.NewUpdateMessageVersionText} {updateInfo.Updates.First().Version}.         
 {Resources.NewUpdateMessageCurrentVersionText} {App.Version.ToString(3).Trim()}.
 {Resources.NewUpdateMessageUpdateText}".Trim(),
                             okButtonText: Resources.MessageBoxOkButtonText,
-                            cancelButtonText: Resources.MessageBoxCancelButtonText
-                        );
-                        if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+                            cancelButtonText: Resources.MessageBoxCancelButtonText);
+                        
+                        if (dialogResult)
                         {
                             var settingsDialog = _viewModelFactory.CreateSettingsViewModel();
                             settingsDialog.ActivateTabByType<UpdateSettingsTabViewModel>();
@@ -225,22 +188,15 @@ public class MainWindowViewModel : Screen
             {
                 _logger.Error(exception);
                 
-                var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                    title: Resources.MessageBoxErrorTitle,
-                    message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message}".Trim(),
-                    okButtonText: Resources.MessageBoxOkButtonText,
-                    cancelButtonText: null
-                );
-
-                await _dialogManager.ShowDialogAsync(errorBoxDialog);
+                await _messageBoxService.ShowAsync(message:
+                    $@"{Resources.MessageBoxErrorText} 
+                   {exception.Message.Split('\'').Last().Replace(".", "").Trim()}");
             }
 
             if (!CheckRole.IsUserAdministrator())
             {
                 if (_settingsService.Settings.IsRunAsAdministrator)
-                    RestartAsAdmin();
+                    await RestartAsAdminAsync();
                 else
                     await ShowAdminPrivilegesRequirement();
             }
