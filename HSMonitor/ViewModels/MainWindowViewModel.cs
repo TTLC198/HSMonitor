@@ -205,17 +205,23 @@ public class MainWindowViewModel : Screen
             {
                 if (PawnIo.Version < new Version(2, 0, 0, 0))
                 {
-                    //todo: переделка на свои диалоговые окна
-                    DialogResult result = MessageBox.Show("PawnIO is outdated, do you want to update it?", nameof(LibreHardwareMonitor), MessageBoxButtons.OKCancel);
-                    if (result == DialogResult.OK)
+                   var dialogResult = await _messageBoxService.ShowAsync(
+                       title: Resources.PawnIoOutdated, //todo:
+                       message: Resources.PawnIoInfo,
+                       okButtonText: Resources.MessageBoxOkButtonText,
+                       cancelButtonText: Resources.MessageBoxCancelButtonText);
+                    if (dialogResult)
                         InstallerService.InstallPawnIo();
                 }
             }
             else
             {
-                //todo: переделка
-                DialogResult result = MessageBox.Show("PawnIO is not installed, do you want to install it?", nameof(LibreHardwareMonitor), MessageBoxButtons.OKCancel);
-                if (result == DialogResult.OK)
+                var dialogResult = await _messageBoxService.ShowAsync(
+                    title: Resources.PawnIoNotInstalled,
+                    message: Resources.PawnIoInfo,
+                    okButtonText: Resources.MessageBoxOkButtonText,
+                    cancelButtonText: Resources.MessageBoxCancelButtonText);
+                if (dialogResult)
                     InstallerService.InstallPawnIo();
             }
 

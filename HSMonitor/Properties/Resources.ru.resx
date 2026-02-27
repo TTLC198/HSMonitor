@@ -264,4 +264,13 @@
   <data name="Update" xml:space="preserve">
     <value>Обновление</value>
   </data>
+  <data name="PawnIoOutdated" xml:space="preserve">
+    <value>PawnIO устарел, хотите обновить его?</value>
+  </data>
+  <data name="PawnIoNotInstalled" xml:space="preserve">
+    <value>PawnIO не установлен, хотите ли вы его установить?</value>
+  </data>
+  <data name="PawnIoInfo" xml:space="preserve">
+    <value>PawnIO позволяет получать информацию о CPU</value>
+  </data>
 </root>

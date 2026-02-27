@@ -486,6 +486,33 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PawnIO allows you to get CPU information.
+        /// </summary>
+        public static string PawnIoInfo {
+            get {
+                return ResourceManager.GetString("PawnIoInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PawnIO is not installed, do you want to install it?.
+        /// </summary>
+        public static string PawnIoNotInstalled {
+            get {
+                return ResourceManager.GetString("PawnIoNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PawnIO is outdated, do you want to update it?.
+        /// </summary>
+        public static string PawnIoOutdated {
+            get {
+                return ResourceManager.GetString("PawnIoOutdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project URL on GitHub:.
         /// </summary>
         public static string ProjectURLText {

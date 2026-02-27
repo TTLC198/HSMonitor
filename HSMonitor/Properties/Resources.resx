@@ -265,4 +265,13 @@ Please reinstall the program to fix the problem.</value>
   <data name="Update" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="PawnIoOutdated" xml:space="preserve">
+    <value>PawnIO is outdated, do you want to update it?</value>
+  </data>
+  <data name="PawnIoNotInstalled" xml:space="preserve">
+    <value>PawnIO is not installed, do you want to install it?</value>
+  </data>
+  <data name="PawnIoInfo" xml:space="preserve">
+    <value>PawnIO allows you to get CPU information</value>
+  </data>
 </root>
