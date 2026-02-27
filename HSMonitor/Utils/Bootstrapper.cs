@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 using HSMonitor.Services;
 using HSMonitor.Services.HardwareMonitorService;
 using HSMonitor.Services.SerialDataService;
@@ -18,7 +19,7 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
     protected override void OnStart()
     {
         Stylet.Logging.LogManager.LoggerFactory = _ => new FileLogger<Bootstrapper>();
-        Stylet.Logging.LogManager.Enabled = true;
+        Stylet.Logging.LogManager.Enabled = false;
         base.OnStart();
     }
     
@@ -42,19 +43,6 @@ public class Bootstrapper : Bootstrapper<MainWindowViewModel>
         builder.Bind<ISettingsTabViewModel>().ToAllImplementations().InSingletonScope().AsWeakBinding();
     }
 
-    protected override void Configure()
-    {
-        base.Configure();
-    }
-
-    protected override void Launch()
-    {
-        GetInstance<HardwareMonitorServiceImpl>().HardwareInformationUpdate();
-        GetInstance<SettingsService>().Load();
-        
-        base.Launch();
-    }
-    
     protected override void OnExit(ExitEventArgs e)
     {
         GetInstance<SerialDataService>().Dispose();

@@ -27,7 +27,7 @@ public class MainWindowViewModel : Screen
     
     private readonly SettingsService _settingsService;
     private readonly SerialDataService _serialDataService;
-    private readonly HardwareMonitorServiceImpl _hardwareMonitorServiceImpl;
+    private readonly HardwareMonitorServiceImpl _hardwareMonitorService;
     private readonly UpdateService _updateService;
     private readonly ILogger<MainWindowViewModel> _logger;
     public DashboardViewModel Dashboard { get; }
@@ -49,7 +49,7 @@ public class MainWindowViewModel : Screen
     public MainWindowViewModel(
         IViewModelFactory viewModelFactory,
         DialogManager dialogManager,
-        HardwareMonitorServiceImpl hardwareMonitorServiceImpl,
+        HardwareMonitorServiceImpl hardwareMonitorService,
         SettingsService settingsService,
         SerialDataService serialDataService,
         UpdateService updateService, 
@@ -58,7 +58,7 @@ public class MainWindowViewModel : Screen
     {
         _viewModelFactory = viewModelFactory;
         _dialogManager = dialogManager;
-        _hardwareMonitorServiceImpl = hardwareMonitorServiceImpl;
+        _hardwareMonitorService = hardwareMonitorService;
         _settingsService = settingsService;
         _serialDataService = serialDataService;
         _updateService = updateService;
@@ -140,6 +140,21 @@ public class MainWindowViewModel : Screen
 
     public async Task OnViewFullyLoaded()
     {
+        await Task.Run(async () =>
+        {
+            try
+            {
+                await _settingsService.LoadAsync();
+                _hardwareMonitorService.HardwareInformationUpdate();
+                
+                Dashboard.DisplayOpacity = 1;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+            }
+        });
+        
         if (!File.Exists(_settingsService.ConfigurationPath) || _settingsService is {Settings: null})
         {
             var dialogResult = await _messageBoxService.ShowAsync(message: Resources.ConfigurationFileErrorMessageText);
@@ -225,7 +240,7 @@ public class MainWindowViewModel : Screen
                     InstallerService.InstallPawnIo();
             }
 
-            _hardwareMonitorServiceImpl.Start();
+            _hardwareMonitorService.Start();
         }
     }
 

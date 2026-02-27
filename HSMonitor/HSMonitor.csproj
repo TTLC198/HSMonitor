@@ -18,6 +18,7 @@
         <SelfContained>false</SelfContained>
         <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

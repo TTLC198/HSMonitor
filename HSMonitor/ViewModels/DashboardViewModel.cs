@@ -79,7 +79,7 @@ public class DashboardViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged();
         }
-    } = 1;
+    } = 0;
 
     public string CpuOcMarqueeText
     {

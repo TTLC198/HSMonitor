@@ -96,7 +96,7 @@ public class Serial : IDisposable
 
     public void Dispose()
     {
-        _serialPort.Close();
+        Close();
         _serialPort.Dispose();
     }
         
