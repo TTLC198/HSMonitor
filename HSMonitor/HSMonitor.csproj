@@ -7,13 +7,18 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <RootNamespace>HSMonitor</RootNamespace>
+        <AssemblyName>HSMonitor</AssemblyName>
+        <AssemblyTitle>HSMonitor</AssemblyTitle>
+        <Copyright>HSMonitor</Copyright>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <ApplicationIcon>Resources/Images/favicon.ico</ApplicationIcon>
+        <ApplicationManifest>Resources\app.manifest</ApplicationManifest>
         <IsPackable>false</IsPackable>
         <PublishSingleFile>false</PublishSingleFile>
         <SelfContained>false</SelfContained>
         <SatelliteResourceLanguages>en;ru</SatelliteResourceLanguages>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -27,7 +32,7 @@
 
     <ItemGroup>
       <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
-      <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.4" />
+      <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
       <PackageReference Include="MaterialDesignThemes" Version="5.3.0" />
       <PackageReference Include="NetSparkleUpdater.SparkleUpdater" Version="3.0.4" />
       <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
@@ -97,6 +102,8 @@
       <EmbeddedResource Update="Properties\Resources.ru.resx">
         <Generator>PublicResXFileCodeGenerator</Generator>
       </EmbeddedResource>
+      <None Remove="Resources\PawnIO_setup.exe" />
+      <EmbeddedResource Include="Resources\PawnIO_setup.exe" />
     </ItemGroup>
 
     <Target Name="ConfigureTrimming" BeforeTargets="PrepareForILLink">

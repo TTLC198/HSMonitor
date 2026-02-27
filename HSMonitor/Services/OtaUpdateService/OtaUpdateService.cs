@@ -24,6 +24,8 @@ public class OtaUpdateService
 
   private readonly IViewModelFactory _viewModelFactory;
   private readonly DialogManager _dialogManager;
+  private readonly MessageBoxService _messageBoxService;
+  
   private readonly SparkleUpdater _updater;
   private readonly ILogger<OtaUpdateService> _logger;
 
@@ -38,11 +40,12 @@ public class OtaUpdateService
 
   private UpdateInfo? _updateInfo;
 
-  public OtaUpdateService(ILogger<OtaUpdateService> logger, IViewModelFactory viewModelFactory, DialogManager dialogManager)
+  public OtaUpdateService(ILogger<OtaUpdateService> logger, IViewModelFactory viewModelFactory, DialogManager dialogManager, MessageBoxService messageBoxService)
   {
     _logger = logger;
     _viewModelFactory = viewModelFactory;
     _dialogManager = dialogManager;
+    _messageBoxService = messageBoxService;
     _updater = new SparkleUpdater(App.DeviceAutoUpdateConfigUrl,
       new Ed25519Checker(SecurityMode.Unsafe))
     {
@@ -171,16 +174,11 @@ public class OtaUpdateService
     {
       _logger.Error(exception);
 
-      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-        title: Resources.MessageBoxErrorTitle,
-        message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message}".Trim(),
-        okButtonText: Resources.MessageBoxOkButtonText,
-        cancelButtonText: null
-      );
-
-      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+      await _messageBoxService.ShowAsync(message:
+        $"""
+         {Resources.MessageBoxErrorText} 
+         {exception.Message.Split('\'').Last().Replace(".", "").Trim()}
+         """);
     }
   }
 
@@ -201,16 +199,11 @@ public class OtaUpdateService
     {
       _logger.Error(exception);
 
-      var errorBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-        title: Resources.MessageBoxErrorTitle,
-        message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message}".Trim(),
-        okButtonText: Resources.MessageBoxOkButtonText,
-        cancelButtonText: null
-      );
-
-      await _dialogManager.ShowDialogAsync(errorBoxDialog);
+      await _messageBoxService.ShowAsync(message:
+        $"""
+         {Resources.MessageBoxErrorText} 
+         {exception.Message.Split('\'').Last().Replace(".", "").Trim()}
+         """);
     }
   }
 

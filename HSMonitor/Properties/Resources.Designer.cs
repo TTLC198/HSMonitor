@@ -324,6 +324,15 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download cancelled.
+        /// </summary>
+        public static string DownloadCancelled {
+            get {
+                return ResourceManager.GetString("DownloadCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading....
         /// </summary>
         public static string DownloadingText {
@@ -482,6 +491,33 @@ namespace HSMonitor.Properties {
         public static string OpenSettingsTooltip {
             get {
                 return ResourceManager.GetString("OpenSettingsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less information about CPU.
+        /// </summary>
+        public static string PawnIoInfo {
+            get {
+                return ResourceManager.GetString("PawnIoInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PawnIO is not installed. Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install..
+        /// </summary>
+        public static string PawnIoNotInstalled {
+            get {
+                return ResourceManager.GetString("PawnIoNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PawnIO is outdated, do you want to update it? Do you want to install it? This will allow you to obtain ALL CPU information. Click OK to install..
+        /// </summary>
+        public static string PawnIoOutdated {
+            get {
+                return ResourceManager.GetString("PawnIoOutdated", resourceCulture);
             }
         }
         

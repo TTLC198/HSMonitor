@@ -36,7 +36,7 @@ public sealed class DialogManager : IDisposable
     /// </summary>
     public async Task<T?> ShowDialogAsync<T>(DialogScreen<T> dialogScreen)
     {
-        if (dialogScreen is null) throw new ArgumentNullException(nameof(dialogScreen));
+        ArgumentNullException.ThrowIfNull(dialogScreen);
 
         if (!await _dialogLock.WaitAsync(0).ConfigureAwait(false))
         {
@@ -48,14 +48,13 @@ public sealed class DialogManager : IDisposable
         {
             var view = await GetOrCreateViewOnUiAsync(dialogScreen).ConfigureAwait(false);
 
-            if (Application.Current?.Dispatcher is null)
-            {
-                await DialogHost.Show(view).ConfigureAwait(false);
-                return dialogScreen.DialogResult;
-            }
+            if (Application.Current?.Dispatcher is not null)
+                return await await Application.Current.Dispatcher.InvokeAsync(() => ShowOnUi(dialogScreen, view)).Task
+                    .ConfigureAwait(false);
+            
+            await DialogHost.Show(view).ConfigureAwait(false);
+            return dialogScreen.DialogResult;
 
-            return await await Application.Current.Dispatcher.InvokeAsync(() => ShowOnUi(dialogScreen, view)).Task
-                .ConfigureAwait(false);
         }
         finally
         {

@@ -372,14 +372,14 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
   {
     IsAppProgressBarActive = false;
     AppUpdateStatus = UpdateStatus.CouldNotDetermine;
-    AppStatusString = $"{exception.Message}"; // todo: локализация
+    AppStatusString = $"{exception.Message}";
   }
 
   private void AppUpdateServiceOnDownloadCancelledEvent(AppCastItem item, string path)
   {
     IsAppProgressBarActive = false;
     AppUpdateStatus = UpdateStatus.UserSkipped;
-    AppStatusString = $"Скачивание отменено."; // todo: локализация
+    AppStatusString = Resources.DownloadCancelled; // todo: локализация
   }
 
   private void DeviceUpdateServiceOnDownloadErrorEvent(DownloadHadErrorEvent errorEvent)
@@ -389,7 +389,7 @@ public class UpdateSettingsTabViewModel : SettingsTabBaseViewModel, INotifyPrope
       IsDeviceDownloadProgressBarActive = false;
       IsDeviceUploadProgressBarActive = false;
       DeviceUpdateStatus = UpdateStatus.CouldNotDetermine;
-      DeviceStatusString = $"{errorEvent.Exception.Message}"; // todo: локализация
+      DeviceStatusString = $"{errorEvent.Exception.Message}";
     });
   }
 

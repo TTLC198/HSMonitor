@@ -16,8 +16,7 @@ namespace HSMonitor.Services;
 
 public class SettingsService
 {
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly DialogManager _dialogManager;
+    private readonly MessageBoxService _messageBoxService;
     [UnconditionalSuppressMessage("SingleFile", "IL3002:Avoid calling members marked with 'RequiresAssemblyFilesAttribute' when publishing as a single-file", Justification = "<Pending>")]
     private readonly RegistryHandler _autoStartSwitch = new(
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 
@@ -33,7 +32,7 @@ public class SettingsService
     
     public ApplicationSettings Settings { get; set; } = DefaultSettings;
 
-    private static readonly ApplicationSettings DefaultSettings = new ApplicationSettings()
+    private static readonly ApplicationSettings DefaultSettings = new()
     {
         LastSelectedPort = null,
         LastSelectedBaudRate = 115200,
@@ -55,11 +54,10 @@ public class SettingsService
     public readonly string ConfigurationPath = Path.Combine(App.SettingsDirPath, "appsettings.json");
     private readonly ILogger<SettingsService> _logger;
 
-    public SettingsService(IViewModelFactory viewModelFactory, DialogManager dialogManager, ILogger<SettingsService> logger)
+    public SettingsService(ILogger<SettingsService> logger, MessageBoxService messageBoxService)
     {
-        _viewModelFactory = viewModelFactory;
-        _dialogManager = dialogManager;
         _logger = logger;
+        _messageBoxService = messageBoxService;
     }
     
     public async Task Reset()
@@ -109,16 +107,12 @@ public class SettingsService
         {
             _logger.Error(exception);
             
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: "OK",
-                cancelButtonText: null
-            );
-
-            if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
+            var dialogResult = await _messageBoxService.ShowAsync(message:
+                $"""
+                 {Resources.MessageBoxErrorText}
+                 {exception.Message.Split('\'').Last()}
+                 """);
+            if (dialogResult)
                 Application.Current.Shutdown();
         }
     }
@@ -131,15 +125,13 @@ public class SettingsService
         {
             if (LocalizationManager.GetCurrentCulture().Name != Settings.ApplicationCultureInfo)
             {
-                var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
+                var dialogResult = await _messageBoxService.ShowAsync(
                     title: Resources.RestartRequirementMessageTitle,
                     message: Resources.RestartRequirementMessageText.Trim(),
                     okButtonText: Resources.MessageBoxOkButtonText,
-                    cancelButtonText: Resources.MessageBoxCancelButtonText
-                );
-
-                if (await _dialogManager.ShowDialogAsync(messageBoxDialog) == true)
-                    RestartApplication();
+                    cancelButtonText: Resources.MessageBoxCancelButtonText);
+                if (dialogResult)
+                    await RestartApplicationAsync();
             }
             
             if (Settings.IsAutoStartEnabled)
@@ -162,21 +154,19 @@ public class SettingsService
         {
             _logger.Error(exception);
             
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: "OK",
-                cancelButtonText: null
-            );
-            await _dialogManager.ShowDialogAsync(messageBoxDialog);
+            var dialogResult = await _messageBoxService.ShowAsync(message:
+                $"""
+                 {Resources.MessageBoxErrorText}
+                 {exception.Message.Split('\'').Last()}
+                 """);
+            if (dialogResult)
+                Application.Current.Shutdown();
         }
         
         SettingsSaved?.Invoke(this, EventArgs.Empty);
     }
     
-    private async void RestartApplication()
+    private async Task RestartApplicationAsync()
     {
         var startInfo = new ProcessStartInfo
         {
@@ -195,15 +185,13 @@ public class SettingsService
         {
             _logger.Error(exception);
             
-            var messageBoxDialog = _viewModelFactory.CreateMessageBoxViewModel(
-                title: Resources.MessageBoxErrorTitle,
-                message: $@"
-{Resources.MessageBoxErrorText}
-{exception.Message.Split('\'').Last()}".Trim(),
-                okButtonText: Resources.MessageBoxOkButtonText,
-                cancelButtonText: null
-            );
-            await _dialogManager.ShowDialogAsync(messageBoxDialog);
+            var dialogResult = await _messageBoxService.ShowAsync(message:
+                $"""
+                 {Resources.MessageBoxErrorText}
+                 {exception.Message.Split('\'').Last()}
+                 """);
+            if (dialogResult)
+                Application.Current.Shutdown();
         }
     }
 }
