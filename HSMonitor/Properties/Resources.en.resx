@@ -333,4 +333,7 @@ Please reinstall the program to fix the problem.</value>
   <data name="PawnIoInfo" xml:space="preserve">
     <value>PawnIO allows you to get CPU information</value>
   </data>
+  <data name="DownloadCancelled" xml:space="preserve">
+    <value>Download cancelled</value>
+  </data>
 </root>

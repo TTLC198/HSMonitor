@@ -206,7 +206,7 @@ public class MainWindowViewModel : Screen
                 if (PawnIo.Version < new Version(2, 0, 0, 0))
                 {
                    var dialogResult = await _messageBoxService.ShowAsync(
-                       title: Resources.PawnIoOutdated, //todo:
+                       title: Resources.PawnIoOutdated,
                        message: Resources.PawnIoInfo,
                        okButtonText: Resources.MessageBoxOkButtonText,
                        cancelButtonText: Resources.MessageBoxCancelButtonText);

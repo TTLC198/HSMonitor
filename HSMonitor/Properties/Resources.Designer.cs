@@ -324,6 +324,15 @@ namespace HSMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download cancelled.
+        /// </summary>
+        public static string DownloadCancelled {
+            get {
+                return ResourceManager.GetString("DownloadCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading....
         /// </summary>
         public static string DownloadingText {

@@ -273,4 +273,7 @@
   <data name="PawnIoInfo" xml:space="preserve">
     <value>PawnIO позволяет получать информацию о CPU</value>
   </data>
+  <data name="DownloadCancelled" xml:space="preserve">
+    <value>Скачивание отменено</value>
+  </data>
 </root>
