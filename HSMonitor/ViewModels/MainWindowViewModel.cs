@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using HSMonitor.Properties;
 using HSMonitor.Services;
 using HSMonitor.Services.HardwareMonitorService;
+using HSMonitor.Services.PawnIO;
 using HSMonitor.Services.SerialDataService;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels.Framework;
 using HSMonitor.ViewModels.Settings;
+using LibreHardwareMonitor.PawnIo;
 using NetSparkleUpdater.Enums;
 using Application = System.Windows.Application;
 using Screen = Stylet.Screen;
@@ -240,6 +243,24 @@ public class MainWindowViewModel : Screen
                     RestartAsAdmin();
                 else
                     await ShowAdminPrivilegesRequirement();
+            }
+            
+            if (PawnIo.IsInstalled)
+            {
+                if (PawnIo.Version < new Version(2, 0, 0, 0))
+                {
+                    //todo: переделка на свои диалоговые окна
+                    DialogResult result = MessageBox.Show("PawnIO is outdated, do you want to update it?", nameof(LibreHardwareMonitor), MessageBoxButtons.OKCancel);
+                    if (result == DialogResult.OK)
+                        InstallerService.InstallPawnIo();
+                }
+            }
+            else
+            {
+                //todo: переделка
+                DialogResult result = MessageBox.Show("PawnIO is not installed, do you want to install it?", nameof(LibreHardwareMonitor), MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
+                    InstallerService.InstallPawnIo();
             }
 
             _hardwareMonitorServiceImpl.Start();

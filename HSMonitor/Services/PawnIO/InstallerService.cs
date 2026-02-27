@@ -2,11 +2,11 @@
 using System.IO;
 using HSMonitor.Views;
 
-namespace HSMonitor.Utils;
+namespace HSMonitor.Services.PawnIO;
 
 public static class InstallerService
 {
-    static void InstallPawnIo()
+    public static void InstallPawnIo()
     {
         var path = ExtractPawnIo();
         if (string.IsNullOrEmpty(path)) return;
