@@ -51,6 +51,8 @@
       <Resource Include="Resources\Images\DefaultRam.png" />
       <Resource Include="Resources\Fonts\org_01.ttf" />
       <Resource Include="Resources\Fonts\VT323.ttf" />
+      <None Remove="Resources\PawnIO_setup.exe" />
+      <EmbeddedResource Include="Resources\PawnIO_setup.exe" />
     </ItemGroup>
 
     <ItemGroup>

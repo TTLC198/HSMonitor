@@ -10,7 +10,17 @@ public static class InstallerService
     {
         var path = ExtractPawnIo();
         if (string.IsNullOrEmpty(path)) return;
-        var process = Process.Start(new ProcessStartInfo(path, "-install"));
+        
+        var psi = new ProcessStartInfo
+        {
+            FileName = path,
+            Arguments = "-install",
+            UseShellExecute = true,
+            Verb = "runas", // запросить повышение прав (UAC)
+            WorkingDirectory = Path.GetDirectoryName(path)
+        };
+
+        var process = Process.Start(psi);
         process?.WaitForExit();
 
         File.Delete(path);
