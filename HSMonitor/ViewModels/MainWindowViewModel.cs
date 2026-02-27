@@ -145,11 +145,11 @@ public class MainWindowViewModel : Screen
 
     public async Task OnViewFullyLoaded()
     {
-        await Task.Run(async () =>
+        await Task.Run(() =>
         {
             try
             {
-                await _settingsService.LoadAsync();
+                _settingsService.Load();
                 _hardwareMonitorService.HardwareInformationUpdate();
                 
                 Dashboard.DisplayOpacity = 1;

@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Windows;
 using HSMonitor.Models;
 using HSMonitor.Properties;
+using HSMonitor.Services.SerialDataService.Parts;
 using HSMonitor.Utils;
 using HSMonitor.Utils.Logger;
 using HSMonitor.ViewModels;
@@ -80,6 +81,7 @@ public class SettingsService
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
             Settings.ApplicationCultureInfo ??= CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+            Settings.LastSelectedPort ??= Serial.GetPorts().FirstOrDefault(d => d.IsHsMonitorData)?.PortName;
             SettingsLoaded?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception exception)
@@ -101,6 +103,7 @@ public class SettingsService
             Settings = JsonSerializer.Deserialize<ApplicationSettings>(json) ?? throw new InvalidOperationException();
             Settings.IsAutoStartEnabled = _autoStartSwitch.IsSet;
             Settings.ApplicationCultureInfo ??= CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+            Settings.LastSelectedPort ??= Serial.GetPorts().FirstOrDefault(d => d.IsHsMonitorData)?.PortName;
             SettingsLoaded?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception exception)
